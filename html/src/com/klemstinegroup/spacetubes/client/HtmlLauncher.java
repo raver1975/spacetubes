@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.badlogic.gdx.backends.gwt.GwtGraphics;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
@@ -28,7 +29,10 @@ public class HtmlLauncher extends GwtApplication {
          public GwtApplicationConfiguration getConfig() {
              int w = Window.getClientWidth() - PADDING;
              int h = Window.getClientHeight() - PADDING;
+//             int w=640;
+//             int h=480;
              cfg = new GwtApplicationConfiguration(w, h);
+//             cfg.fullscreenOrientation = GwtGraphics.OrientationLockType.LANDSCAPE;
              Window.enableScrolling(false);
              Window.setMargin("0");
              Window.addResizeHandler(new ResizeListener());

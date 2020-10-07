@@ -2,10 +2,7 @@ package com.klemstinegroup.spacetubes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.graphics.ParticleEmitterBox2D;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -26,24 +23,48 @@ public class FireEmitter extends Actor {
         fireEmitter.getEmitters().add(new ParticleEmitterBox2D(aWorld, fireEmitter.getEmitters().first()));
         fireEmitter.getEmitters().removeIndex(0);
         fireEmitter.setPosition(5, 2);
-        fireEmitter.scaleEffect(.05f);
+        fireEmitter.scaleEffect(.021f);
         fireEmitter.start();
 
     }
 
     float x = 5;
     float y = 2;
+    float ang = 0;
 
     @Override
     public void act(float delta) {
         super.act(delta);
-        x = x - .05f;
-        y = y - .05f;
-        if (x<-5)x=5;
-        if (y<-5)y=5;
+        x = x - .01f;
+        y = y - .01f;
+        if (x < -2.5) x = 2.5f;
+        if (y < -2.5) y = 2.5f;
+        ang += 2;
         fireEmitter.setPosition(x, y);
-        this.setRotation(this.getRotation()+10);
+//        this.setRotation(this.getRotation()+10);
+        setAngle(fireEmitter, ang);
         fireEmitter.update(delta);
+    }
+
+    private void setAngle(ParticleEffect fireEmitter, float targetAngle) {
+        for (ParticleEmitter emitter : fireEmitter.getEmitters()) {
+//        ParticleEmitter emitter = fireEmitter.getEmitters().first(); // find the emitter you want to     rotate here
+//        float targetAngle = /* your target angle */
+
+            ParticleEmitter.ScaledNumericValue angle = emitter.getAngle();
+
+            /* find angle property and adjust that by letting the min, max of low and high span their current size around your angle */
+
+            float angleHighMin = angle.getHighMin();
+            float angleHighMax = angle.getHighMax();
+            float spanHigh = angleHighMax - angleHighMin;
+            angle.setHigh(targetAngle - spanHigh / 2.0f, targetAngle + spanHigh / 2.0f);
+
+            float angleLowMin = angle.getLowMin();
+            float angleLowMax = angle.getLowMax();
+            float spanLow = angleLowMax - angleLowMin;
+            angle.setLow(targetAngle - spanLow / 2.0f, targetAngle + spanLow / 2.0f);
+        }
     }
 
     @Override

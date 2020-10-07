@@ -1,5 +1,6 @@
 package com.klemstinegroup.spacetubes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -15,13 +16,13 @@ public class B2dContactListener implements ContactListener {
         String classA = contact.getFixtureA().getBody().getUserData().getClass().getName();
         String classB = contact.getFixtureB().getBody().getUserData().getClass().getName();
 
-        //Gdx.app.debug("begin Contact","between: "+classA+" and "+ classB);
-        if(classA.equalsIgnoreCase("com.mygdx.game.WindowsFrame") && classB.equalsIgnoreCase("com.mygdx.game.Ball")){
+//        Gdx.app.debug("begin Contact","between: "+classA+" and "+ classB);
+        if(classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.WindowsFrame") && classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball")){
             Ball ball = (Ball)(contact.getFixtureB().getBody().getUserData());
             BallGenerator.getInstance().explode(ball);
 
         }
-        else if(classB.equalsIgnoreCase("com.mygdx.game.WindowsFrame") && classA.equalsIgnoreCase("com.mygdx.game.Ball")){
+        else if(classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.WindowsFrame") && classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball")){
             Ball ball = (Ball)(contact.getFixtureA().getBody().getUserData());
             BallGenerator.getInstance().explode(ball);
         }
