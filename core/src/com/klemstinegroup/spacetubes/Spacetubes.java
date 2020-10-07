@@ -24,7 +24,7 @@ public class Spacetubes extends ApplicationAdapter  {
 
     @Override
     public void create () {
-        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+//        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         world = new World(new Vector2(0, -3), true);
