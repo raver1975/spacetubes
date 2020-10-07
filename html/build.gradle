@@ -64,13 +64,13 @@ task dist(dependsOn: [clean, compileGwt]) {
             from "war"
             into "build/dist"
         }
-        delete "docs"
-        file("docs").mkdirs()
+        file("../docs").deleteDir()
+        file("../docs").mkdirs()
         copy {
             from "build/dist"
-            into "docs"
+            into "../docs"
         }
-        delete "docs/WEB-INF"
+        delete "../docs/WEB-INF"
     }
 }
 
