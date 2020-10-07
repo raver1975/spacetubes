@@ -26,6 +26,19 @@ public class B2dContactListener implements ContactListener {
             Ball ball = (Ball)(contact.getFixtureA().getBody().getUserData());
             BallGenerator.getInstance().explode(ball);
         }
+        else if(!(classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball") && classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball"))&&(classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball")||classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball"))){
+            try {
+                Ball ball = (Ball) (contact.getFixtureA().getBody().getUserData());
+                BallGenerator.getInstance().explode(ball);
+            }
+            catch (Exception e){}
+            try {
+                Ball ball = (Ball) (contact.getFixtureB().getBody().getUserData());
+                BallGenerator.getInstance().explode(ball);
+            }
+            catch (Exception e){}
+
+        }
 
     }
 

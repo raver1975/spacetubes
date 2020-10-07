@@ -56,7 +56,7 @@ project(":desktop") {
     }
 }
 
-project(":android") {
+/*project(":android") {
     apply plugin: "android"
 
     configurations { natives }
@@ -78,9 +78,9 @@ project(":android") {
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         api "de.tomgrill.gdxfacebook:gdx-facebook-android:1.4.1"
         api "de.tomgrill.gdxdialogs:gdx-dialogs-android:1.2.5"
-        
+
     }
-}
+}*/
 
 project(":ios") {
     apply plugin: "java-library"

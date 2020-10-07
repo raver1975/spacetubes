@@ -12,6 +12,8 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.graphics.ParticleEmitterBox2D;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by julienvillegas on 07/12/2017.
@@ -70,11 +72,16 @@ public class Ball extends Image {
     public void act(float delta) {
         super.act(delta);
         if(exploding) {
+            Array<Body> bodies = new Array<>();
+            /*orld.getBodies(bodies);
+            if (bodies.contains(body,true))world.destroyBody(body);*/
+            explosionEffect.setPosition(this.getX(),this.getY());
+            this.setScale(this.getScaleX()*.98f,this.getScaleY()*.98f);
             explosionEffect.update(delta);
 
             if (explosionEffect.isComplete()) {
-                explosionEffect.dispose();
                 world.destroyBody(body);
+                explosionEffect.dispose();
                 this.delete = true;
             }
         }
@@ -91,7 +98,7 @@ public class Ball extends Image {
         explosionEffect.getEmitters().add(new ParticleEmitterBox2D(world,explosionEffect.getEmitters().first()));
         explosionEffect.getEmitters().removeIndex(0);
         explosionEffect.setPosition(this.getX()+this.getWidth()/2, this.getY());
-        explosionEffect.scaleEffect(0.01f);
+        explosionEffect.scaleEffect(0.02f);
 
         explosionEffect.start();
 

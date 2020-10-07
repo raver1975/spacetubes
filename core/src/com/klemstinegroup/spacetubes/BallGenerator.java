@@ -18,8 +18,7 @@ import java.util.Random;
 public class BallGenerator {
 
 
-    private final int MAX_NBR = 30;
-    private int ballNbr;
+    private final int MAX_NBR = 10;
 
     private World world;
     private Stage stage;
@@ -27,44 +26,42 @@ public class BallGenerator {
     private ParticleEffectPool ballExplosionPool;
 
 
-
     private static BallGenerator ballGenerator;
 
-    static public BallGenerator getInstance(){
-        if(ballGenerator==null){
+    static public BallGenerator getInstance() {
+        if (ballGenerator == null) {
             ballGenerator = new BallGenerator();
         }
         return ballGenerator;
     }
 
-    private BallGenerator(){
-        ballNbr = 0;
+    private BallGenerator() {
         TextureAtlas textureAtlas = new TextureAtlas();
-        textureAtlas.addRegion("particle",new TextureRegion(new Texture("particle.png")));
+        textureAtlas.addRegion("particle", new TextureRegion(new Texture("particle.png")));
         ParticleEffect explosionEffect = new ParticleEffect();
         explosionEffect.load(Gdx.files.internal("particles.p"), textureAtlas);
-        ballExplosionPool = new ParticleEffectPool(explosionEffect,MAX_NBR*2,  MAX_NBR*2);
+        ballExplosionPool = new ParticleEffectPool(explosionEffect, MAX_NBR * 2, MAX_NBR * 2);
     }
 
-    public void setup(Stage aStage,World aWorld){
+    public void setup(Stage aStage, World aWorld) {
         stage = aStage;
         world = aWorld;
     }
 
 
-    public void emit(){
-        if(ballNbr<MAX_NBR) {
+    public void emit() {
+        if (stage.getActors().size < MAX_NBR) {
             Random rand = new Random();
             Ball ball = new Ball(world, (float) ((rand.nextInt(60) - 30)) / 10, 9);
             stage.addActor(ball);
-            ballNbr++;
-            Gdx.app.debug("generatBalls", "Balls:" + ballNbr);
+            Ball ball2 = new Ball(world, (float) ((rand.nextInt(60) - 30)) / 10, 9);
+            stage.addActor(ball2);
+//            Gdx.app.debug("generatBalls", "Balls:" + ballNbr);
         }
     }
 
-    public void explode(Ball aBall){
+    public void explode(Ball aBall) {
         ParticleEffectPool.PooledEffect effect = ballExplosionPool.obtain();
         aBall.explode(effect);
-        ballNbr--;
     }
 }

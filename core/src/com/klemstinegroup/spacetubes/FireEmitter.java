@@ -46,8 +46,8 @@ public class FireEmitter extends Actor {
         fireEmitter.update(delta);
     }
 
-    private void setAngle(ParticleEffect fireEmitter, float targetAngle) {
-        for (ParticleEmitter emitter : fireEmitter.getEmitters()) {
+    private static void setAngle(ParticleEffect pe, float targetAngle) {
+        for (ParticleEmitter emitter : pe.getEmitters()) {
 //        ParticleEmitter emitter = fireEmitter.getEmitters().first(); // find the emitter you want to     rotate here
 //        float targetAngle = /* your target angle */
 
