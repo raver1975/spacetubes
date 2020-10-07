@@ -27,6 +27,7 @@ public class HtmlLauncher extends GwtApplication {
 
          @Override
          public GwtApplicationConfiguration getConfig() {
+
              int w = Window.getClientWidth() - PADDING;
              int h = Window.getClientHeight() - PADDING;
 //             int w=640;
