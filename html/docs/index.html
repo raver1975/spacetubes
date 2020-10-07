@@ -1,70 +1,39 @@
 <!doctype html>
 <html>
-       <head>
-              <title>Spacetubes</title>
-              <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-              <meta id="gameViewport" name="viewport" content="width=device-width initial-scale=1">
-              <link href="styles.css" rel="stylesheet" type="text/css">
-              <script src="soundmanager2-setup.js"></script>
-  			  <script src="soundmanager2-jsmin.js"></script>
-       </head>
+<head>
+    <title>Spacetubes</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta id="gameViewport" name="viewport" content="width=device-width initial-scale=1">
+    <link href="styles.css" rel="stylesheet" type="text/css">
+    <script src="soundmanager2-setup.js"></script>
+    <script src="soundmanager2-jsmin.js"></script>
+</head>
 
-       <body><script type="text/javascript" src="html/html.nocache.js"></script></body>
-              <!--<a class="superdev" href="javascript:%7B%20window.__gwt_bookmarklet_params%20%3D%20%7B'server_url'%3A'http%3A%2F%2Flocalhost%3A9876%2F'%7D%3B%20var%20s%20%3D%20document.createElement('script')%3B%20s.src%20%3D%20'http%3A%2F%2Flocalhost%3A9876%2Fdev_mode_on.js'%3B%20void(document.getElementsByTagName('head')%5B0%5D.appendChild(s))%3B%7D">&#8635;</a>
-              <div align="center" id="embed-html"></div>-->
-
-
-
-       <script>
-
-              function getDevicePixelRatio() {
-                     var mediaQuery;
-                     var is_firefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-                     if (window.devicePixelRatio !== undefined && !is_firefox) {
-                            return window.devicePixelRatio;
-                     } else if (window.matchMedia) {
-                            mediaQuery = "(-webkit-min-device-pixel-ratio: 1.5),\
-          (min--moz-device-pixel-ratio: 1.5),\
-          (-o-min-device-pixel-ratio: 3/2),\
-          (min-resolution: 1.5dppx)";
-                            if (window.matchMedia(mediaQuery).matches) {
-                                   return 1.5;
-                            }
-                            mediaQuery = "(-webkit-min-device-pixel-ratio: 2),\
-          (min--moz-device-pixel-ratio: 2),\
-          (-o-min-device-pixel-ratio: 2/1),\
-          (min-resolution: 2dppx)";
-                            if (window.matchMedia(mediaQuery).matches) {
-                                   return 2;
-                            }
-                            mediaQuery = "(-webkit-min-device-pixel-ratio: 0.75),\
-          (min--moz-device-pixel-ratio: 0.75),\
-          (-o-min-device-pixel-ratio: 3/4),\
-          (min-resolution: 0.75dppx)";
-                            if (window.matchMedia(mediaQuery).matches) {
-                                   return 0.7;
-                            }
-                     } else {
-                            return 1;
-                     }
-              }
-
-              document.getElementById('gameViewport').setAttribute('content',
-                 'width=device-width initial-scale=' + 1/getDevicePixelRatio());
+<body>
+<script type="text/javascript" src="html/html.nocache.js"></script>
+</body>
+<!--<a class="superdev" href="javascript:%7B%20window.__gwt_bookmarklet_params%20%3D%20%7B'server_url'%3A'http%3A%2F%2Flocalhost%3A9876%2F'%7D%3B%20var%20s%20%3D%20document.createElement('script')%3B%20s.src%20%3D%20'http%3A%2F%2Flocalhost%3A9876%2Fdev_mode_on.js'%3B%20void(document.getElementsByTagName('head')%5B0%5D.appendChild(s))%3B%7D">&#8635;</a>
+<div align="center" id="embed-html"></div>-->
 
 
+<script>
+    document.getElementById('gameViewport').setAttribute('content', 'width=device-width initial-scale=' + 1 / window.devicePixelRatio);
 
-              function handleMouseDown(evt) {
-                evt.preventDefault();
-                evt.stopPropagation();
-                window.focus();
-              }
 
-              function handleMouseUp(evt) {
-                evt.preventDefault();
-                evt.stopPropagation();
-              }
-              document.getElementById('embed-html').addEventListener('mousedown', handleMouseDown, false);
-              document.getElementById('embed-html').addEventListener('mouseup', handleMouseUp, false);
-       </script>
+    function handleMouseDown(evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+        window.focus();
+    }
+
+    function handleMouseUp(evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+    }
+
+    document.getElementById('embed-html').addEventListener('mousedown', handleMouseDown, false);
+    document.getElementById('embed-html').addEventListener('mouseup', handleMouseUp, false);
+    Window.resizeBy(-1,-1);
+    Window.resizeBy(1,1);
+</script>
 </html>

@@ -37,7 +37,7 @@ public class HtmlLauncher extends GwtApplication {
              Window.enableScrolling(false);
              Window.setMargin("0");
              Window.addResizeHandler(new ResizeListener());
-             Window.resizeBy(0,0);
+//             Window.resizeBy(0,0);
              cfg.preferFlash = false;
              return cfg;
          }
