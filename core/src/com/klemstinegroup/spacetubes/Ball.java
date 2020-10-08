@@ -31,9 +31,10 @@ public class Ball extends Image {
     static private final Texture texture = new Texture("bubble.png");
     Array<ParticleEffect> explosionEffect = new Array<>();
     private boolean exploding;
+    private boolean dead = false;
     private float scale = 2;
 
-    public Ball(World aWorld, RayHandler rayHandler,float pos_x, float pos_y) {
+    public Ball(World aWorld, RayHandler rayHandler, float pos_x, float pos_y) {
         super(texture);
 //        setDrawable(null);
         this.setSize(0.3f, 0.3f);
@@ -63,8 +64,8 @@ public class Ball extends Image {
 
         this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
         circle.dispose();
-        Vector2 v=body.getPosition();
-        pl2 = new PointLight(rayHandler, 128, new Color(1,1,1,1f), 1f,v.x,v.y);
+        Vector2 v = body.getPosition();
+        pl2 = new PointLight(rayHandler, 128, new Color(1, 1, 1, 1f), 1f, v.x, v.y);
         pl2.setIgnoreAttachedBody(true);
     }
 
@@ -85,7 +86,7 @@ public class Ball extends Image {
         Vector2 v = body.getPosition();
 
         if (exploding) {
-//            BallGenerator.getInstance().explode(this);
+            BallGenerator.getInstance().explode(this);
             for (ParticleEffect explosionEffect : explosionEffect) {
                 FireEmitter.setAngle(explosionEffect, body.getAngle() * MathUtils.radiansToDegrees + 180);
                 explosionEffect.setPosition(v.x, v.y);
@@ -117,7 +118,8 @@ public class Ball extends Image {
                     break;
                 }
             }
-            if (com) {
+            if ( explosionEffect.size > 200){dead=true;};
+            if (com ) {
                 world.destroyBody(body);
                 for (ParticleEffect explosionEffect : explosionEffect) {
                     explosionEffect.dispose();
@@ -125,9 +127,7 @@ public class Ball extends Image {
                 this.delete = true;
             }
         }
-        else{
-            pl2.setPosition(v);
-        }
+        pl2.setPosition(v);
 
         setRotation(body.getAngle() * MathUtils.radiansToDegrees);
 
@@ -146,17 +146,17 @@ public class Ball extends Image {
 //            b.setScale(this.getScaleX(), this.getScaleY());
 //        }
 //        BallGenerator.getInstance().explode(b);
+        if (!dead) {
+            explosionEffect.getEmitters().add(new ParticleEmitterBox2D(world, explosionEffect.getEmitters().first()));
+            explosionEffect.getEmitters().removeIndex(0);
+            explosionEffect.setPosition(this.getX() + this.getWidth() / 2, this.getY());
+            explosionEffect.scaleEffect(0.02f);
 
-        explosionEffect.getEmitters().add(new ParticleEmitterBox2D(world, explosionEffect.getEmitters().first()));
-        explosionEffect.getEmitters().removeIndex(0);
-        explosionEffect.setPosition(this.getX() + this.getWidth() / 2, this.getY());
-        explosionEffect.scaleEffect(0.02f);
+            explosionEffect.start();
+            this.explosionEffect.add(explosionEffect);
 
-        explosionEffect.start();
-        this.explosionEffect.add(explosionEffect);
-
-        exploding = true;
-
+            exploding = true;
+        }
     }
 
 }

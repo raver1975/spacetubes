@@ -40,9 +40,9 @@ public class Spacetubes extends ApplicationAdapter  {
         stage.getCamera().viewportHeight = 10/ratio;
         debugRenderer = new Box2DDebugRenderer();
 
-        GearActor gearActor1 = new GearActor(world,-2,-1.5f,2.35f,2.35f,false);
-        GearActor gearActor3 = new GearActor(world,2,-1.5f,2.35f,2.35f,false);
-        GearActor gearActor2 = new GearActor(world,0,-2.5f,2.35f,2.35f,true);
+        GearActor gearActor1 = new GearActor(world,-2,-2.5f,2.35f,2.35f,false);
+        GearActor gearActor3 = new GearActor(world,2,-2.5f,2.35f,2.35f,false);
+        GearActor gearActor2 = new GearActor(world,0,-3.5f,2.35f,2.35f,true);
         stage.addActor(gearActor1);
         stage.addActor(gearActor2);
         stage.addActor(gearActor3);
@@ -55,10 +55,10 @@ public class Spacetubes extends ApplicationAdapter  {
         rayHandler.setBlurNum(3);
 
 
-        PointLight pl = new PointLight(rayHandler, 128, new Color(0.2f,1,1,1f), 10,-2f,-1.5f);
+        PointLight pl = new PointLight(rayHandler, 128, new Color(0.2f,1,1,1f), 10,-3f,0f);
         pl.setIgnoreAttachedBody(true);
 
-        PointLight pl2 = new PointLight(rayHandler, 128, new Color(1,0,1,1f), 10,2f,-1.5f);
+        PointLight pl2 = new PointLight(rayHandler, 128, new Color(1,0,1,1f), 10,3f,0f);
         pl2.setIgnoreAttachedBody(true);
 
         rayHandler.setShadows(true);
@@ -67,7 +67,7 @@ public class Spacetubes extends ApplicationAdapter  {
         pl2.setStaticLight(false);
         pl2.setSoft(true);
         BallGenerator.getInstance().setup(stage,world,rayHandler);
-        stage.addActor(new FireEmitter(world));
+//        stage.addActor(new FireEmitter(world));
 
     }
 
