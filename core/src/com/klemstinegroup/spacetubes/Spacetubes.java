@@ -40,9 +40,9 @@ public class Spacetubes extends ApplicationAdapter  {
         stage.getCamera().viewportHeight = 10/ratio;
         debugRenderer = new Box2DDebugRenderer();
 
-        GearActor gearActor1 = new GearActor(world,-2,-2.5f,2.35f,2.35f,false);
-        GearActor gearActor3 = new GearActor(world,2,-2.5f,2.35f,2.35f,false);
-        GearActor gearActor2 = new GearActor(world,0,-3.5f,2.35f,2.35f,true);
+        GearActor gearActor1 = new GearActor(world,-2,-1.5f,2.35f,2.35f,false);
+        GearActor gearActor3 = new GearActor(world,2,-1.5f,2.35f,2.35f,false);
+        GearActor gearActor2 = new GearActor(world,0,-2.5f,2.35f,2.35f,true);
         stage.addActor(gearActor1);
         stage.addActor(gearActor2);
         stage.addActor(gearActor3);
