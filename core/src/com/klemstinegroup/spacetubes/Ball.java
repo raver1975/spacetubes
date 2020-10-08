@@ -118,7 +118,7 @@ public class Ball extends Image {
                     break;
                 }
             }
-            if ( explosionEffect.size > 200){dead=true;};
+            if ( explosionEffect.size > 200||body.getPosition().y<-6f){dead=true;};
             if (com ) {
                 world.destroyBody(body);
                 for (ParticleEffect explosionEffect : explosionEffect) {
