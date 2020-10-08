@@ -1,5 +1,6 @@
 package com.klemstinegroup.spacetubes;
 
+import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -18,8 +19,8 @@ import java.util.Random;
 public class BallGenerator {
 
 
-    private final int MAX_NBR = 10;
-
+    public static final int MAX_NBR = 10;
+    Random rand = new Random();
     private World world;
     private Stage stage;
 
@@ -27,6 +28,7 @@ public class BallGenerator {
 
 
     private static BallGenerator ballGenerator;
+    private RayHandler rayHandler;
 
     static public BallGenerator getInstance() {
         if (ballGenerator == null) {
@@ -40,21 +42,22 @@ public class BallGenerator {
         textureAtlas.addRegion("particle", new TextureRegion(new Texture("particle.png")));
         ParticleEffect explosionEffect = new ParticleEffect();
         explosionEffect.load(Gdx.files.internal("particles.p"), textureAtlas);
-        ballExplosionPool = new ParticleEffectPool(explosionEffect, MAX_NBR * 2, MAX_NBR * 2);
+        ballExplosionPool = new ParticleEffectPool(explosionEffect, MAX_NBR * 20, MAX_NBR * 20);
     }
 
-    public void setup(Stage aStage, World aWorld) {
+    public void setup(Stage aStage, World aWorld, RayHandler rayHandler) {
         stage = aStage;
         world = aWorld;
+        this.rayHandler=rayHandler;
     }
 
 
     public void emit() {
         if (stage.getActors().size < MAX_NBR) {
-            Random rand = new Random();
-            Ball ball = new Ball(world, (float) ((rand.nextInt(60) - 30)) / 10, 9);
+
+            Ball ball = new Ball(world, rayHandler,(float) ((rand.nextInt(100) - 50)) / 10, 5);
             stage.addActor(ball);
-            Ball ball2 = new Ball(world, (float) ((rand.nextInt(60) - 30)) / 10, 9);
+            Ball ball2 = new Ball(world, rayHandler,(float) ((rand.nextInt(1000) - 500)) / 100, (((rand.nextInt(1000) - 500)) / 100)+5);
             stage.addActor(ball2);
 //            Gdx.app.debug("generatBalls", "Balls:" + ballNbr);
         }

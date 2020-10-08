@@ -20,7 +20,7 @@ public class GearActor extends Image {
     private World world;
     private float angle;
 
-    public GearActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight) {
+    public GearActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight,boolean clockwise) {
         super(new Texture("gear.png"));
         this.setSize(aWidth,aHeight);
         this.setPosition(pos_x, pos_y);
@@ -48,7 +48,7 @@ public class GearActor extends Image {
         loader.attachFixture(body, "gear", fd, scale);
 
         this.setOrigin(this.getWidth()/2,this.getHeight()/2);
-        body.setAngularVelocity(1);
+        body.setAngularVelocity(clockwise?1:-1);
         body.setUserData(this);
 
     }

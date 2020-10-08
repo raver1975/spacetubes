@@ -40,8 +40,12 @@ public class Spacetubes extends ApplicationAdapter  {
         stage.getCamera().viewportHeight = 10/ratio;
         debugRenderer = new Box2DDebugRenderer();
 
-        GearActor gearActor = new GearActor(world,0,0,3,3);
-        stage.addActor(gearActor);
+        GearActor gearActor1 = new GearActor(world,-2,-1.5f,2.35f,2.35f,false);
+        GearActor gearActor3 = new GearActor(world,2,-1.5f,2.35f,2.35f,false);
+        GearActor gearActor2 = new GearActor(world,0,-2.5f,2.35f,2.35f,true);
+        stage.addActor(gearActor1);
+        stage.addActor(gearActor2);
+        stage.addActor(gearActor3);
 
 
         new WindowsFrame(world,stage.getCamera().viewportWidth,stage.getCamera().viewportHeight);
@@ -56,7 +60,7 @@ public class Spacetubes extends ApplicationAdapter  {
         rayHandler.setShadows(true);
         pl.setStaticLight(false);
         pl.setSoft(true);
-        BallGenerator.getInstance().setup(stage,world);
+        BallGenerator.getInstance().setup(stage,world,rayHandler);
         stage.addActor(new FireEmitter(world));
 
     }
