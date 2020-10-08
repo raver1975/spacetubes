@@ -20,7 +20,7 @@ public class WindowsFrame {
 
         world = aWorld;
         BodyDef bd = new BodyDef();
-        bd.position.set(-width*5,-heigth/2);
+        bd.position.set(-width*5,-2);
         bd.type = BodyDef.BodyType.StaticBody;
         body = world.createBody(bd);
         PolygonShape groundBox = new PolygonShape();
