@@ -51,15 +51,21 @@ public class Spacetubes extends ApplicationAdapter  {
         new WindowsFrame(world,stage.getCamera().viewportWidth,stage.getCamera().viewportHeight);
 
         rayHandler = new RayHandler(world);
-        rayHandler.setAmbientLight(0.1f, 0.1f, 0.1f, 1f);
+        rayHandler.setAmbientLight(0.1f, 0.0f, 0.0f, 0.1f);
         rayHandler.setBlurNum(3);
 
-        PointLight pl = new PointLight(rayHandler, 128, new Color(0.2f,1,1,1f), 10,-5,2);
-        PointLight pl2 = new PointLight(rayHandler, 128, new Color(1,0,1,1f), 10,5,2);
+
+        PointLight pl = new PointLight(rayHandler, 128, new Color(0.2f,1,1,1f), 10,-2f,-1.5f);
+        pl.setIgnoreAttachedBody(true);
+
+        PointLight pl2 = new PointLight(rayHandler, 128, new Color(1,0,1,1f), 10,2f,-1.5f);
+        pl2.setIgnoreAttachedBody(true);
 
         rayHandler.setShadows(true);
         pl.setStaticLight(false);
         pl.setSoft(true);
+        pl2.setStaticLight(false);
+        pl2.setSoft(true);
         BallGenerator.getInstance().setup(stage,world,rayHandler);
         stage.addActor(new FireEmitter(world));
 

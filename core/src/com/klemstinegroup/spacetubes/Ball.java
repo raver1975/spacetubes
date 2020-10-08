@@ -65,7 +65,7 @@ public class Ball extends Image {
         circle.dispose();
         Vector2 v=body.getPosition();
         pl2 = new PointLight(rayHandler, 128, new Color(1,1,1,1f), 1f,v.x,v.y);
-        pl2.setSoft(false);
+        pl2.setIgnoreAttachedBody(true);
     }
 
     @Override
