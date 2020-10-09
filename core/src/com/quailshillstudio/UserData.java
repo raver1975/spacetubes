@@ -1,4 +1,4 @@
-package com.quailshillstudio.polygonClippingUtils;
+package com.quailshillstudio;
 
 public class UserData {
 	public static final int GROUND = 0;

@@ -2,7 +2,6 @@ package com.quailshillstudio;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.quailshillstudio.polygonClippingUtils.UserData;
 
 public class UserDataInterface extends Image {
     public UserData userData = null;

@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.quailshillstudio.polygonClippingUtils.UserData;
+import com.quailshillstudio.UserData;
 
 /**
  * Created by julienvillegas on 06/12/2017.

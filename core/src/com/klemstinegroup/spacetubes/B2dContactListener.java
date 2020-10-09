@@ -1,14 +1,12 @@
 package com.klemstinegroup.spacetubes;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.quailshillstudio.UserDataInterface;
-import com.quailshillstudio.polygonClippingUtils.CollisionGeometry;
-import com.quailshillstudio.polygonClippingUtils.PolygonBox2DShape;
-import com.quailshillstudio.polygonClippingUtils.UserData;
+import com.quailshillstudio.CollisionGeometry;
+import com.quailshillstudio.PolygonBox2DShape;
+import com.quailshillstudio.UserData;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 /**

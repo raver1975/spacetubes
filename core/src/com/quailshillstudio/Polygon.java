@@ -1,22 +1,22 @@
 /**
  * Efficient Clipping of Arbitrary Polygons using OpenGPL
  * Copyright (c) 2011, 2012 Helder Correia <helder.mc@gmail.com>
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.quailshillstudio.polygonClippingUtils;
+package com.quailshillstudio;
 
 
 /**
@@ -24,7 +24,7 @@ package com.quailshillstudio.polygonClippingUtils;
  * Greiner (greiner[at]informatik.uni-erlangen.de) and Kai Hormann
  * (hormann[at]informatik.tu-clausthal.de), ACM Transactions on Graphics
  * 1998;17(2):71-83.
- *
+ * <p>
  * Available at: http://www.inf.usi.ch/hormann/papers/Greiner.1998.ECO.pdf
  */
 
@@ -114,12 +114,17 @@ class Vertex {
     /** String representation of the vertex for debugging purposes */
     @Override
     public String toString() {
-        return String.format(
-            "(%.2f, %.2f) <-> %s(%.2f, %.2f)%s <-> (%.2f, %.2f) %s",
-            prev.x, prev.y, (intersect ? 'i' : ' '),
-            x,      y,      (intersect ? (entry ? 'e' : 'x') : ' '),
-            next.x, next.y, (intersect && !checked ? '!' : ' ')
-        );
+        return "Vertex{" +
+                "x=" + x +
+                ", y=" + y +
+                ", next=" + next +
+                ", prev=" + prev +
+                ", neighbour=" + neighbour +
+                ", alpha=" + alpha +
+                ", entry=" + entry +
+                ", intersect=" + intersect +
+                ", checked=" + checked +
+                '}';
     }
 }
 
@@ -132,7 +137,7 @@ class Vertex {
 class Intersection {
     float x, y;
     float us, uc;
-    
+
     Intersection(Vertex s1, Vertex s2, Vertex c1, Vertex c2) {
         float den = (c2.y - c1.y) * (s2.x - s1.x) - (c2.x - c1.x) * (s2.y - s1.y);
 
@@ -170,7 +175,8 @@ public class Polygon {
     int vertices = 0;
 
     /** Constructor */
-    Polygon() {}
+    Polygon() {
+    }
 
     /** Constructor which accepts an array of float[] {x, y} */
     public Polygon(float[][] p) {
@@ -267,12 +273,12 @@ public class Polygon {
         float[][] points = new float[vertices][2];
         Vertex v = first;
         for (int i = 0; i < vertices; i++) {
-            points[i] = new float[] {v.x, v.y};
+            points[i] = new float[]{v.x, v.y};
             v = v.next;
         }
         return points;
     }
-    
+
     /** Calculate the union between two polygons */
     public Array<Polygon> union(Polygon poly) {
         return clip(poly, false, false);
@@ -300,7 +306,7 @@ public class Polygon {
      * A&B ... A AND B (Intersection of A and B)
      * A\B ... A - B
      * B\A ... B - A
-     * 
+     *
      * The entry records store the direction the algorithm should take when
      * it arrives at that entry point in an intersection. Depending on the
      * operation requested, the direction is set as follows for entry points
@@ -330,7 +336,7 @@ public class Polygon {
                 do { // for each vertex Cj of clip polygon do
                     if (!c.intersect) {
                         Intersection i = new Intersection(
-                            s, this.getNext(s.next), c, clip.getNext(c.next)
+                                s, this.getNext(s.next), c, clip.getNext(c.next)
                         );
                         if (i.test()) {
                             Vertex iS = Vertex.intersection(i.x, i.y, i.us);
@@ -352,7 +358,7 @@ public class Polygon {
         // phase two - identify entry/exit points
         s = this.first;
         c = clip.first;
-        
+
         s_entry ^= s.isInside(clip);
         c_entry ^= c.isInside(this);
 
@@ -386,7 +392,7 @@ public class Polygon {
                         current = current.next;
                         clipped.add(new Vertex(current.x, current.y));
                     } while (!current.intersect);
-                    
+
                 } else {
                     do {
                         current = current.prev;
@@ -395,7 +401,7 @@ public class Polygon {
                 }
                 current = current.neighbour;
             } while (!current.checked);
-            
+
             list.add(clipped);
         }
 
@@ -413,7 +419,7 @@ public class Polygon {
         String out = "Printing polygon:\n";
         Vertex s = first;
         do {
-            out += String.format("%02d: %s\n", count++, s);
+            out += (count++)+"\t"+s+"\n";
             s = s.next;
         } while (!s.equals(first));
         return out;

@@ -1,4 +1,4 @@
-package com.quailshillstudio.polygonClippingUtils;
+package com.quailshillstudio;
 
 
 import com.badlogic.gdx.physics.box2d.Body;

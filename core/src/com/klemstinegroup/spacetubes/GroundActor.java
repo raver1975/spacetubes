@@ -9,9 +9,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.quailshillstudio.UserDataInterface;
-import com.quailshillstudio.polygonClippingUtils.UserData;
+import com.quailshillstudio.UserData;
 
 /**
  * Created by julienvillegas on 06/12/2017.
