@@ -38,7 +38,7 @@ public class HtmlLauncher extends GwtApplication {
              Window.setMargin("0");
              Window.addResizeHandler(new ResizeListener());
 //             Window.resizeBy(0,0);
-             cfg.preferFlash = false;
+//             cfg.preferFlash = false;
              return cfg;
          }
 

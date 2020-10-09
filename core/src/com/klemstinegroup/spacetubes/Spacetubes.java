@@ -70,7 +70,7 @@ public class Spacetubes extends ApplicationAdapter {
         GearActor gearActor1 = new GearActor(world, -20, -15.0f, 23.5f, 23.5f, false);
         GearActor gearActor3 = new GearActor(world, 20, -15.00f, 23.5f, 23.5f, false);
         GearActor gearActor2 = new GearActor(world, 0, -25.0f, 23.5f, 23.5f, true);
-//        GroundActor groundActor = new GroundActor(world, 30f, -20.0f, 43.35f, 43.5f);
+        GroundActor groundActor = new GroundActor(world, 30f, -20.0f, 43.35f, 43.5f);
         stage.addActor(gearActor1);
         stage.addActor(gearActor2);
         stage.addActor(gearActor3);
@@ -80,7 +80,7 @@ public class Spacetubes extends ApplicationAdapter {
 //        new WindowsFrame(world, stage.getCamera().viewportWidth, stage.getCamera().viewportHeight);
 
         rayHandler = new RayHandler(world);
-        rayHandler.setAmbientLight(0.3f, 0.2f, 0.2f, .5f);
+        rayHandler.setAmbientLight(0.3f, 0.2f, 0.2f, .0f);
         rayHandler.setBlurNum(3);
 
 
@@ -100,11 +100,11 @@ public class Spacetubes extends ApplicationAdapter {
 
         try {
 
-            float[] points = {-50, 0, -50, -10f, 50, -10f, 50, 0};
-            Array<float[]> verts = new Array<>();
-            verts.add(points);
-            GroundFixture grFix = new GroundFixture(verts);
-            polyVerts.add(grFix);
+//            float[] points = {-50, 0, -50, -50f, 50, -50f, 50, 0};
+//            Array<float[]> verts = new Array<>();
+//            verts.add(points);
+//            GroundFixture grFix = new GroundFixture(verts);
+//            polyVerts.add(grFix);
 
 //            float[] points1 = {-50, 20, -50, 10f, 0, 10f, 0, 20};
 //            Array<float[]> verts1 = new Array<>();
@@ -112,23 +112,23 @@ public class Spacetubes extends ApplicationAdapter {
 //            GroundFixture grFix1 = new GroundFixture(verts1);
 //            polyVerts.add(grFix1);
 //            gearActor2.body.getFixtureList().clear();
-//            for (int ii = 0; ii < gearActor2.body.getFixtureList().size; ii++) {
-//                System.out.println("ii:" + ii);
-//                verts.clear();
-//                PolygonShape s = (PolygonShape) gearActor2.body.getFixtureList().get(ii).getShape();
-//                float[] p = new float[s.getVertexCount()];
-//                Vector2 v = new Vector2();
-//                for (int i = 0; i < s.getVertexCount(); i++) {
-//                    s.getVertex(i, v);
-//                    p[i * 2] = v.x*gearActor2.getWidth();
-//                    p[i * 2 + 1] = v.y*gearActor2.getHeight();
-//                    verts.add(p);
-//                    System.out.println("+++"+v);
-//                }
-//                System.out.println();
-//                grFix = new GroundFixture(verts);
-//                polyVerts.add(grFix);
-//            }
+            for (int ii = 0; ii < gearActor2.body.getFixtureList().size; ii++) {
+                System.out.println("ii:" + ii);
+                Array<float[]> verts = new Array<>();
+                PolygonShape s = (PolygonShape) gearActor2.body.getFixtureList().get(ii).getShape();
+                float[] p = new float[s.getVertexCount()];
+                Vector2 v = new Vector2();
+                for (int i = 0; i < s.getVertexCount(); i++) {
+                    s.getVertex(i, v);
+                    p[i * 2] = v.x * gearActor2.getWidth();
+                    p[i * 2 + 1] = v.y * gearActor2.getHeight();
+                    verts.add(p);
+                    System.out.println("+++" + v);
+                }
+                System.out.println();
+                GroundFixture grFix = new GroundFixture(verts);
+                polyVerts.add(grFix);
+            }
             mustCreate = true;
         } catch (
                 Exception e) {
@@ -143,8 +143,6 @@ public class Spacetubes extends ApplicationAdapter {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.act();
-        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
         stage.draw();
         debugRenderer.render(world, stage.getCamera().combined);
@@ -177,6 +175,8 @@ public class Spacetubes extends ApplicationAdapter {
 
         if (mustCreate)
             createGround();
+        stage.act();
+        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
     }
 
@@ -199,6 +199,7 @@ public class Spacetubes extends ApplicationAdapter {
 
 
     public void switchGround(Array<PolygonBox2DShape> rs) {
+        polyVerts.clear();
         mustCreate = true;
         Array<float[]> verts = new Array<float[]>();
         for (int i = 0; i < rs.size; i++) {

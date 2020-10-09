@@ -68,7 +68,7 @@ public class Ball extends UserDataInterface {
         this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
         circle.dispose();
         Vector2 v = body.getPosition();
-        pl2 = new PointLight(rayHandler, 128, new Color(1, 1, 1, 1f), 1.1f, v.x, v.y);
+        pl2 = new PointLight(rayHandler, 128, new Color(1, 1, 1, 1f), 5f, v.x, v.y);
         pl2.setIgnoreAttachedBody(true);
     }
 
@@ -125,7 +125,7 @@ public class Ball extends UserDataInterface {
                     break;
                 }
             }
-            if (explosionEffect.size > 200 || body.getPosition().y < -6f) {
+            if (explosionEffect.size > 200 || body.getPosition().y < -100f) {
                 dead = true;
             }
             ;
