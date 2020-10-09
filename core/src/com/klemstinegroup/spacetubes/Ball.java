@@ -16,14 +16,15 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.graphics.ParticleEmitterBox2D;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+import com.quailshillstudio.UserDataInterface;
+import com.quailshillstudio.polygonClippingUtils.UserData;
 
 /**
  * Created by julienvillegas on 07/12/2017.
  */
 
-public class Ball extends Image {
+public class Ball extends UserDataInterface {
     private final PointLight pl2;
     private Body body;
     private World world;
@@ -32,14 +33,16 @@ public class Ball extends Image {
     Array<ParticleEffect> explosionEffect = new Array<>();
     private boolean exploding;
     private boolean dead = false;
-    private float scale = 2;
+    private float ballScale = 20f;
+    private float explosionScale = .2f;
+
 
     public Ball(World aWorld, RayHandler rayHandler, float pos_x, float pos_y) {
         super(texture);
 //        setDrawable(null);
-        this.setSize(0.3f, 0.3f);
+        this.setSize(4f, 4f);
         this.setPosition(pos_x, pos_y);
-
+        userData = new UserData(UserData.BOMB);
         world = aWorld;
         BodyDef bd = new BodyDef();
         bd.position.set(this.getX(), this.getY());
@@ -65,7 +68,7 @@ public class Ball extends Image {
         this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
         circle.dispose();
         Vector2 v = body.getPosition();
-        pl2 = new PointLight(rayHandler, 128, new Color(1, 1, 1, 1f), 1f, v.x, v.y);
+        pl2 = new PointLight(rayHandler, 128, new Color(1, 1, 1, 1f), 1.1f, v.x, v.y);
         pl2.setIgnoreAttachedBody(true);
     }
 
@@ -86,10 +89,14 @@ public class Ball extends Image {
         Vector2 v = body.getPosition();
 
         if (exploding) {
-            BallGenerator.getInstance().explode(this);
+            if (MathUtils.random() > .8f) {
+                BallGenerator.getInstance().explode(this);
+            }
             for (ParticleEffect explosionEffect : explosionEffect) {
                 FireEmitter.setAngle(explosionEffect, body.getAngle() * MathUtils.radiansToDegrees + 180);
                 explosionEffect.setPosition(v.x, v.y);
+                explosionEffect.setPosition(this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2);
+//                explosionEffect.scaleEffect(0.02f);
                 explosionEffect.update(delta);
             }
 //            Array<Body> bodies = new Array<>();
@@ -98,10 +105,10 @@ public class Ball extends Image {
 
 
             CircleShape circle = new CircleShape();
-            scale += .42f;
-            circle.setRadius(this.getWidth() / scale);
-            body.getFixtureList().first().getShape().setRadius(this.getWidth() / scale);
-            this.setScale(2f / scale);
+            ballScale += .12f;
+            circle.setRadius(this.getWidth() / ballScale);
+            body.getFixtureList().first().getShape().setRadius(this.getWidth() / ballScale);
+            this.setScale(2f / ballScale);
             /*body.destroyFixture(body.getFixtureList().first());
             // 2. Create a FixtureDef, as usual.
             FixtureDef fd = new FixtureDef();
@@ -118,8 +125,11 @@ public class Ball extends Image {
                     break;
                 }
             }
-            if ( explosionEffect.size > 200||body.getPosition().y<-6f){dead=true;};
-            if (com ) {
+            if (explosionEffect.size > 200 || body.getPosition().y < -6f) {
+                dead = true;
+            }
+            ;
+            if (com) {
                 world.destroyBody(body);
                 for (ParticleEffect explosionEffect : explosionEffect) {
                     explosionEffect.dispose();
@@ -149,9 +159,11 @@ public class Ball extends Image {
         if (!dead) {
             explosionEffect.getEmitters().add(new ParticleEmitterBox2D(world, explosionEffect.getEmitters().first()));
             explosionEffect.getEmitters().removeIndex(0);
-            explosionEffect.setPosition(this.getX() + this.getWidth() / 2, this.getY());
-            explosionEffect.scaleEffect(0.02f);
+            explosionEffect.setPosition(this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2);
+//            explosionEffect.scaleEffect(0.02f);
 
+            explosionEffect.scaleEffect(explosionScale + MathUtils.random(.01f));
+            explosionScale -= .002f;
             explosionEffect.start();
             this.explosionEffect.add(explosionEffect);
 

@@ -4,7 +4,7 @@
 	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
 	<inherits name='com.badlogic.gdx.physics.box2d.box2d-gwt' />
 	<inherits name='Box2DLights' />
-
+	<inherits name="space.earlygrey.shapedrawer"/>
 	<inherits name='Spacetubes' />
 	<entry-point class='com.klemstinegroup.spacetubes.client.HtmlLauncher' />
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>

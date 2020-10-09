@@ -54,10 +54,9 @@ public class BallGenerator {
 
     public void emit() {
         if (stage.getActors().size < MAX_NBR) {
-
-            Ball ball = new Ball(world, rayHandler,(float) ((rand.nextInt(100) - 50)) / 10, 5);
+            Ball ball = new Ball(world, rayHandler,(float) ((rand.nextInt(1000) - 500)) / 10, (((rand.nextInt(1000) - 500)) / 10)+70);
             stage.addActor(ball);
-            Ball ball2 = new Ball(world, rayHandler,(float) ((rand.nextInt(1000) - 500)) / 100, (((rand.nextInt(1000) - 500)) / 100)+5);
+            Ball ball2 = new Ball(world, rayHandler,(float) ((rand.nextInt(1000) - 500)) / 10, (((rand.nextInt(1000) - 500)) / 10)+70);
             stage.addActor(ball2);
 //            Gdx.app.debug("generatBalls", "Balls:" + ballNbr);
         }
