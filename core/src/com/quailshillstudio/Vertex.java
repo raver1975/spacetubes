@@ -4,7 +4,7 @@ package com.quailshillstudio;
  * This class is almost exactly as described in the paper by Gnther/Greiner.
  * Basically it is a node in a circular doubly linked list.
  */
-class Vertex {
+public class Vertex {
     /** Coordinates of the vertex */
     float x, y;
 

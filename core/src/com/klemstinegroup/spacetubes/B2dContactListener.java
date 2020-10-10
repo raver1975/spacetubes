@@ -1,5 +1,6 @@
 package com.klemstinegroup.spacetubes;
 
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
@@ -7,6 +8,7 @@ import com.quailshillstudio.CollisionGeometry;
 import com.quailshillstudio.PolygonBox2DShape;
 import com.quailshillstudio.UserData;
 import com.quailshillstudio.UserDataInterface;
+import net.dermetfan.gdx.physics.box2d.Box2DUtils;
 
 import java.util.HashSet;
 
@@ -58,14 +60,14 @@ public class B2dContactListener implements ContactListener {
             BallActor ball = (BallActor) (contact.getFixtureA().getBody().getUserData());
             BallGenerator.getInstance().explode(ball);
             clippingGround(contact.getFixtureA().getBody(), contact.getFixtureB().getBody());
-            ball.userData.type=UserData.BALL;
+//            ball.userData.type=UserData.BALL;
         } catch (Exception e) {
         }
         try {
             BallActor ball = (BallActor) (contact.getFixtureB().getBody().getUserData());
             BallGenerator.getInstance().explode(ball);
             clippingGround(contact.getFixtureB().getBody(), contact.getFixtureA().getBody());
-            ball.userData.type=UserData.BALL;
+//            ball.userData.type=UserData.BALL;
         } catch (Exception e) {
         }
     }
@@ -113,11 +115,16 @@ public class B2dContactListener implements ContactListener {
                     polyClip = new PolygonBox2DShape((ChainShape) fixtureList.get(i).getShape());
                 }
                 Array<PolygonBox2DShape> rs = polyClip.differenceCS(circlePoly);
+                Polygon p=new Polygon();
+
                 for (int y = 0; y < rs.size; y++) {
                     rs.get(y).circleContact(b.getPosition(), circRadius);
-                    totalRS.add(rs.get(y).verticesToLoop());
+//                    rs.get(y).ConstPolygonBox2DShape(shape);
+                    totalRS.add(rs.get(y).vertices());
                 }
+//                totalRS.add(rs.get(0).vertices());
             }
+
             spacetubes.switchGround(totalRS, (UserDataInterface) a.getUserData());
 //            ((UserDataInterface) body.getUserData()).getUserData().mustDestroy = true;
         }

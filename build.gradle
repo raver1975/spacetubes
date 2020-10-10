@@ -30,6 +30,7 @@ allprojects {
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
         shapedrawerVersion = '2.3.0'
+        gdxUtilsVersion = '0.13.4'
     }
 
     repositories {
@@ -122,6 +123,8 @@ project(":html") {
         api "de.tomgrill.gdxdialogs:gdx-dialogs-html:1.2.5:sources"
         api "de.tomgrill.gdxdialogs:gdx-dialogs-core:1.2.5:sources"
         implementation "space.earlygrey:shapedrawer:$shapedrawerVersion:sources"
+        compile "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion:sources"
+        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion:sources" // Box2D module (optional)
         
     }
 }
@@ -138,5 +141,7 @@ project(":core") {
         api "de.tomgrill.gdxfacebook:gdx-facebook-core:1.4.1"
         api "de.tomgrill.gdxdialogs:gdx-dialogs-core:1.2.5"
         implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
+        compile "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion"
+        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion" // Box2D module (optional)
     }
 }

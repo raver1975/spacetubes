@@ -66,8 +66,11 @@ public class BallActor extends UserDataInterface {
         this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
         circle.dispose();
         Vector2 v = body.getPosition();
-        pl2 = new PointLight(rayHandler, 128, new Color(1, 1, 1, 1f), 20f, v.x, v.y);
+        pl2 = new PointLight(rayHandler, 128, new Color(1, 1, 1, 1f), 10f, v.x, v.y);
+        pl2.attachToBody(body);
         pl2.setIgnoreAttachedBody(true);
+
+
     }
 
     @Override
@@ -135,7 +138,7 @@ public class BallActor extends UserDataInterface {
                 this.delete = true;
             }
         }
-        pl2.setPosition(v);
+//        pl2.setPosition(v);
 
         setRotation(body.getAngle() * MathUtils.radiansToDegrees);
 

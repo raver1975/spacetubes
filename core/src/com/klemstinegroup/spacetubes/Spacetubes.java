@@ -27,7 +27,7 @@ public class Spacetubes extends ApplicationAdapter {
     private World world;
     private Stage stage;
     private Box2DDebugRenderer debugRenderer;
-    public Array<GroundFixture> polyVerts = new Array<GroundFixture>();
+    public Array<GroundFixture> polyVerts = new Array<>();
 
     private RayHandler rayHandler;
     private Texture whiteTexture;
@@ -129,31 +129,31 @@ public class Spacetubes extends ApplicationAdapter {
             }
 //        this.ud=groundActor;
         mustCreate = true;*/
-            //        this.mustCreate = false;
-        this.ud=groundActor;
-            Array<float[]> totalRS = new Array<float[]>();
-            Array<Fixture> fixtureList = ud.body.getFixtureList();
-            int fixCount = fixtureList.size;
-            for (int i = 0; i < fixCount; i++) {
-                PolygonBox2DShape polyClip = null;
-                if (fixtureList.get(i).getShape() instanceof PolygonShape) {
-                    polyClip = new PolygonBox2DShape((PolygonShape) fixtureList.get(i).getShape());
-                } else if (fixtureList.get(i).getShape() instanceof ChainShape) {
-                    polyClip = new PolygonBox2DShape((ChainShape) fixtureList.get(i).getShape());
-                }
-                Array<PolygonBox2DShape> rs = polyClip.clipCS(polyClip, false, true);
-                for (int y = 0; y < rs.size; y++) {
-//                rs.get(y).circleContact(b.getPosition(), circRadius);
-                    totalRS.add(rs.get(y).verticesToLoop());
-                }
+        //        this.mustCreate = false;
+        this.ud = groundActor;
+        Array<float[]> totalRS = new Array<float[]>();
+        Array<Fixture> fixtureList = ud.body.getFixtureList();
+        int fixCount = fixtureList.size;
+        for (int i = 0; i < fixCount; i++) {
+            PolygonBox2DShape polyClip = null;
+            if (fixtureList.get(i).getShape() instanceof PolygonShape) {
+                polyClip = new PolygonBox2DShape((PolygonShape) fixtureList.get(i).getShape());
+            } else if (fixtureList.get(i).getShape() instanceof ChainShape) {
+                polyClip = new PolygonBox2DShape((ChainShape) fixtureList.get(i).getShape());
             }
+            Array<PolygonBox2DShape> rs = polyClip.clipCS(polyClip, false, true);
+            for (int y = 0; y < rs.size; y++) {
+//                rs.get(y).circleContact(b.getPosition(), circRadius);
+                totalRS.add(rs.get(y).verticesToLoop());
+            }
+        }
 //            polyVerts.clear();
-        this.ud=groundActor;
-            switchGround(totalRS, groundActor);
+        this.ud = groundActor;
+        switchGround(totalRS, groundActor);
 //        } catch (
 //                Exception e) {
 //        }
-mustCreate=false;
+        mustCreate = false;
     }
 
     @Override
@@ -161,6 +161,8 @@ mustCreate=false;
 
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.act();
+        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
 
         stage.draw();
@@ -194,8 +196,6 @@ mustCreate=false;
 
         if (mustCreate)
             createGround();
-        stage.act();
-        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
     }
 
@@ -218,22 +218,11 @@ mustCreate=false;
 
 
     public void switchGround(Array<float[]> rs, UserDataInterface ud1) {
-
         polyVerts.clear();
         mustCreate = true;
-//        Array<float[]> verts = new Array<>();
-//        for (int i = 0; i < rs.size; i++) {/*
-//            float[] temp = rs.get(i).verticesToLoop();
-//            for (int ii=0;ii<temp.length;ii+=2){
-//                temp[ii]+=pos.x;
-//                temp[ii+1]+=pos.y;
-//            }
-//            verts.add(temp);
-//
-//        }*/
         GroundFixture grFix = new GroundFixture(rs);
         polyVerts.add(grFix);
-        this.ud=ud1;
+        this.ud = ud1;
     }
 
     protected void createGround() {
@@ -244,6 +233,7 @@ mustCreate=false;
 
         Body nground = world.createBody(groundDef);
         nground.setUserData(ud);
+//        System.out.println(polyVerts.size);
         for (int i = 0; i < polyVerts.size; i++) {
 //            Body nground = ud.getBody();
 //            nground.setTransform(ud.getX(),ud.getY(),nground.getAngle());
@@ -269,7 +259,30 @@ mustCreate=false;
 //                    }
                     ChainShape shape = new ChainShape();
 //                if (f.length >= 6) {
-                    shape.createLoop(this.polyVerts.get(i).getVerts().get(y));
+                    float f[] = this.polyVerts.get(i).getVerts().get(y);
+                    int hh = 0;
+                    while (true) {
+                        boolean flag = true;
+                        for (hh = 0; hh < f.length - 3; hh += 2) {
+                            while (b2SquaredDistance(f[hh], f[hh + 1], f[hh + 2], f[hh + 3]) < (0.000025f)) {
+                                f[hh + 2] += .00001d;
+                                f[hh + 3] += .00001d;
+                                flag = false;
+                            }
+                        }
+
+                        while (b2SquaredDistance(f[hh], f[hh + 1], f[0], f[1]) < (0.000025f)) {
+
+                            f[0] += .00001d;
+                            f[1] += .00001d;
+                            flag = false;
+                        }
+                        if (flag) break;
+                    }
+                    shape.createLoop(f);
+//                    shape.setNextVertex(this.polyVerts.get(i).getVerts().get(y)[0],this.polyVerts.get(i).getVerts().get(y)[1]);
+//                    shape.setPrevVertex(this.polyVerts.get(i).getVerts().get(y)[this.polyVerts.get(i).getVerts().get(y).length-2],this.polyVerts.get(i).getVerts().get(y)[this.polyVerts.get(i).getVerts().get(y).length-2]);
+
                     fixtureDef.shape = shape;
                     fixtures.add(nground.createFixture(fixtureDef));
 //                } else if (f.length >= 4) {
@@ -286,6 +299,12 @@ mustCreate=false;
         }
         this.mustCreate = false;
         polyVerts.clear();
+    }
+
+
+    private float b2SquaredDistance(float x1, float y1, float x2, float y2) {
+        Vector2 vec = new Vector2(x1, y1);
+        return vec.dst2(x2, y2);
     }
 
 
