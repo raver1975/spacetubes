@@ -73,8 +73,8 @@ public class GroundActor extends UserDataInterface {
     public void act(float delta) {
         super.act(delta);
         this.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
-        body.setTransform(position.cpy(),body.getAngle());
-        body.setAwake(true);
+//        body.setTransform(position.cpy(),body.getAngle());
+//        body.setAwake(true);
         this.setPosition(body.getPosition().x-this.getWidth()/2 , body.getPosition().y -this.getHeight()/2);
 
     }

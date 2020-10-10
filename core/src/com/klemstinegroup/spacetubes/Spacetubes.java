@@ -27,7 +27,7 @@ public class Spacetubes extends ApplicationAdapter {
     private World world;
     private Stage stage;
     private Box2DDebugRenderer debugRenderer;
-    private Array<GroundFixture> polyVerts = new Array<GroundFixture>();
+    public Array<GroundFixture> polyVerts = new Array<GroundFixture>();
 
     private RayHandler rayHandler;
     private Texture whiteTexture;
@@ -48,7 +48,7 @@ public class Spacetubes extends ApplicationAdapter {
         drawer = new ShapeDrawer(batch, region);
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        world = new World(new Vector2(0, -3), true);
+        world = new World(new Vector2(0, -10), true);
         world.setContactListener(new B2dContactListener(this));
         batch = new PolygonSpriteBatch();
         Gdx.input.setInputProcessor(stage);
@@ -78,10 +78,10 @@ public class Spacetubes extends ApplicationAdapter {
         rayHandler.setBlurNum(3);
 
 
-        PointLight pl = new PointLight(rayHandler, 1280, new Color(0.2f, 1, 1, 1f), 150, -30f, 10f);
+        PointLight pl = new PointLight(rayHandler, 1280, new Color(0.2f, 1, 1, 1f), 150, -80f, 10f);
         pl.setIgnoreAttachedBody(true);
 
-        PointLight pl2 = new PointLight(rayHandler, 1280, new Color(1, 0, 1, 1f), 150, 30f, 10f);
+        PointLight pl2 = new PointLight(rayHandler, 1280, new Color(1, 0, 1, 1f), 150, 80f, 10f);
         pl2.setIgnoreAttachedBody(true);
 
         PointLight pl3 = new PointLight(rayHandler, 1280, new Color(1, 1, .2f, 1f), 150, -30f, -70f);
@@ -96,7 +96,7 @@ public class Spacetubes extends ApplicationAdapter {
         BallGenerator.getInstance().setup(stage, world, rayHandler);
 //        stage.addActor(new FireEmitter(world));
 
-        try {
+//        try {
 
 //            float[] points = {-50, 0, -50, -50f, 50, -50f, 50, 0};
 //            Array<float[]> verts = new Array<>();
@@ -110,11 +110,11 @@ public class Spacetubes extends ApplicationAdapter {
 //            GroundFixture grFix1 = new GroundFixture(verts1);
 //            polyVerts.add(grFix1);
 //            gearActor2.body.getFixtureList().clear();
-            for (int ii = 0; ii < groundActor.body.getFixtureList().size; ii++) {
+/*            for (int ii = 0; ii < groundActor.body.getFixtureList().size; ii++) {
                 System.out.println("ii:" + ii);
                 Array<float[]> verts = new Array<>();
                 PolygonShape s = (PolygonShape) groundActor.body.getFixtureList().get(ii).getShape();
-                float[] p = new float[s.getVertexCount()];
+                float[] p = new float[s.getVertexCount()*2];
                 Vector2 v = new Vector2();
                 for (int i = 0; i < s.getVertexCount(); i++) {
                     s.getVertex(i, v);
@@ -127,12 +127,33 @@ public class Spacetubes extends ApplicationAdapter {
                 GroundFixture grFix = new GroundFixture(verts);
                 polyVerts.add(grFix);
             }
-            mustCreate = true;
-        } catch (
-                Exception e) {
-        }
-
-
+//        this.ud=groundActor;
+        mustCreate = true;*/
+            //        this.mustCreate = false;
+        this.ud=groundActor;
+            Array<float[]> totalRS = new Array<float[]>();
+            Array<Fixture> fixtureList = ud.body.getFixtureList();
+            int fixCount = fixtureList.size;
+            for (int i = 0; i < fixCount; i++) {
+                PolygonBox2DShape polyClip = null;
+                if (fixtureList.get(i).getShape() instanceof PolygonShape) {
+                    polyClip = new PolygonBox2DShape((PolygonShape) fixtureList.get(i).getShape());
+                } else if (fixtureList.get(i).getShape() instanceof ChainShape) {
+                    polyClip = new PolygonBox2DShape((ChainShape) fixtureList.get(i).getShape());
+                }
+                Array<PolygonBox2DShape> rs = polyClip.clipCS(polyClip, false, true);
+                for (int y = 0; y < rs.size; y++) {
+//                rs.get(y).circleContact(b.getPosition(), circRadius);
+                    totalRS.add(rs.get(y).verticesToLoop());
+                }
+            }
+//            polyVerts.clear();
+        this.ud=groundActor;
+            switchGround(totalRS, groundActor);
+//        } catch (
+//                Exception e) {
+//        }
+mustCreate=false;
     }
 
     @Override
@@ -196,44 +217,46 @@ public class Spacetubes extends ApplicationAdapter {
 //    }
 
 
-    public void switchGround(Array<PolygonBox2DShape> rs, UserDataInterface ud) {
-        this.ud = ud;
+    public void switchGround(Array<float[]> rs, UserDataInterface ud1) {
+
         polyVerts.clear();
         mustCreate = true;
-        Array<float[]> verts = new Array<float[]>();
-        for (int i = 0; i < rs.size; i++) {
-            float[] temp = rs.get(i).verticesToLoop();
+//        Array<float[]> verts = new Array<>();
+//        for (int i = 0; i < rs.size; i++) {/*
+//            float[] temp = rs.get(i).verticesToLoop();
 //            for (int ii=0;ii<temp.length;ii+=2){
 //                temp[ii]+=pos.x;
 //                temp[ii+1]+=pos.y;
 //            }
-            verts.add(temp);
-
-        }
-        GroundFixture grFix = new GroundFixture(verts);
+//            verts.add(temp);
+//
+//        }*/
+        GroundFixture grFix = new GroundFixture(rs);
         polyVerts.add(grFix);
+        this.ud=ud1;
     }
 
     protected void createGround() {
         BodyDef groundDef = new BodyDef();
-        groundDef.type = BodyDef.BodyType.DynamicBody;
+        groundDef.type = ud.body.getType();
 //        groundDef.position.set(pos.cpy());
         groundDef.position.set(ud.body.getPosition().cpy());
 
+        Body nground = world.createBody(groundDef);
+        nground.setUserData(ud);
         for (int i = 0; i < polyVerts.size; i++) {
 //            Body nground = ud.getBody();
-            Body nground=world.createBody(groundDef);
 //            nground.setTransform(ud.getX(),ud.getY(),nground.getAngle());
-            nground.setUserData(ud);
 //            nground.getFixtureList().clear();
             Array<Fixture> fixtures = new Array<>();
             for (int y = 0; y < this.polyVerts.get(i).getVerts().size; y++) {
-                FixtureDef fixtureDef = new FixtureDef();
-                fixtureDef.density = 1f;//ud.body.getFixtureList().get(0).getDensity();
-                fixtureDef.friction = .5f;//ud.body.getFixtureList().get(0).getFriction();
-                fixtureDef.restitution=.3f;//ud.body.getFixtureList().get(0).getRestitution();
+                if (this.polyVerts.get(i).getVerts().get(y).length >= 6) {
+                    FixtureDef fixtureDef = new FixtureDef();
+                    fixtureDef.density = 10f;//ud.body.getFixtureList().get(0).getDensity();
+                    fixtureDef.friction = .50f;//ud.body.getFixtureList().get(0).getFriction();
+                    fixtureDef.restitution = .3f;//ud.body.getFixtureList().get(0).getRestitution();
 
-                float[] f = this.polyVerts.get(i).getVerts().get(y);
+//                    float[] f = ;
 //                if (f.length >= 4) {
 //                FloatArray a = new FloatArray();
 //                a.addAll(this.polyVerts.get(i).getVerts().get(y));
@@ -244,18 +267,19 @@ public class Spacetubes extends ApplicationAdapter {
 //                        a.add(a.pop());
 //                        a.add(a.pop());
 //                    }
-                ChainShape shape = new ChainShape();
-                if (f.length >= 6) {
-                    shape.createLoop(f);
+                    ChainShape shape = new ChainShape();
+//                if (f.length >= 6) {
+                    shape.createLoop(this.polyVerts.get(i).getVerts().get(y));
                     fixtureDef.shape = shape;
                     fixtures.add(nground.createFixture(fixtureDef));
-                } else if (f.length >= 4) {
-                    shape.createChain(f);
-                    fixtureDef.shape = shape;
-                    fixtures.add(nground.createFixture(fixtureDef));
-                }
+//                } else if (f.length >= 4) {
+//                    shape.createChain(f);
+//                    fixtureDef.shape = shape;
+//                    fixtures.add(nground.createFixture(fixtureDef));
+//                }
 //                nground.getFixtureList().add(fixtures.peek());
 //                }
+                }
             }
             polyVerts.get(i).setFixtures(fixtures);
 

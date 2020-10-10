@@ -55,9 +55,9 @@ public class BallActor extends UserDataInterface {
 
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
-        fd.density = 10;
+        fd.density = 1;
         fd.friction = 0.5f;
-        fd.restitution = 0.6f;
+        fd.restitution = 1f;
         fd.shape = circle;
 
         Fixture fixture = body.createFixture(fd);
@@ -66,7 +66,7 @@ public class BallActor extends UserDataInterface {
         this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
         circle.dispose();
         Vector2 v = body.getPosition();
-        pl2 = new PointLight(rayHandler, 128, new Color(1, 1, 1, 1f), 5f, v.x, v.y);
+        pl2 = new PointLight(rayHandler, 128, new Color(1, 1, 1, 1f), 20f, v.x, v.y);
         pl2.setIgnoreAttachedBody(true);
     }
 
@@ -87,9 +87,9 @@ public class BallActor extends UserDataInterface {
         Vector2 v = body.getPosition();
 
         if (exploding) {
-            if (MathUtils.random() > .8f) {
+//            if (MathUtils.random() > .8f) {
                 BallGenerator.getInstance().explode(this);
-            }
+//            }
             for (ParticleEffect explosionEffect : explosionEffect) {
                 FireEmitter.setAngle(explosionEffect, body.getAngle() * MathUtils.radiansToDegrees + 180);
                 explosionEffect.setPosition(v.x, v.y);
@@ -123,7 +123,7 @@ public class BallActor extends UserDataInterface {
                     break;
                 }
             }
-            if (explosionEffect.size > 200 || body.getPosition().y < -100f) {
+            if (explosionEffect.size > 200 || body.getPosition().y < -500f) {
                 dead = true;
             }
             ;
