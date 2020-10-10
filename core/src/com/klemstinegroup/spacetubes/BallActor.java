@@ -23,9 +23,8 @@ import com.quailshillstudio.UserData;
  * Created by julienvillegas on 07/12/2017.
  */
 
-public class Ball extends UserDataInterface {
+public class BallActor extends UserDataInterface {
     private final PointLight pl2;
-    private Body body;
     private World world;
     private boolean delete;
     static private final Texture texture = new Texture("bubble.png");
@@ -36,7 +35,7 @@ public class Ball extends UserDataInterface {
     private float explosionScale = .2f;
 
 
-    public Ball(World aWorld, RayHandler rayHandler, float pos_x, float pos_y) {
+    public BallActor(World aWorld, RayHandler rayHandler, float pos_x, float pos_y) {
         super(texture);
 //        setDrawable(null);
         this.setSize(4f, 4f);

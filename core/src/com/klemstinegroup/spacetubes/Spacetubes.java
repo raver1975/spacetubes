@@ -16,10 +16,10 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.quailshillstudio.UserDataInterface;
 import com.quailshillstudio.GroundFixture;
 import com.quailshillstudio.PolygonBox2DShape;
 import com.quailshillstudio.UserData;
+import com.quailshillstudio.UserDataInterface;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class Spacetubes extends ApplicationAdapter {
@@ -33,6 +33,7 @@ public class Spacetubes extends ApplicationAdapter {
     private Texture whiteTexture;
     private ShapeDrawer drawer;
     private boolean mustCreate;
+    private UserDataInterface ud;
 
     @Override
     public void create() {
@@ -56,32 +57,36 @@ public class Spacetubes extends ApplicationAdapter {
         stage = new Stage(new ScreenViewport());
         stage.getCamera().position.set(0, 0, 10);
         stage.getCamera().lookAt(0, 0, 0);
-        stage.getCamera().viewportWidth = 100;
-        stage.getCamera().viewportHeight = 100 / ratio;
+        stage.getCamera().viewportWidth = 200;
+        stage.getCamera().viewportHeight = 200 / ratio;
         debugRenderer = new Box2DDebugRenderer();
 
-        GearActor gearActor1 = new GearActor(world, -20, -15.0f, 23.5f, 23.5f, false);
-        GearActor gearActor3 = new GearActor(world, 20, -15.00f, 23.5f, 23.5f, false);
+//        GearActor gearActor1 = new GearActor(world, -20, -15.0f, 23.5f, 23.5f, false);
         GearActor gearActor2 = new GearActor(world, 0, -25.0f, 23.5f, 23.5f, true);
-        GroundActor groundActor = new GroundActor(world, 30f, -20.0f, 43.35f, 43.5f);
-        stage.addActor(gearActor1);
+//        GearActor gearActor3 = new GearActor(world, 20, -15.00f, 23.5f, 23.5f, false);
+        GroundActor groundActor = new GroundActor(world, 30f, -20.0f, 150.35f, 150.5f);
+//        stage.addActor(gearActor1);
         stage.addActor(gearActor2);
-        stage.addActor(gearActor3);
-//        stage.addActor(groundActor);
+//        stage.addActor(gearActor3);
+        stage.addActor(groundActor);
 
 
 //        new WindowsFrame(world, stage.getCamera().viewportWidth, stage.getCamera().viewportHeight);
 
         rayHandler = new RayHandler(world);
-        rayHandler.setAmbientLight(0.3f, 0.2f, 0.2f, .0f);
+        rayHandler.setAmbientLight(0.3f, 0.2f, 0.2f, .5f);
         rayHandler.setBlurNum(3);
 
 
-        PointLight pl = new PointLight(rayHandler, 1280, new Color(0.2f, 1, 1, 1f), 100, -30f, 10f);
+        PointLight pl = new PointLight(rayHandler, 1280, new Color(0.2f, 1, 1, 1f), 150, -30f, 10f);
         pl.setIgnoreAttachedBody(true);
 
-        PointLight pl2 = new PointLight(rayHandler, 1280, new Color(1, 0, 1, 1f), 100, 30f, 10f);
+        PointLight pl2 = new PointLight(rayHandler, 1280, new Color(1, 0, 1, 1f), 150, 30f, 10f);
         pl2.setIgnoreAttachedBody(true);
+
+        PointLight pl3 = new PointLight(rayHandler, 1280, new Color(1, 1, .2f, 1f), 150, -30f, -70f);
+        pl3.setIgnoreAttachedBody(true);
+
 
         rayHandler.setShadows(true);
         pl.setStaticLight(false);
@@ -105,16 +110,16 @@ public class Spacetubes extends ApplicationAdapter {
 //            GroundFixture grFix1 = new GroundFixture(verts1);
 //            polyVerts.add(grFix1);
 //            gearActor2.body.getFixtureList().clear();
-            for (int ii = 0; ii < gearActor2.body.getFixtureList().size; ii++) {
+            for (int ii = 0; ii < groundActor.body.getFixtureList().size; ii++) {
                 System.out.println("ii:" + ii);
                 Array<float[]> verts = new Array<>();
-                PolygonShape s = (PolygonShape) gearActor2.body.getFixtureList().get(ii).getShape();
+                PolygonShape s = (PolygonShape) groundActor.body.getFixtureList().get(ii).getShape();
                 float[] p = new float[s.getVertexCount()];
                 Vector2 v = new Vector2();
                 for (int i = 0; i < s.getVertexCount(); i++) {
                     s.getVertex(i, v);
-                    p[i * 2] = v.x * gearActor2.getWidth();
-                    p[i * 2 + 1] = v.y * gearActor2.getHeight();
+                    p[i * 2] = v.x * groundActor.getWidth();
+                    p[i * 2 + 1] = v.y * groundActor.getHeight();
                     verts.add(p);
                     System.out.println("+++" + v);
                 }
@@ -149,7 +154,7 @@ public class Spacetubes extends ApplicationAdapter {
 
 
         for (int i = 0; i < world.getBodyCount(); i++) {
-            Array<Body> bodies = new Array<Body>();
+            Array<Body> bodies = new Array<>();
             world.getBodies(bodies);
             try {
                 UserDataInterface datai = ((UserDataInterface) bodies.get(i).getUserData());
@@ -191,12 +196,19 @@ public class Spacetubes extends ApplicationAdapter {
 //    }
 
 
-    public void switchGround(Array<PolygonBox2DShape> rs) {
+    public void switchGround(Array<PolygonBox2DShape> rs, UserDataInterface ud) {
+        this.ud = ud;
         polyVerts.clear();
         mustCreate = true;
         Array<float[]> verts = new Array<float[]>();
         for (int i = 0; i < rs.size; i++) {
-            verts.add(rs.get(i).verticesToLoop());
+            float[] temp = rs.get(i).verticesToLoop();
+//            for (int ii=0;ii<temp.length;ii+=2){
+//                temp[ii]+=pos.x;
+//                temp[ii+1]+=pos.y;
+//            }
+            verts.add(temp);
+
         }
         GroundFixture grFix = new GroundFixture(verts);
         polyVerts.add(grFix);
@@ -204,18 +216,23 @@ public class Spacetubes extends ApplicationAdapter {
 
     protected void createGround() {
         BodyDef groundDef = new BodyDef();
-        groundDef.type = BodyDef.BodyType.KinematicBody;
-        groundDef.position.set(0, 0);
+        groundDef.type = BodyDef.BodyType.DynamicBody;
+//        groundDef.position.set(pos.cpy());
+        groundDef.position.set(ud.body.getPosition().cpy());
 
         for (int i = 0; i < polyVerts.size; i++) {
-            Body nground = world.createBody(groundDef);
-            nground.setUserData(new UserDataInterface(new UserData(UserData.GROUND)));
-
+//            Body nground = ud.getBody();
+            Body nground=world.createBody(groundDef);
+//            nground.setTransform(ud.getX(),ud.getY(),nground.getAngle());
+            nground.setUserData(ud);
+//            nground.getFixtureList().clear();
             Array<Fixture> fixtures = new Array<>();
             for (int y = 0; y < this.polyVerts.get(i).getVerts().size; y++) {
                 FixtureDef fixtureDef = new FixtureDef();
-                fixtureDef.density = 1;
-                fixtureDef.friction = .8f;
+                fixtureDef.density = 1f;//ud.body.getFixtureList().get(0).getDensity();
+                fixtureDef.friction = .5f;//ud.body.getFixtureList().get(0).getFriction();
+                fixtureDef.restitution=.3f;//ud.body.getFixtureList().get(0).getRestitution();
+
                 float[] f = this.polyVerts.get(i).getVerts().get(y);
 //                if (f.length >= 4) {
 //                FloatArray a = new FloatArray();
@@ -237,10 +254,11 @@ public class Spacetubes extends ApplicationAdapter {
                     fixtureDef.shape = shape;
                     fixtures.add(nground.createFixture(fixtureDef));
                 }
-
+//                nground.getFixtureList().add(fixtures.peek());
 //                }
             }
             polyVerts.get(i).setFixtures(fixtures);
+
         }
         this.mustCreate = false;
         polyVerts.clear();

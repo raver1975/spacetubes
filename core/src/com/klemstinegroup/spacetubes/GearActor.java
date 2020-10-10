@@ -4,25 +4,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.World;
 import com.quailshillstudio.UserData;
+import com.quailshillstudio.UserDataInterface;
 
 /**
  * Created by julienvillegas on 06/12/2017.
  */
 
-public class GearActor extends Image {
-
-    private final UserData userData;
-    public Body body;
-    private World world;
-    private float angle;
-
+public class GearActor extends UserDataInterface {
 
     public GearActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight, boolean clockwise) {
         super(new Texture("gear.png"));
-        userData = new UserData(UserData.GROUND);
+        userData = new UserData(UserData.BALL);
         this.setSize(aWidth, aHeight);
         this.setPosition(pos_x, pos_y);
 

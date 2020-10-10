@@ -56,27 +56,27 @@ public class B2dContactListener implements ContactListener {
         }
 
 //        Gdx.app.debug("begin Contact","between: "+classA+" and "+ classB);
-        if (classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.WindowsFrame") && classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball")) {
-            Ball ball = (Ball) (contact.getFixtureB().getBody().getUserData());
+        if (classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.WindowsFrame") && classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.BallActor")) {
+            BallActor ball = (BallActor) (contact.getFixtureB().getBody().getUserData());
             BallGenerator.getInstance().explode(ball);
 
-        } else if (classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.WindowsFrame") && classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball")) {
-            Ball ball = (Ball) (contact.getFixtureA().getBody().getUserData());
+        } else if (classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.WindowsFrame") && classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.BallActor")) {
+            BallActor ball = (BallActor) (contact.getFixtureA().getBody().getUserData());
             BallGenerator.getInstance().explode(ball);
         }
-//        else if(!(classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball") && classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball"))&&(classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball")||classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball"))){
-        else if ((classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball") || classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.Ball"))) {
+//        else if(!(classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.BallActor") && classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.BallActor"))&&(classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.BallActor")||classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.BallActor"))){
+        else if ((classA.equalsIgnoreCase("com.klemstinegroup.spacetubes.BallActor") || classB.equalsIgnoreCase("com.klemstinegroup.spacetubes.BallActor"))) {
 //            System.out.println(classA+"\t"+classB);
+            clippingGround(contact.getFixtureA().getBody(), contact.getFixtureB().getBody());
             try {
-                Ball ball = (Ball) (contact.getFixtureA().getBody().getUserData());
+                BallActor ball = (BallActor) (contact.getFixtureA().getBody().getUserData());
                 BallGenerator.getInstance().explode(ball);
-                clippingGround(contact.getFixtureA().getBody(), contact.getFixtureB().getBody());
             } catch (Exception e) {
             }
+            clippingGround(contact.getFixtureB().getBody(), contact.getFixtureA().getBody());
             try {
-                Ball ball = (Ball) (contact.getFixtureB().getBody().getUserData());
+                BallActor ball = (BallActor) (contact.getFixtureB().getBody().getUserData());
                 BallGenerator.getInstance().explode(ball);
-                clippingGround(contact.getFixtureB().getBody(), contact.getFixtureA().getBody());
             } catch (Exception e) {
             }
 
@@ -100,13 +100,14 @@ public class B2dContactListener implements ContactListener {
         if (((UserDataInterface) b1.getUserData()).getUserData().getType() == UserData.GROUND) {
             a = b1;
         }
-        System.out.println("collision:" + a.getUserData().getClass().getName() + "\t" + b.getUserData().getClass().getName());
         if (a == null || b == null) {
             return;
         }
+        System.out.println("collision:" + a.getUserData().getClass().getName() + "\t" + b.getUserData().getClass().getName());
         Array<PolygonBox2DShape> totalRS = new Array<PolygonBox2DShape>();
 
-        float[] circVerts = CollisionGeometry.approxCircle(b.getPosition().x, b.getPosition().y, circRadius, segments);
+        float[] circVerts = CollisionGeometry.approxCircle(b.getPosition().x-a.getPosition().x, b.getPosition().y-a.getPosition().y, circRadius, segments);
+//        float[] circVerts = CollisionGeometry.approxCircle(b.getPosition().x-a.getPosition().x, b.getPosition().y-a.getPosition().x, circRadius, segments);
         if (circVerts.length >= 4) {
             ChainShape shape = new ChainShape();
             if (circVerts.length >= 6) {
@@ -133,8 +134,8 @@ public class B2dContactListener implements ContactListener {
                     totalRS.add(rs.get(y));
                 }
             }
-            spacetubes.switchGround(totalRS);
-            ((UserData) body.getUserData()).mustDestroy = true;
+            spacetubes.switchGround(totalRS, (UserDataInterface)a.getUserData());
+//            ((UserDataInterface) body.getUserData()).getUserData().mustDestroy = true;
         }
     }
 

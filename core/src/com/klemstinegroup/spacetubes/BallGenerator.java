@@ -54,7 +54,7 @@ public class BallGenerator {
 
     public void emit() {
         while (stage.getActors().size < MAX_NBR) {
-            Ball ball = new Ball(world, rayHandler,rand.nextInt(100) - 50, (rand.nextInt(100) +50));
+            BallActor ball = new BallActor(world, rayHandler,rand.nextInt(100) - 50, (rand.nextInt(100) +50));
             stage.addActor(ball);
 //            Ball ball2 = new Ball(world, rayHandler,(float) ((rand.nextInt(1000) - 500)) / 10, (((rand.nextInt(1000) - 500)) / 10)+70);
 //            stage.addActor(ball2);
@@ -62,7 +62,7 @@ public class BallGenerator {
         }
     }
 
-    public void explode(Ball aBall) {
+    public void explode(BallActor aBall) {
         ParticleEffectPool.PooledEffect effect = ballExplosionPool.obtain();
         aBall.explode(effect);
     }

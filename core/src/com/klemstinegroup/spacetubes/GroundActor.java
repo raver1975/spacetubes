@@ -20,7 +20,6 @@ public class GroundActor extends UserDataInterface {
 
     private final Vector2 position;
     private final Vector2 v_offset;
-    private Body body;
     private World world;
     private float angle;
 
@@ -57,13 +56,15 @@ public class GroundActor extends UserDataInterface {
         this.setOrigin(v_offset.x,v_offset.y);
 //        body.setAngularVelocity(clockwise?1:-1);
         body.setUserData(this);
-        position=body.getPosition();
+        position=body.getPosition().cpy();
 
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
+//        body.setTransform(position.cpy(),body.getAngle());
+//        body.setAwake(true);
 
 
     }
@@ -72,6 +73,9 @@ public class GroundActor extends UserDataInterface {
     public void act(float delta) {
         super.act(delta);
         this.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
+        body.setTransform(position.cpy(),body.getAngle());
+        body.setAwake(true);
         this.setPosition(body.getPosition().x-this.getWidth()/2 , body.getPosition().y -this.getHeight()/2);
+
     }
 }
