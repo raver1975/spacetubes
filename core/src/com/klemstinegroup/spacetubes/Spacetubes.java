@@ -11,15 +11,14 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.quailshillstudio.GroundFixture;
-import com.quailshillstudio.PolygonBox2DShape;
-import com.quailshillstudio.UserData;
-import com.quailshillstudio.UserDataInterface;
+import com.quailshillstudio.*;
+import net.dermetfan.gdx.physics.box2d.Box2DUtils;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class Spacetubes extends ApplicationAdapter {
@@ -48,7 +47,7 @@ public class Spacetubes extends ApplicationAdapter {
         drawer = new ShapeDrawer(batch, region);
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        world = new World(new Vector2(0, -10), true);
+        world = new World(new Vector2(0, -5), true);
         world.setContactListener(new B2dContactListener(this));
         batch = new PolygonSpriteBatch();
         Gdx.input.setInputProcessor(stage);
@@ -60,14 +59,17 @@ public class Spacetubes extends ApplicationAdapter {
         stage.getCamera().viewportWidth = 200;
         stage.getCamera().viewportHeight = 200 / ratio;
         debugRenderer = new Box2DDebugRenderer();
+//debugRenderer.setDrawVelocities(true);
+//debugRenderer.setDrawContacts(true);
 
 //        GearActor gearActor1 = new GearActor(world, -20, -15.0f, 23.5f, 23.5f, false);
-        GearActor gearActor2 = new GearActor(world, 0, -25.0f, 23.5f, 23.5f, true);
+        GearActor gearActor2 = new GearActor(world, 30, -15.0f, 20.5f, 20.5f, .6f);
 //        GearActor gearActor3 = new GearActor(world, 20, -15.00f, 23.5f, 23.5f, false);
+        GearActor gearActor4 = new GearActor(world, 70, 10.00f, 20.5f, 20.5f, -.6f);
         GroundActor groundActor = new GroundActor(world, 30f, -20.0f, 150.35f, 150.5f);
 //        stage.addActor(gearActor1);
         stage.addActor(gearActor2);
-//        stage.addActor(gearActor3);
+        stage.addActor(gearActor4);
         stage.addActor(groundActor);
 
 
@@ -131,25 +133,31 @@ public class Spacetubes extends ApplicationAdapter {
         mustCreate = true;*/
         //        this.mustCreate = false;
         this.ud = groundActor;
-        Array<float[]> totalRS = new Array<float[]>();
+        Array<float[]> totalRS = new Array<>();
         Array<Fixture> fixtureList = ud.body.getFixtureList();
         int fixCount = fixtureList.size;
         for (int i = 0; i < fixCount; i++) {
             PolygonBox2DShape polyClip = null;
-            if (fixtureList.get(i).getShape() instanceof PolygonShape) {
+//            if (fixtureList.get(i).getShape() instanceof PolygonShape) {
+            try {
                 polyClip = new PolygonBox2DShape((PolygonShape) fixtureList.get(i).getShape());
-            } else if (fixtureList.get(i).getShape() instanceof ChainShape) {
+            }
+            catch (Exception e){
                 polyClip = new PolygonBox2DShape((ChainShape) fixtureList.get(i).getShape());
             }
+//            } else if (fixtureList.get(i).getShape() instanceof ChainShape) {
+//            }
             Array<PolygonBox2DShape> rs = polyClip.clipCS(polyClip, false, true);
             for (int y = 0; y < rs.size; y++) {
-//                rs.get(y).circleContact(b.getPosition(), circRadius);
                 totalRS.add(rs.get(y).verticesToLoop());
             }
         }
-//            polyVerts.clear();
         this.ud = groundActor;
         switchGround(totalRS, groundActor);
+
+
+
+
 //        } catch (
 //                Exception e) {
 //        }
@@ -163,7 +171,6 @@ public class Spacetubes extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
-
 
         stage.draw();
         debugRenderer.render(world, stage.getCamera().combined);
@@ -226,12 +233,20 @@ public class Spacetubes extends ApplicationAdapter {
     }
 
     protected void createGround() {
-        BodyDef groundDef = new BodyDef();
-        groundDef.type = ud.body.getType();
-//        groundDef.position.set(pos.cpy());
-        groundDef.position.set(ud.body.getPosition().cpy());
 
+//        BodyDef groundDef = new BodyDef();
+        BodyDef groundDef = Box2DUtils.createDef(ud.body);
+//        groundDef.type = ud.body.getType();
+        groundDef.active=true;
+//        groundDef.position.set(pos.cpy());
+//        groundDef.position.set(ud.body.getPosition().cpy());
+//        groundDef.angle=ud.body.getAngle();
+//        Body tempBody=ud.body;
         Body nground = world.createBody(groundDef);
+//        Body nground =ud.body;
+        ud.body=nground;
+//        ud.body.setTransform(tempBody.getPosition(),tempBody.getAngle());
+//        nground.getFixtureList().clear();
         nground.setUserData(ud);
 //        System.out.println(polyVerts.size);
         for (int i = 0; i < polyVerts.size; i++) {
@@ -244,7 +259,7 @@ public class Spacetubes extends ApplicationAdapter {
                     FixtureDef fixtureDef = new FixtureDef();
                     fixtureDef.density = 10f;//ud.body.getFixtureList().get(0).getDensity();
                     fixtureDef.friction = .50f;//ud.body.getFixtureList().get(0).getFriction();
-                    fixtureDef.restitution = .3f;//ud.body.getFixtureList().get(0).getRestitution();
+                    fixtureDef.restitution = 1f;//ud.body.getFixtureList().get(0).getRestitution();
 
 //                    float[] f = ;
 //                if (f.length >= 4) {
@@ -260,6 +275,10 @@ public class Spacetubes extends ApplicationAdapter {
                     ChainShape shape = new ChainShape();
 //                if (f.length >= 6) {
                     float f[] = this.polyVerts.get(i).getVerts().get(y);
+                    Polygon p=new Polygon(f);
+//                    p.setPosition(ud.body.getPosition().x,ud.body.getPosition().y);
+//                    p.setRotation(ud.body.getAngle());
+                    f=p.getTransformedVertices();
                     int hh = 0;
                     while (true) {
                         boolean flag = true;

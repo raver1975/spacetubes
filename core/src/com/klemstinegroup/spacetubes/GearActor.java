@@ -16,7 +16,7 @@ import com.quailshillstudio.UserDataInterface;
 
 public class GearActor extends UserDataInterface {
 
-    public GearActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight, boolean clockwise) {
+    public GearActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight, float clockwise) {
         super(new Texture("gear.png"));
         userData = new UserData(UserData.BALL);
         this.setSize(aWidth, aHeight);
@@ -36,15 +36,15 @@ public class GearActor extends UserDataInterface {
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
         fd.density = 1;
-        fd.friction = 0.5f;
-        fd.restitution = 0.3f;
+        fd.friction = 0.1f;
+        fd.restitution = 0f;
 
         // 3. Create a Body, as usual.
 
         float scale = this.getWidth();
         loader.attachFixture(body, "gear", fd, scale);
         this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
-        body.setAngularVelocity(clockwise ? 1 : -1);
+        body.setAngularVelocity(clockwise);
         body.setUserData(this);
 
     }

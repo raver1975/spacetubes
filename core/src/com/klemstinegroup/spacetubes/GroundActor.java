@@ -34,7 +34,7 @@ public class GroundActor extends UserDataInterface {
 
         BodyDef bd = new BodyDef();
 //        bd.position.set(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
-        bd.type = BodyDef.BodyType.StaticBody;
+        bd.type = BodyDef.BodyType.DynamicBody;
         bd.position.x = this.getX();
         bd.position.y = this.getY();
         float scale = this.getWidth();
@@ -43,9 +43,9 @@ public class GroundActor extends UserDataInterface {
 
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
-        fd.density = 1;
-        fd.friction = 0.5f;
-        fd.restitution = 0.3f;
+        fd.density = 10f;
+        fd.friction = 0.001f;
+        fd.restitution = 0f;
 
         // 3. Create a Body, as usual.
 

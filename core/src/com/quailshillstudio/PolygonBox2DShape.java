@@ -18,9 +18,14 @@ public class PolygonBox2DShape extends Polygon{
 	        }
 	    }
 	    
-	 	public PolygonBox2DShape(Shape shape){
-	 		if(shape instanceof ChainShape) this.ConstPolygonBox2DShape((ChainShape)shape);
-	 		else if (shape instanceof PolygonShape) this.ConstPolygonBox2DShape((PolygonShape) shape);
+	 	public PolygonBox2DShape(Shape shape) {
+//	 		if(shape instanceof ChainShape)
+			try {
+
+				this.ConstPolygonBox2DShape((ChainShape) shape);
+			} catch (Exception e) {
+				this.ConstPolygonBox2DShape((PolygonShape) shape);
+			}
 	 	}
 	 	
 	    /** Breaking the genetricity of the class by Adding this constructor Libgdx/Box2d specific**/
@@ -94,7 +99,7 @@ public class PolygonBox2DShape extends Polygon{
 	        Vertex v = first;
 	        for (int i = 0, j = 0; i < vertices - 1; i++) {
 	        	// Here escape the verts that have a square distance > 0.005f * 0.005f to avoid the b2DistanceSquared(v1,v2) > 0.005f * 0.005f expression
-	        	if(v.equals(first) || (b2SquaredDistance(verts.get(j-2), verts.get(j-1), v.x, v.y) > (0.35f))){
+	        	if(v.equals(first) || (b2SquaredDistance(verts.get(j-2), verts.get(j-1), v.x, v.y) > (0.000025f))){
 	            	verts.add(v.x);
 	            	j++;
 	            	verts.add(v.y);

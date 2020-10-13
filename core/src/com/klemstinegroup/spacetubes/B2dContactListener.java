@@ -17,8 +17,8 @@ import java.util.HashSet;
  */
 
 public class B2dContactListener implements ContactListener {
-    public float circRadius = 4f;
-    public int segments = 8;
+    public float circRadius = 6f;
+    public int segments = 16;
 
     private final Spacetubes spacetubes;
     private HashSet<String> debugSet = new HashSet<>();
@@ -32,20 +32,6 @@ public class B2dContactListener implements ContactListener {
 
     @Override
     public void beginContact(Contact contact) {
-
-    }
-
-    @Override
-    public void endContact(Contact contact) {
-
-    }
-
-    @Override
-    public void preSolve(Contact contact, Manifold oldManifold) {
-    }
-
-    @Override
-    public void postSolve(Contact contact, ContactImpulse impulse) {
         String classA = contact.getFixtureA().getBody().getUserData().getClass().getName();
         String classB = contact.getFixtureB().getBody().getUserData().getClass().getName();
 
@@ -71,30 +57,44 @@ public class B2dContactListener implements ContactListener {
         } catch (Exception e) {
         }
     }
+
+    @Override
+    public void endContact(Contact contact) {
+
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold oldManifold) {
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse impulse) {
+
+    }
     private void clippingGround(Body a1, Body b1) {
-        Body a = null;
-        Body b = null;
+        Body ground = null;
+        Body bomb = null;
         if (((UserDataInterface) a1.getUserData()).getUserData().getType() == UserData.BOMB) {
-            b = a1;
+            bomb = a1;
         }
         if (((UserDataInterface) b1.getUserData()).getUserData().getType() == UserData.BOMB) {
-            b = b1;
+            bomb = b1;
         }
         if (((UserDataInterface) a1.getUserData()).getUserData().getType() == UserData.GROUND) {
-            a = a1;
+            ground = a1;
         }
         if (((UserDataInterface) b1.getUserData()).getUserData().getType() == UserData.GROUND) {
-            a = b1;
+            ground = b1;
         }
-        if (a == null || b == null) {
+        if (ground == null || bomb == null) {
             return;
         }
-        System.out.println("collision:" + a.getUserData().getClass().getName() + "\t" + b.getUserData().getClass().getName());
+        System.out.println("collision:" + ground.getUserData().getClass().getName() + "\t" + bomb.getUserData().getClass().getName());
         Array<float[]> totalRS = new Array<>();
-        b.applyForceToCenter(new Vector2(0, 200000), true);
+        bomb.applyForceToCenter(new Vector2(0, 40000), true);
 
-        float[] circVerts = CollisionGeometry.approxCircle(b.getPosition().x - a.getPosition().x, b.getPosition().y - a.getPosition().y, circRadius, segments);
-//        float[] circVerts = CollisionGeometry.approxCircle(b.getPosition().x-a.getPosition().x, b.getPosition().y-a.getPosition().x, circRadius, segments);
+//        float[] circVerts = CollisionGeometry.approxCircle(b.getPosition().x, b.getPosition().y - a.getPosition().y, circRadius, segments);
+        float[] circVerts = CollisionGeometry.approxCircle(bomb.getPosition().x-ground.getPosition().x-circRadius/2, bomb.getPosition().y-ground.getPosition().y-circRadius/2, circRadius, segments);
             ChainShape shape = new ChainShape();
             shape.createLoop(circVerts);
 //            if (circVerts.length >= 6) {
@@ -103,29 +103,32 @@ public class B2dContactListener implements ContactListener {
 //            }
 
             PolygonBox2DShape circlePoly = new PolygonBox2DShape(shape);
-            Body body = a;
+            Body body = ground;
 
             Array<Fixture> fixtureList = body.getFixtureList();
             int fixCount = fixtureList.size;
             for (int i = 0; i < fixCount; i++) {
                 PolygonBox2DShape polyClip = null;
-                if (fixtureList.get(i).getShape() instanceof PolygonShape) {
+
+//                if (fixtureList.get(i).getShape() instanceof PolygonShape) {
+                try {
                     polyClip = new PolygonBox2DShape((PolygonShape) fixtureList.get(i).getShape());
-                } else if (fixtureList.get(i).getShape() instanceof ChainShape) {
-                    polyClip = new PolygonBox2DShape((ChainShape) fixtureList.get(i).getShape());
                 }
+                catch (Exception e){    polyClip = new PolygonBox2DShape((ChainShape) fixtureList.get(i).getShape());}
+
+
+
+//                }
                 Array<PolygonBox2DShape> rs = polyClip.differenceCS(circlePoly);
-                Polygon p=new Polygon();
 
                 for (int y = 0; y < rs.size; y++) {
-                    rs.get(y).circleContact(b.getPosition(), circRadius);
+                    rs.get(y).circleContact(bomb.getPosition().cpy().sub(ground.getPosition()), circRadius);
 //                    rs.get(y).ConstPolygonBox2DShape(shape);
                     totalRS.add(rs.get(y).vertices());
                 }
 //                totalRS.add(rs.get(0).vertices());
             }
-
-            spacetubes.switchGround(totalRS, (UserDataInterface) a.getUserData());
+            spacetubes.switchGround(totalRS, (UserDataInterface) ground.getUserData());
 //            ((UserDataInterface) body.getUserData()).getUserData().mustDestroy = true;
         }
 
