@@ -72,7 +72,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         GearActor gearActor2 = new GearActor(world, -40, 20.0f, 40.5f, 40.5f, -1.6f);
 //        GearActor gearActor3 = new GearActor(world, 20, -15.00f, 23.5f, 23.5f, false);
         GearActor gearActor4 = new GearActor(world, 40, 20.00f, 40.5f, 40.5f, 1.6f);
-        GroundActor groundActor = new GroundActor(world, 0f, 120.0f, 34.35f, 34.5f);
+        GroundActor groundActor = new GroundActor(world, 0f, 120.0f, 20.35f, 34.5f);
 //        stage.addActor(gearActor1);
         stage.addActor(gearActor2);
         stage.addActor(gearActor4);
