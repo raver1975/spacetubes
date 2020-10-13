@@ -8,6 +8,7 @@ import com.badlogic.gdx.backends.gwt.GwtGraphics;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.xml.client.Document;
 import com.klemstinegroup.spacetubes.Spacetubes;
 
 
@@ -30,6 +31,7 @@ public class HtmlLauncher extends GwtApplication {
 
              int w = Window.getClientWidth() - PADDING;
              int h = Window.getClientHeight() - PADDING;
+
 //             int w=640;
 //             int h=480;
              cfg = new GwtApplicationConfiguration(w, h);
@@ -37,7 +39,7 @@ public class HtmlLauncher extends GwtApplication {
              Window.enableScrolling(false);
              Window.setMargin("0");
              Window.addResizeHandler(new ResizeListener());
-//             Window.resizeBy(0,0);
+             Window.resizeBy(0,0);
 //             cfg.preferFlash = false;
              return cfg;
          }

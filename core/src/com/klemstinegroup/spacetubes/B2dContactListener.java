@@ -3,6 +3,7 @@ package com.klemstinegroup.spacetubes;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.FloatArray;
 import com.quailshillstudio.CollisionGeometry;
 import com.quailshillstudio.PolygonBox2DShape;
 import com.quailshillstudio.UserData;
@@ -40,17 +41,17 @@ public class B2dContactListener implements ContactListener {
                 debugSet.add(collis);
             }
         }
+        clippingGround(contact);
         try {
             BallActor ball = (BallActor) (contact.getFixtureA().getBody().getUserData());
             BallGenerator.getInstance().explode(ball);
-            clippingGround(contact.getFixtureA().getBody(), contact.getFixtureB().getBody());
 //            ball.userData.type=UserData.BALL;
         } catch (Exception e) {
         }
+        clippingGround(contact);
         try {
             BallActor ball = (BallActor) (contact.getFixtureB().getBody().getUserData());
             BallGenerator.getInstance().explode(ball);
-            clippingGround(contact.getFixtureB().getBody(), contact.getFixtureA().getBody());
 //            ball.userData.type=UserData.BALL;
         } catch (Exception e) {
         }
@@ -70,7 +71,9 @@ public class B2dContactListener implements ContactListener {
 
     }
 
-    private void clippingGround(Body a1, Body b1) {
+    private void clippingGround(Contact contact) {
+        Body a1 = contact.getFixtureA().getBody();
+        Body b1 = contact.getFixtureB().getBody();
         Body ground = null;
         Body bomb = null;
         if (((UserDataInterface) a1.getUserData()).getUserData().getType() == UserData.BOMB) {

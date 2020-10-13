@@ -69,31 +69,32 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //debugRenderer.setDrawContacts(true);
 
 //        GearActor gearActor1 = new GearActor(world, -20, -15.0f, 23.5f, 23.5f, false);
-        GearActor gearActor2 = new GearActor(world, 30, -15.0f, 20.5f, 20.5f, .6f);
+        GearActor gearActor2 = new GearActor(world, -40, 20.0f, 40.5f, 40.5f, -1.6f);
 //        GearActor gearActor3 = new GearActor(world, 20, -15.00f, 23.5f, 23.5f, false);
-        GearActor gearActor4 = new GearActor(world, 70, 10.00f, 20.5f, 20.5f, -.6f);
-        GroundActor groundActor = new GroundActor(world, 30f, -20.0f, 150.35f, 150.5f);
+        GearActor gearActor4 = new GearActor(world, 40, 20.00f, 40.5f, 40.5f, 1.6f);
+        GroundActor groundActor = new GroundActor(world, 0f, 120.0f, 34.35f, 34.5f);
 //        stage.addActor(gearActor1);
         stage.addActor(gearActor2);
         stage.addActor(gearActor4);
         stage.addActor(groundActor);
 
-
-//        new WindowsFrame(world, stage.getCamera().viewportWidth, stage.getCamera().viewportHeight);
+        WindowsFrame windowFrame = new WindowsFrame(world, -100, -100, 200, 100);
+        stage.addActor(windowFrame);
 
         rayHandler = new RayHandler(world);
         rayHandler.setAmbientLight(0.3f, 0.2f, 0.2f, .5f);
         rayHandler.setBlurNum(3);
 
 
-        PointLight pl = new PointLight(rayHandler, 1280, new Color(0.2f, 1, 1, 1f), 150, -80f, 10f);
+        PointLight pl = new PointLight(rayHandler, 256, new Color(0.2f, 1, 1, 1f), 150, -80f, 10f);
         pl.setIgnoreAttachedBody(true);
 
-        PointLight pl2 = new PointLight(rayHandler, 1280, new Color(1, 0, 1, 1f), 150, 80f, 10f);
+        PointLight pl2 = new PointLight(rayHandler, 256, new Color(1, 0, 1, 1f), 150, 80f, 10f);
         pl2.setIgnoreAttachedBody(true);
 
-        PointLight pl3 = new PointLight(rayHandler, 1280, new Color(1, 1, .2f, 1f), 150, -30f, -70f);
-        pl3.setIgnoreAttachedBody(true);
+        PointLight pl3 = new PointLight(rayHandler, 256, new Color(1, 1, .2f, 1f), 150, 0f, -10f);
+        pl3.attachToBody(windowFrame.body,100,80);
+        pl3.setIgnoreAttachedBody(false);
 
 
         rayHandler.setShadows(true);
@@ -239,8 +240,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
 //        BodyDef groundDef = new BodyDef();
         BodyDef groundDef = Box2DUtils.createDef(ud.body);
-//        groundDef.type = ud.body.getType();
-        groundDef.type= BodyDef.BodyType.DynamicBody;
+        groundDef.type = ud.body.getType();
+//        groundDef.type= BodyDef.BodyType.DynamicBody;
         groundDef.active = true;
 //        groundDef.position.set(pos.cpy());
 //        groundDef.position.set(ud.body.getPosition().cpy());

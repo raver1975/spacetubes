@@ -25,7 +25,7 @@ public class GroundActor extends UserDataInterface {
 
     public GroundActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight) {
         super(new Texture("gfx/test02.png"));
-        userData=new UserData(UserData.GROUND);
+        userData=new UserData(UserData.BOMB);
         this.setSize(aWidth,aHeight);
         this.setPosition(pos_x, pos_y);
 
@@ -33,7 +33,6 @@ public class GroundActor extends UserDataInterface {
         BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("test.json"));
 
         BodyDef bd = new BodyDef();
-//        bd.position.set(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
         bd.type = BodyDef.BodyType.DynamicBody;
         bd.position.x = this.getX();
         bd.position.y = this.getY();
@@ -43,9 +42,9 @@ public class GroundActor extends UserDataInterface {
 
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
-        fd.density = 1f;
+        fd.density = 10f;
         fd.friction = 0f;
-        fd.restitution = 1f;
+        fd.restitution = 0f;
 
         // 3. Create a Body, as usual.
 
@@ -54,7 +53,6 @@ public class GroundActor extends UserDataInterface {
         v_offset=loader.getOrigin("test02",scale);
         System.out.println("loadr x,y:"+v_offset);
         this.setOrigin(v_offset.x,v_offset.y);
-//        body.setAngularVelocity(clockwise?1:-1);
         body.setUserData(this);
         position=body.getPosition().cpy();
 
@@ -62,19 +60,13 @@ public class GroundActor extends UserDataInterface {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
-//        body.setTransform(position.cpy(),body.getAngle());
-//        body.setAwake(true);
-
-
+        //super.draw(batch, parentAlpha);
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
         this.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
-//        body.setTransform(position.cpy(),body.getAngle());
-//        body.setAwake(true);
         this.setPosition(body.getPosition().x-this.getWidth()/2 , body.getPosition().y -this.getHeight()/2);
 
     }

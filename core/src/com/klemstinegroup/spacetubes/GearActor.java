@@ -18,7 +18,7 @@ public class GearActor extends UserDataInterface {
 
     public GearActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight, float clockwise) {
         super(new Texture("gear.png"));
-        userData = new UserData(UserData.BALL);
+        userData = new UserData(UserData.BOMB);
         this.setSize(aWidth, aHeight);
         this.setPosition(pos_x, pos_y);
 

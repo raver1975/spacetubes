@@ -5,26 +5,24 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.quailshillstudio.UserData;
+import com.quailshillstudio.UserDataInterface;
 
 /**
  * Created by julienvillegas on 07/12/2017.
  */
 
-public class WindowsFrame {
+public class WindowsFrame extends UserDataInterface {
 
-    private Body body;
-    private World world;
-
-    public WindowsFrame(World aWorld, float width, float heigth) {
-
-
+    public WindowsFrame(World aWorld, float x, float y,float width, float height) {
+        super(new UserData(UserData.GROUND));
         world = aWorld;
         BodyDef bd = new BodyDef();
-        bd.position.set(-width*5,-2);
+        bd.position.set(x,y);
         bd.type = BodyDef.BodyType.StaticBody;
         body = world.createBody(bd);
         PolygonShape groundBox = new PolygonShape();
-        groundBox.setAsBox(width*10, 0.1f);
+        groundBox.setAsBox(width, height);
         body.setUserData(this);
 
         FixtureDef fixtureDef = new FixtureDef();
