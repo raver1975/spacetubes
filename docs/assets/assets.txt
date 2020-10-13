@@ -9,7 +9,7 @@ b:continous.p:continous-57e360be583a497c9630d2a590a3be6f.p:2042:application/unkn
 i:gear.png:gear-4dc7b35e367393bbc103146ca0f909b3.png:96441:image/png:1
 d:gfx:gfx:0:application/unknown:1
 i:gfx/test01.png:gfx/test01-b211e28edcf0e5b3ec4cfb051fd5beb1.png:15664:image/png:1
-i:gfx/test02.png:gfx/test02-81769030551b219cec32815ca169b70d.png:9877:image/png:1
+i:gfx/test02.png:gfx/test02-fba80195d70ef5c1a386a8a46c544570.png:10570:image/png:1
 i:gfx/test03 (multi shapes).png:gfx/test03 (multi shapes)-bf183d8f3b66f176d8239f4cdf0e0dfd.png:7467:image/png:1
 i:gfx/test04 (non square).png:gfx/test04 (non square)-3eca2c95dc4828ce640375b719d9442b.png:19361:image/png:1
 i:gfx/test05 (non square).png:gfx/test05 (non square)-4f3d06ab2acc4fdb9143a62c63845789.png:7649:image/png:1
@@ -19,7 +19,7 @@ i:object-deferred-n.png:object-deferred-n-f208d3d50fe7a5119f4c5afa067821d3.png:6
 i:object-deferred.png:object-deferred-9e495e18dde7ff7c90730ae4e600a57f.png:5282:image/png:1
 i:particle.png:particle-80cd2ffbc5f91c261029362bd8e97f65.png:1821:image/png:1
 b:particles.p:particles-9f11f717061d60c12f60dcf651986cb2.p:2576:application/unknown:1
-t:test.json:test-277b58049c1c4265c51a4ae23358367f.json:10411:application/unknown:1
+t:test.json:test-2d6a9b6af1572fd97cf95837b2b58cf5.json:22992:application/unknown:1
 t:com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl:particles.fragment-b90524761fdf09b0a836056d590c30b8.glsl:820:application/unknown:1
 t:com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl:particles.vertex-f25b8b2fae10b9bfa09bfdd484923148.glsl:2886:application/unknown:1
 t:com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl:default.fragment-e1c018bd48044c8b67c7bbc53145e540.glsl:5874:application/unknown:1

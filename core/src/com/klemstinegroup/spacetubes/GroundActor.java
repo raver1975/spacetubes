@@ -44,8 +44,8 @@ public class GroundActor extends UserDataInterface {
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
         fd.density = 1f;
-        fd.friction = 0.001f;
-        fd.restitution = 0f;
+        fd.friction = 0f;
+        fd.restitution = 1f;
 
         // 3. Create a Body, as usual.
 

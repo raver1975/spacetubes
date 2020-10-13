@@ -55,7 +55,7 @@ public class BallActor extends UserDataInterface {
 
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
-        fd.density = 1;
+        fd.density = .001f;
         fd.friction = 0.5f;
         fd.restitution = 1f;
         fd.shape = circle;

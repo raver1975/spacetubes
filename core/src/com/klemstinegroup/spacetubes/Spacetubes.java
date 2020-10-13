@@ -2,9 +2,7 @@ package com.klemstinegroup.spacetubes;
 
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -13,15 +11,19 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.quailshillstudio.*;
+import com.quailshillstudio.GroundFixture;
+import com.quailshillstudio.PolygonBox2DShape;
+import com.quailshillstudio.UserData;
+import com.quailshillstudio.UserDataInterface;
 import net.dermetfan.gdx.physics.box2d.Box2DUtils;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
-public class Spacetubes extends ApplicationAdapter {
+public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     PolygonSpriteBatch batch;
     private World world;
     private Stage stage;
@@ -54,6 +56,10 @@ public class Spacetubes extends ApplicationAdapter {
         float ratio = (float) (Gdx.graphics.getWidth()) / (float) (Gdx.graphics.getHeight());
 
         stage = new Stage(new ScreenViewport());
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        Gdx.input.setInputProcessor(multiplexer);
+        multiplexer.addProcessor(this);
+        multiplexer.addProcessor(stage);
         stage.getCamera().position.set(0, 0, 10);
         stage.getCamera().lookAt(0, 0, 0);
         stage.getCamera().viewportWidth = 200;
@@ -141,8 +147,7 @@ public class Spacetubes extends ApplicationAdapter {
 //            if (fixtureList.get(i).getShape() instanceof PolygonShape) {
             try {
                 polyClip = new PolygonBox2DShape((PolygonShape) fixtureList.get(i).getShape());
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 polyClip = new PolygonBox2DShape((ChainShape) fixtureList.get(i).getShape());
             }
 //            } else if (fixtureList.get(i).getShape() instanceof ChainShape) {
@@ -154,8 +159,6 @@ public class Spacetubes extends ApplicationAdapter {
         }
         this.ud = groundActor;
         switchGround(totalRS, groundActor);
-
-
 
 
 //        } catch (
@@ -237,14 +240,15 @@ public class Spacetubes extends ApplicationAdapter {
 //        BodyDef groundDef = new BodyDef();
         BodyDef groundDef = Box2DUtils.createDef(ud.body);
 //        groundDef.type = ud.body.getType();
-        groundDef.active=true;
+        groundDef.type= BodyDef.BodyType.DynamicBody;
+        groundDef.active = true;
 //        groundDef.position.set(pos.cpy());
 //        groundDef.position.set(ud.body.getPosition().cpy());
 //        groundDef.angle=ud.body.getAngle();
 //        Body tempBody=ud.body;
         Body nground = world.createBody(groundDef);
 //        Body nground =ud.body;
-        ud.body=nground;
+        ud.body = nground;
 //        ud.body.setTransform(tempBody.getPosition(),tempBody.getAngle());
 //        nground.getFixtureList().clear();
         nground.setUserData(ud);
@@ -275,10 +279,10 @@ public class Spacetubes extends ApplicationAdapter {
                     ChainShape shape = new ChainShape();
 //                if (f.length >= 6) {
                     float f[] = this.polyVerts.get(i).getVerts().get(y);
-                    Polygon p=new Polygon(f);
+                    Polygon p = new Polygon(f);
 //                    p.setPosition(ud.body.getPosition().x,ud.body.getPosition().y);
 //                    p.setRotation(ud.body.getAngle());
-                    f=p.getTransformedVertices();
+                    f = p.getTransformedVertices();
                     int hh = 0;
                     while (true) {
                         boolean flag = true;
@@ -327,4 +331,47 @@ public class Spacetubes extends ApplicationAdapter {
     }
 
 
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
+        Vector3 worldCoordinates = stage.getCamera().unproject(new Vector3(screenX, screenY, 0));
+        System.out.println(screenX+","+screenY+"\t"+worldCoordinates);
+        stage.addActor(new BallActor(world, rayHandler, worldCoordinates.x, worldCoordinates.y));
+        return true;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
 }
