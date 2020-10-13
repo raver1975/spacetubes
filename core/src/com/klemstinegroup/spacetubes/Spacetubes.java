@@ -92,7 +92,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         PointLight pl2 = new PointLight(rayHandler, 256, new Color(1, 0, 1, 1f), 150, 80f, 10f);
         pl2.setIgnoreAttachedBody(true);
 
-        PointLight pl3 = new PointLight(rayHandler, 256, new Color(1, 1, .2f, 1f), 150, 0f, -10f);
+        PointLight pl3 = new PointLight(rayHandler, 256, new Color(1, 1, .2f, 1f), 150, 0f, 10f);
         pl3.attachToBody(windowFrame.body,100,80);
         pl3.setIgnoreAttachedBody(false);
 
@@ -173,11 +173,11 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act();
-        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
-        stage.draw();
+        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
+        stage.act();
         debugRenderer.render(world, stage.getCamera().combined);
+        stage.draw();
 
         //debugRenderer.render(world, stage.getCamera().combined);
 
