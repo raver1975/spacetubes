@@ -160,10 +160,10 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        debugRenderer.render(world, stage.getCamera().combined);
-        stage.draw();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         stage.act();
+        debugRenderer.render(world, stage.getCamera().combined);
+        stage.draw();
 
 
 
