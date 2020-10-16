@@ -1,13 +1,16 @@
 package com.klemstinegroup.spacetubes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.quailshillstudio.UserData;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.quailshillstudio.DestructionData;
 
 /**
  * Created by julienvillegas on 06/12/2017.
@@ -17,7 +20,15 @@ public class GearActor extends UserDataInterface {
 
     public GearActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight, float clockwise) {
         super(new Texture("gear.png"));
-        userData = new UserData(UserData.BOMB);
+//        super();
+        Pixmap pixmap = new Pixmap((int) aWidth, (int) aHeight, Pixmap.Format.RGB888);
+        pixmap.setColor(1, 0, 1, 1f);
+        pixmap.fill();
+        pixmap.setColor(1, 1, 0, 1f);
+        pixmap.fillCircle((int)aWidth/2,(int)aHeight/2,(int)Math.max(aWidth/2,aHeight/2));
+//        setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(pixmap))));
+//        tr = new TextureRegion(new Texture(pixmap));
+        userData = new DestructionData(DestructionData.BOMB);
         this.setSize(aWidth, aHeight);
         this.setPosition(pos_x, pos_y);
 
@@ -29,7 +40,7 @@ public class GearActor extends UserDataInterface {
         bd.type = BodyDef.BodyType.KinematicBody;
         bd.position.x = this.getX();
         bd.position.y = this.getY();
-        body = world.createBody(bd);
+        body=world.createBody(bd);
 
 
         // 2. Create a FixtureDef, as usual.
@@ -42,24 +53,27 @@ public class GearActor extends UserDataInterface {
 
         float scale = this.getWidth();
         loader.attachFixture(body, "gear", fd, scale);
+        createVertex();
         this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
         body.setAngularVelocity(clockwise);
         body.setUserData(this);
 
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
 
 
-    }
-
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-        this.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
-        this.setPosition(body.getPosition().x - this.getWidth() / 2, body.getPosition().y - this.getHeight() / 2);
-
-    }
+//    @Override
+//    public void draw(Batch batch, float parentAlpha) {
+//        super.draw(batch, parentAlpha);
+//
+//
+//    }
+//
+//    @Override
+//    public void act(float delta) {
+//        super.act(delta);
+//        this.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
+//        this.setPosition(body.getPosition().x - this.getWidth() / 2, body.getPosition().y - this.getHeight() / 2);
+//
+//    }
 }

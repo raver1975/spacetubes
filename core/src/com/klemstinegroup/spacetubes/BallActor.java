@@ -15,7 +15,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.graphics.ParticleEmitterBox2D;
 import com.badlogic.gdx.utils.Array;
-import com.quailshillstudio.UserData;
+import com.quailshillstudio.DestructionData;
 
 /**
  * Created by julienvillegas on 07/12/2017.
@@ -31,6 +31,10 @@ public class BallActor extends UserDataInterface {
     private boolean dead = false;
     private float ballScale = 20f;
     private float explosionScale = .2f;
+    private int r;
+    private int g;
+    private int b;
+    private float lightShrinkDist=100;
 
 
     public BallActor(World aWorld, RayHandler rayHandler, float pos_x, float pos_y) {
@@ -38,7 +42,7 @@ public class BallActor extends UserDataInterface {
 //        setDrawable(null);
         this.setSize(4f, 4f);
         this.setPosition(pos_x, pos_y);
-        userData = new UserData(UserData.BOMB);
+        userData = new DestructionData(DestructionData.BOMB);
         world = aWorld;
         BodyDef bd = new BodyDef();
         bd.position.set(this.getX(), this.getY());
@@ -64,7 +68,7 @@ public class BallActor extends UserDataInterface {
         this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
         circle.dispose();
         Vector2 v = body.getPosition();
-        pl2 = new PointLight(rayHandler, 128, new Color(1, 1, 1, 1f), 10f, v.x, v.y);
+        pl2 = new PointLight(rayHandler, 128, new Color(1, 1, 1, 1f), 5f, v.x, v.y);
         pl2.attachToBody(body);
         pl2.setIgnoreAttachedBody(true);
 
@@ -156,6 +160,7 @@ public class BallActor extends UserDataInterface {
 //            b.setScale(this.getScaleX(), this.getScaleY());
 //        }
 //        BallGenerator.getInstance().explode(b);
+
         if (!dead) {
             explosionEffect.getEmitters().add(new ParticleEmitterBox2D(world, explosionEffect.getEmitters().first()));
             explosionEffect.getEmitters().removeIndex(0);
@@ -166,7 +171,13 @@ public class BallActor extends UserDataInterface {
             explosionScale -= .002f;
             explosionEffect.start();
             this.explosionEffect.add(explosionEffect);
-
+pl2.setDistance(lightShrinkDist--);
+while(r+g+b==0) {
+    r = MathUtils.randomBoolean() ? 1 : 0;
+    g = MathUtils.randomBoolean() ? 1 : 0;
+    b = MathUtils.randomBoolean() ? 1 : 0;
+}
+pl2.setColor(r,g,b,1);
             exploding = true;
         }
     }

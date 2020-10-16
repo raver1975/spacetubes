@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.quailshillstudio.CollisionGeometry;
 import com.quailshillstudio.PolygonBox2DShape;
-import com.quailshillstudio.UserData;
+import com.quailshillstudio.DestructionData;
 
 import java.util.HashSet;
 
@@ -74,16 +74,16 @@ public class B2dContactListener implements ContactListener {
         Body b1 = contact.getFixtureB().getBody();
         Body ground = null;
         Body bomb = null;
-        if (((UserDataInterface) a1.getUserData()).getUserData().getType() == UserData.BOMB) {
+        if (((UserDataInterface) a1.getUserData()).getUserData().getType() == DestructionData.BOMB) {
             bomb = a1;
         }
-        if (((UserDataInterface) b1.getUserData()).getUserData().getType() == UserData.BOMB) {
+        if (((UserDataInterface) b1.getUserData()).getUserData().getType() == DestructionData.BOMB) {
             bomb = b1;
         }
-        if (((UserDataInterface) a1.getUserData()).getUserData().getType() == UserData.GROUND) {
+        if (((UserDataInterface) a1.getUserData()).getUserData().getType() == DestructionData.GROUND) {
             ground = a1;
         }
-        if (((UserDataInterface) b1.getUserData()).getUserData().getType() == UserData.GROUND) {
+        if (((UserDataInterface) b1.getUserData()).getUserData().getType() == DestructionData.GROUND) {
             ground = b1;
         }
         if (ground == null || bomb == null) {
@@ -110,27 +110,27 @@ public class B2dContactListener implements ContactListener {
         Array<Fixture> fixtureList = body.getFixtureList();
         int fixCount = fixtureList.size;
         for (int i = 0; i < fixCount; i++) {
-            PolygonBox2DShape polyClip = null;
-
-//                if (fixtureList.get(i).getShape() instanceof PolygonShape) {
+            PolygonBox2DShape polyClip;
             try {
                 polyClip = new PolygonBox2DShape((PolygonShape) fixtureList.get(i).getShape());
             } catch (Exception e) {
                 polyClip = new PolygonBox2DShape((ChainShape) fixtureList.get(i).getShape());
             }
-
-
-//                }
             Array<PolygonBox2DShape> rs = polyClip.differenceCS(circlePoly);
-
             for (int y = 0; y < rs.size; y++) {
                 rs.get(y).circleContact(bomb.getPosition().cpy().sub(ground.getPosition()), circRadius);
-//                    rs.get(y).ConstPolygonBox2DShape(shape);
                 totalRS.add(rs.get(y).vertices());
             }
-//                totalRS.add(rs.get(0).vertices());
         }
-        spacetubes.switchGround(totalRS, (UserDataInterface) ground.getUserData());
+        spacetubes.mustCreate = true;
+//        GroundFixture grFix = new GroundFixture(rs);
+//        polyVerts.add(grFix);
+        UserDataInterface ud1=(UserDataInterface)ground.getUserData();
+        spacetubes.polyVerts.clear();
+        spacetubes.polyVerts.add(ud1);
+        ud1.verts=totalRS;
+        spacetubes.ud = ud1;
+//        spacetubes.switchGround(totalRS, (UserDataInterface) ground.getUserData());
 //            ((UserDataInterface) body.getUserData()).getUserData().mustDestroy = true;
     }
 

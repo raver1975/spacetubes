@@ -16,9 +16,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.quailshillstudio.GroundFixture;
-import com.quailshillstudio.PolygonBox2DShape;
-import com.quailshillstudio.UserData;
+import com.quailshillstudio.DestructionData;
 import net.dermetfan.gdx.physics.box2d.Box2DUtils;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
@@ -27,13 +25,13 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private World world;
     private Stage stage;
     private Box2DDebugRenderer debugRenderer;
-    public Array<GroundFixture> polyVerts = new Array<>();
+    public Array<UserDataInterface> polyVerts = new Array<>();
 
     private RayHandler rayHandler;
     private Texture whiteTexture;
     private ShapeDrawer drawer;
-    private boolean mustCreate;
-    private UserDataInterface ud;
+    boolean mustCreate;
+    UserDataInterface ud;
     private GroundBoxActor windowFrame;
 
     @Override
@@ -55,7 +53,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         Gdx.input.setInputProcessor(stage);
         float ratio = (float) (Gdx.graphics.getWidth()) / (float) (Gdx.graphics.getHeight());
 
-        stage = new Stage(new ScreenViewport(),batch);
+        stage = new Stage(new ScreenViewport(), batch);
         InputMultiplexer multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(this);
@@ -72,28 +70,30 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         GearActor gearActor2 = new GearActor(world, -40, 20.0f, 40.5f, 40.5f, -1.6f);
 //        GearActor gearActor3 = new GearActor(world, 20, -15.00f, 23.5f, 23.5f, false);
         GearActor gearActor4 = new GearActor(world, 40, 20.00f, 40.5f, 40.5f, 1.6f);
-        GroundActor groundActor = new GroundActor(world, 0f, 120.0f, 20.35f, 34.5f);
+        JarActor groundActor = new JarActor(world, 0f, 120.0f, 20.35f, 34.5f);
 //        stage.addActor(gearActor1);
         stage.addActor(gearActor2);
         stage.addActor(gearActor4);
         stage.addActor(groundActor);
 
-        windowFrame = new GroundBoxActor(drawer, world, -100, -100, 200, 100);
+        windowFrame = new GroundBoxActor(world, -0, -50, 80, 20);
         stage.addActor(windowFrame);
 
-        rayHandler = new RayHandler(world);
-        rayHandler.setAmbientLight(0.3f, 0.2f, 0.2f, .5f);
+        rayHandler = new RayHandler(world,2048,2048);
+        rayHandler.setAmbientLight(0.4f, 0.2f, 0.2f, .5f);
         rayHandler.setBlurNum(3);
+        rayHandler.setCulling(false);
+        rayHandler.setLightMapRendering(true);
 
 
-        PointLight pl = new PointLight(rayHandler, 256, new Color(0.2f, 1, 1, 1f), 150, -80f, 10f);
+        PointLight pl = new PointLight(rayHandler, 512, new Color(0.2f, 1, 1, 1f), 150, -80f, 10f);
         pl.setIgnoreAttachedBody(true);
 
-        PointLight pl2 = new PointLight(rayHandler, 256, new Color(1, 0, 1, 1f), 150, 80f, 10f);
+        PointLight pl2 = new PointLight(rayHandler, 512, new Color(1, 0, 1, 1f), 150, 80f, 10f);
         pl2.setIgnoreAttachedBody(true);
 
-        PointLight pl3 = new PointLight(rayHandler, 256, new Color(1, 1, .2f, 1f), 150, 0f, 10f);
-        pl3.attachToBody(windowFrame.body, 100, 80);
+        PointLight pl3 = new PointLight(rayHandler, 512, new Color(1, 1, .2f, 1f), 150, 0f, 10f);
+//        pl3.attachToBody(windowFrame.body, 100, 80);
         pl3.setIgnoreAttachedBody(false);
 
 
@@ -139,28 +139,14 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //        this.ud=groundActor;
         mustCreate = true;*/
         //        this.mustCreate = false;
+
         this.ud = windowFrame;
-        Array<float[]> totalRS = new Array<>();
-        Array<Fixture> fixtureList = ud.body.getFixtureList();
-        int fixCount = fixtureList.size;
-        for (int i = 0; i < fixCount; i++) {
-            PolygonBox2DShape polyClip = null;
-//            if (fixtureList.get(i).getShape() instanceof PolygonShape) {
-            try {
-                polyClip = new PolygonBox2DShape((PolygonShape) fixtureList.get(i).getShape());
-            } catch (Exception e) {
-                polyClip = new PolygonBox2DShape((ChainShape) fixtureList.get(i).getShape());
-            }
-//            } else if (fixtureList.get(i).getShape() instanceof ChainShape) {
-//            }
-            Array<PolygonBox2DShape> rs = polyClip.clipCS(polyClip, false, true);
-            for (int y = 0; y < rs.size; y++) {
-                totalRS.add(rs.get(y).verticesToLoop());
-            }
-        }
-        this.ud = groundActor;
-        windowFrame.verts = totalRS;
-        switchGround(totalRS, groundActor);
+
+//        windowFrame.verts = totalRS;
+//        UserDataInterface ud1=(UserDataInterface)ground.getUserData();
+        polyVerts.add(ud);
+//        ud.verts = totalRS;
+//        switchGround(totalRS, groundActor);
 
 //        } catch (
 //                Exception e) {
@@ -174,10 +160,13 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.act();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
+        stage.act();
         debugRenderer.render(world, stage.getCamera().combined);
         stage.draw();
+
+
+
 
         //debugRenderer.render(world, stage.getCamera().combined);
 
@@ -192,8 +181,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
             world.getBodies(bodies);
             try {
                 UserDataInterface datai = ((UserDataInterface) bodies.get(i).getUserData());
-                UserData data = datai.getUserData();
-                if (data != null && data.getType() == UserData.GROUND) {
+                DestructionData data = datai.getUserData();
+                if (data != null && data.getType() == DestructionData.GROUND) {
                     if ((data.mustDestroy || mustCreate) && !data.destroyed) {
                         world.destroyBody(bodies.get(i));
                         bodies.removeIndex(i);
@@ -228,14 +217,10 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //    }
 
 
-    public void switchGround(Array<float[]> rs, UserDataInterface ud1) {
-        polyVerts.clear();
-        mustCreate = true;
-        GroundFixture grFix = new GroundFixture(rs);
-        polyVerts.add(grFix);
-        windowFrame.verts=rs;
-        this.ud = ud1;
-    }
+//    public void switchGround(Array<float[]> rs, UserDataInterface ud1) {
+//        polyVerts.clear();
+//
+//    }
 
     protected void createGround() {
 
@@ -319,7 +304,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //                }
                 }
             }
-            polyVerts.get(i).setFixtures(fixtures);
+//            polyVerts.get(i).setFixtures(fixtures);
 
         }
         this.mustCreate = false;
