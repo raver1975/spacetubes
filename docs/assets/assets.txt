@@ -9,7 +9,7 @@ b:continous.p:continous-57e360be583a497c9630d2a590a3be6f.p:2042:application/unkn
 i:gear.png:gear-4dc7b35e367393bbc103146ca0f909b3.png:96441:image/png:1
 d:gfx:gfx:0:application/unknown:1
 i:gfx/test01.png:gfx/test01-b211e28edcf0e5b3ec4cfb051fd5beb1.png:15664:image/png:1
-i:gfx/test02.png:gfx/test02-aca95eb707ce092c5a549d33028bbc12.png:12637:image/png:1
+i:gfx/test02.png:gfx/test02-2a7381098f821a514c6ec8ff8dc5939a.png:10572:image/png:1
 i:gfx/test03 (multi shapes).png:gfx/test03 (multi shapes)-bf183d8f3b66f176d8239f4cdf0e0dfd.png:7467:image/png:1
 i:gfx/test04 (non square).png:gfx/test04 (non square)-3eca2c95dc4828ce640375b719d9442b.png:19361:image/png:1
 i:gfx/test05 (non square).png:gfx/test05 (non square)-4f3d06ab2acc4fdb9143a62c63845789.png:7649:image/png:1

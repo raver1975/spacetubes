@@ -67,9 +67,9 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //debugRenderer.setDrawContacts(true);
 
 //        GearActor gearActor1 = new GearActor(world, -20, -15.0f, 23.5f, 23.5f, false);
-        GearActor gearActor2 = new GearActor(world, -40, 20.0f, 40.5f, 40.5f, -1.6f);
+        GearActor gearActor2 = new GearActor(world, -50, 20.0f, 40.5f, 40.5f, -1.6f);
 //        GearActor gearActor3 = new GearActor(world, 20, -15.00f, 23.5f, 23.5f, false);
-        GearActor gearActor4 = new GearActor(world, 40, 20.00f, 40.5f, 40.5f, 1.6f);
+        GearActor gearActor4 = new GearActor(world, 50, 20.00f, 40.5f, 40.5f, 1.6f);
         JarActor groundActor = new JarActor(world, 0f, 120.0f, 20.35f, 34.5f);
 //        stage.addActor(gearActor1);
         stage.addActor(gearActor2);
@@ -160,10 +160,10 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
-        stage.act();
         debugRenderer.render(world, stage.getCamera().combined);
         stage.draw();
+        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
+        stage.act();
 
 
 
