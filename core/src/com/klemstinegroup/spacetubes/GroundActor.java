@@ -5,11 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.quailshillstudio.UserDataInterface;
 import com.quailshillstudio.UserData;
 
 /**
@@ -60,7 +58,7 @@ public class GroundActor extends UserDataInterface {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        //super.draw(batch, parentAlpha);
+        super.draw(batch, parentAlpha);
     }
 
     @Override
@@ -68,6 +66,5 @@ public class GroundActor extends UserDataInterface {
         super.act(delta);
         this.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
         this.setPosition(body.getPosition().x-this.getWidth()/2 , body.getPosition().y -this.getHeight()/2);
-
     }
 }

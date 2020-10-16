@@ -3,11 +3,9 @@ package com.klemstinegroup.spacetubes;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.FloatArray;
 import com.quailshillstudio.CollisionGeometry;
 import com.quailshillstudio.PolygonBox2DShape;
 import com.quailshillstudio.UserData;
-import com.quailshillstudio.UserDataInterface;
 
 import java.util.HashSet;
 

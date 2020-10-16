@@ -91,7 +91,27 @@ eclipse.project.name = appName + "-html"
 apply plugin: 'org.ajoberstar.grgit'
 version = "1.0.0-${grgit.head().abbreviatedId}"
 
-task tagRelease {dependsOn dist
+task startIPFSDaemon{dependsOn dist
+    doFirst {
+        println("Start watching")
+        ext.process = new ProcessBuilder()
+                .directory(projectDir)
+                .command("ipfs", "daemon")
+                .start()
+    }
+}
+
+task addToIPFS(type:Exec){dependsOn startIPFSDaemon
+    commandLine 'ipfs','add','-r','build/dist'
+//    ByteArrayOutputStream ba=new ByteArrayOutputStream()
+//    standardOutput = ba
+//    String[] splitOut=ba.toString().split('added');
+//    System.out.println("http://ipfs.io/ipfs/"+splitOut[splitOut.length-1]);
+
+//    System.out.println(standardOutput.toString())
+}
+
+task tagRelease {dependsOn addToIPFS
     description = 'Tags the current head with the project\'s version.'
     doLast {
         grgit.tag.add {
@@ -107,3 +127,4 @@ task pushToOrigin {dependsOn tagRelease
         grgit.push()
     }
 }
+

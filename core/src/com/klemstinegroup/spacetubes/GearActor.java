@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.quailshillstudio.UserData;
-import com.quailshillstudio.UserDataInterface;
 
 /**
  * Created by julienvillegas on 06/12/2017.

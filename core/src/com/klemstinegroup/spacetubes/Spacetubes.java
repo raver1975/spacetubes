@@ -19,7 +19,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.quailshillstudio.GroundFixture;
 import com.quailshillstudio.PolygonBox2DShape;
 import com.quailshillstudio.UserData;
-import com.quailshillstudio.UserDataInterface;
 import net.dermetfan.gdx.physics.box2d.Box2DUtils;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
@@ -35,6 +34,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private ShapeDrawer drawer;
     private boolean mustCreate;
     private UserDataInterface ud;
+    private GroundBoxActor windowFrame;
 
     @Override
     public void create() {
@@ -55,7 +55,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         Gdx.input.setInputProcessor(stage);
         float ratio = (float) (Gdx.graphics.getWidth()) / (float) (Gdx.graphics.getHeight());
 
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(new ScreenViewport(),batch);
         InputMultiplexer multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(this);
@@ -78,7 +78,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         stage.addActor(gearActor4);
         stage.addActor(groundActor);
 
-        WindowsFrame windowFrame = new WindowsFrame(world, -100, -100, 200, 100);
+        windowFrame = new GroundBoxActor(drawer, world, -100, -100, 200, 100);
         stage.addActor(windowFrame);
 
         rayHandler = new RayHandler(world);
@@ -93,7 +93,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         pl2.setIgnoreAttachedBody(true);
 
         PointLight pl3 = new PointLight(rayHandler, 256, new Color(1, 1, .2f, 1f), 150, 0f, 10f);
-        pl3.attachToBody(windowFrame.body,100,80);
+        pl3.attachToBody(windowFrame.body, 100, 80);
         pl3.setIgnoreAttachedBody(false);
 
 
@@ -139,7 +139,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //        this.ud=groundActor;
         mustCreate = true;*/
         //        this.mustCreate = false;
-        this.ud = groundActor;
+        this.ud = windowFrame;
         Array<float[]> totalRS = new Array<>();
         Array<Fixture> fixtureList = ud.body.getFixtureList();
         int fixCount = fixtureList.size;
@@ -159,8 +159,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
             }
         }
         this.ud = groundActor;
+        windowFrame.verts = totalRS;
         switchGround(totalRS, groundActor);
-
 
 //        } catch (
 //                Exception e) {
@@ -174,8 +174,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         stage.act();
+        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         debugRenderer.render(world, stage.getCamera().combined);
         stage.draw();
 
@@ -233,6 +233,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         mustCreate = true;
         GroundFixture grFix = new GroundFixture(rs);
         polyVerts.add(grFix);
+        windowFrame.verts=rs;
         this.ud = ud1;
     }
 
@@ -351,7 +352,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
         Vector3 worldCoordinates = stage.getCamera().unproject(new Vector3(screenX, screenY, 0));
-        System.out.println(screenX+","+screenY+"\t"+worldCoordinates);
+        System.out.println(screenX + "," + screenY + "\t" + worldCoordinates);
         stage.addActor(new BallActor(world, rayHandler, worldCoordinates.x, worldCoordinates.y));
         return true;
     }
@@ -372,7 +373,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     }
 
     @Override
-    public boolean scrolled(int amount) {
+    public boolean scrolled(float amountX, float amountY) {
         return false;
     }
 }
