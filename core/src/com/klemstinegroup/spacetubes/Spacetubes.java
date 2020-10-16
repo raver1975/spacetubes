@@ -93,7 +93,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         pl2.setIgnoreAttachedBody(true);
 
         PointLight pl3 = new PointLight(rayHandler, 512, new Color(1, 1, .2f, 1f), 150, 0f, 10f);
-//        pl3.attachToBody(windowFrame.body, 100, 80);
+        pl3.attachToBody(windowFrame.body, 0, 50);
         pl3.setIgnoreAttachedBody(false);
 
 
@@ -102,6 +102,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         pl.setSoft(true);
         pl2.setStaticLight(false);
         pl2.setSoft(true);
+        pl3.setStaticLight(false);
+        pl3.setSoft(true);
         BallGenerator.getInstance().setup(stage, world, rayHandler);
 //        stage.addActor(new FireEmitter(world));
 
@@ -162,7 +164,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         stage.act();
-        debugRenderer.render(world, stage.getCamera().combined);
+//        debugRenderer.render(world, stage.getCamera().combined);
         stage.draw();
 
 

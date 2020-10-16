@@ -95,12 +95,12 @@ public class BallActor extends UserDataInterface {
         Vector2 v = body.getPosition();
 
         if (exploding) {
-            body.applyForceToCenter(body.getLinearVelocity().cpy().scl(.05f + MathUtils.random(.01f) - .005f, .05f + MathUtils.random(.01f) - .005f).scl(explosionScale/5f), true);
+            body.applyForceToCenter(body.getLinearVelocity().cpy().scl(.05f + MathUtils.random(.01f) - .005f, .05f + MathUtils.random(.01f) - .005f).scl(explosionScale/6f), true);
 //            if (MathUtils.random() > .8f) {
             BallGenerator.getInstance().explode(this);
 //            }
             for (ParticleEffect explosionEffect : explosionEffect) {
-                FireEmitter.setAngle(explosionEffect, body.getAngle() * MathUtils.radiansToDegrees + 180);
+                FireEmitter.setAngle(explosionEffect, body.getAngle() * MathUtils.radiansToDegrees + 180*(explosionScale>0?1:0));
                 explosionEffect.setPosition(v.x, v.y);
                 explosionEffect.setPosition(this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2);
 //                explosionEffect.scaleEffect(0.02f);

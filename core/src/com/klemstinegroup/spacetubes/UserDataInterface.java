@@ -111,14 +111,15 @@ public class UserDataInterface extends Image {
                 EarClippingTriangulator triangulator = new EarClippingTriangulator();
                 ShortArray triangleIndices = triangulator.computeTriangles(f1);
                 PolygonRegion pR = new PolygonRegion(tr, f1, triangleIndices.toArray());
+                pR.getRegion().getTexture().setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.ClampToEdge);
                 PolygonSprite pS = new PolygonSprite(pR);
+
 //                pS.scale(1);
 //                pS.setOrigin(this.getWidth()*this.getScaleX()/2f, this.getHeight()*this.getScaleY()/2f);
 //                pS.translate(pS.getWidth()/2, pS.getHeight()/2);
 //                pS.translate(pS.getHeight());
                 pS.setPosition(body.getPosition().x - this.getWidth() / 2f, body.getPosition().y - this.getHeight() / 2f);
                 pS.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
-
                 pS.draw((PolygonSpriteBatch) batch);
 
             }
