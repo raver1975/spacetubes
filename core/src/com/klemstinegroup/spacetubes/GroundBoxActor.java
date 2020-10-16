@@ -21,26 +21,34 @@ public class GroundBoxActor extends UserDataInterface {
     public GroundBoxActor( World aWorld, float x, float y, float width, float height) {
 //        super(new Texture("gfx/test02.png"));
         super();
-        Pixmap pixmap = new Pixmap((int) width, (int) height, Pixmap.Format.RGB888);
+        int px=1;
+        int py=1;
+        while(px<width){
+            px*=2;
+        }
+        while(py<width){
+            py*=2;
+        }
+        Pixmap pixmap = new Pixmap((int) px, (int) py, Pixmap.Format.RGB888);
         pixmap.setColor(1, 1, 1, .1f);
         pixmap.fill();
 //        pixmap.setColor(1, 0, 0, .1f);
 //        pixmap.fillCircle((int)width/2,(int)height/2,(int)Math.min(width/2,height/2));
         final int MAX_COLOR = 6;
         final int MIN_COLOR = 0;
-        double jump = (MAX_COLOR-MIN_COLOR) / (width*1.0);
+        double jump = (MAX_COLOR-MIN_COLOR) / (px*1.0);
 //        Color[] colors = new colors[ARRAY_SIZE];
-        for (int i = 0; i < width; i++) {
+        for (int i = 0; i < px; i++) {
 //            colors[i] = Color.HSVToColor(new float[]{(float) (MIN_COLOR + (jump*i)), 1.0f, 1.0f});
 //            colors[i] = Color.HSVToColor(new float[]{(float) (MIN_COLOR + (jump*i)), 1.0f, 1.0f});
             Color colors =HSVtoRGB((float) ((jump * i)), 1.0f, 1.0f);
             System.out.println(colors.toString());
             pixmap.setColor(colors);
-            pixmap.drawLine(i,0,i, (int) height);
+            pixmap.drawLine(i,0,i, (int) py);
         }
         pixmap.setColor(Color.BLACK);
-        pixmap.drawLine(0,0,0,(int)height);
-        pixmap.drawLine((int)width-1,0,(int)width-1,(int)height);
+        pixmap.drawLine(0,0,0,(int)py);
+        pixmap.drawLine((int)px-1,0,(int)px-1,(int)py);
 //        setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(pixmap))));
         tr = new TextureRegion(new Texture(pixmap));
 
