@@ -23,7 +23,15 @@ public class JarActor extends UserDataInterface {
     public JarActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight) {
         super(new Texture("gfx/test01.png"));
 //        super();
-        Pixmap pixmap = new Pixmap((int) aWidth, (int) aHeight, Pixmap.Format.RGB888);
+        int px=1;
+        int py=1;
+        while(px<aWidth){
+            px*=2;
+        }
+        while(py<aWidth){
+            py*=2;
+        }
+        Pixmap pixmap = new Pixmap((int) px, (int) py, Pixmap.Format.RGB888);
         pixmap.setColor(1, 0, 1, 1f);
         pixmap.fill();
 //        pixmap.setColor(1, 0, 0, 1f);
