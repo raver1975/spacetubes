@@ -23,15 +23,17 @@ import java.util.UUID;
 public class UserDataInterface extends Image {
     public static final float circRadius = 6f;
     public static final int segments = 16;
+    public static final EarClippingTriangulator triangulator = new EarClippingTriangulator();
 
     public DestructionData destr = null;
     public Body body;
     public World world;
     public BodyDef tempBodyDef;
+    public Array<FixtureDef> tempFixtureDefs = new Array<>();
     public Vector2 center = new Vector2();
     public Vector2 scale = new Vector2(1, 1);
     public Array<float[]> verts = new Array<>();
-    String uuid = UUID.randomUUID().toString();
+//    String uuid = UUID.randomUUID().toString();
 
     public Vector2 getCenter() {
         return center;
@@ -106,12 +108,15 @@ public class UserDataInterface extends Image {
 
     public void collide(UserDataInterface bomb, Vector2[] points) {
         tempBodyDef = Box2DUtils.createDef(body);
+        for (Fixture f : body.getFixtureList()) {
+            tempFixtureDefs.add(Box2DUtils.createDef(f));
+        }
         Array<float[]> totalRS = new Array<>();
         bomb.body.applyForceToCenter(new Vector2(0, 40000), true);
 
-        Array<PolygonBox2DShape> shapes =new Array<>();
+        Array<PolygonBox2DShape> shapes = new Array<>();
         for (Vector2 vv : points) {
-            Vector2 v = new Vector2(vv.x - this.body.getPosition().x - circRadius / 2f, vv.y - this.body.getPosition().y - circRadius / 2f);
+            Vector2 v = new Vector2(vv.x - this.body.getPosition().x, vv.y - this.body.getPosition().y );
             v.rotateRad(-this.body.getAngle());
             float[] circVerts = CollisionGeometry.approxCircle(v.x, v.y, circRadius, segments);
             ChainShape shape = new ChainShape();
@@ -128,20 +133,20 @@ public class UserDataInterface extends Image {
             } catch (Exception e) {
                 polyClip = new PolygonBox2DShape((ChainShape) fixtureList.get(i).getShape());
             }
-            Array<PolygonBox2DShape> rstot=new Array<>();
+            Array<PolygonBox2DShape> rstot = new Array<>();
             rstot.add(polyClip);
-            for (PolygonBox2DShape po:shapes){
-                for(PolygonBox2DShape p2:rstot){
+            for (PolygonBox2DShape po : shapes) {
+                for (PolygonBox2DShape p2 : rstot) {
                     Array<PolygonBox2DShape> rs = p2.differenceCS(po);
-                    rstot.removeValue(p2,true);
+                    rstot.removeValue(p2, true);
                     rstot.addAll(rs);
                 }
 
             }
             for (int y = 0; y < rstot.size; y++) {
-                for (int e=0;e<shapes.size;e++) {
-                    rstot.get(y).circleContact(points[e].cpy().sub(this.body.getPosition()), circRadius);
-                }
+//                for (int e = 0; e < shapes.size; e++) {
+//                    rstot.get(y).circleContact(points[e].cpy().sub(this.body.getPosition()), circRadius);
+//                }
                 totalRS.add(rstot.get(y).vertices());
             }
         }
@@ -191,7 +196,7 @@ public class UserDataInterface extends Image {
             }
             f1[u++] = f1[0];
             f1[u++] = f1[1];
-            EarClippingTriangulator triangulator = new EarClippingTriangulator();
+
             ShortArray triangleIndices = triangulator.computeTriangles(f1);
             PolygonRegion pR = new PolygonRegion(((TextureRegionDrawable) this.getDrawable()).getRegion(), f1, triangleIndices.toArray());
             pR.getRegion().getTexture().setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
@@ -215,27 +220,30 @@ public class UserDataInterface extends Image {
 //        new FireEmitter(world);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UserDataInterface)) return false;
-        UserDataInterface that = (UserDataInterface) o;
-        return uuid.equals(that.uuid);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(uuid);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (!(o instanceof UserDataInterface)) return false;
+//        UserDataInterface that = (UserDataInterface) o;
+//        return uuid.equals(that.uuid);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(uuid);
+//    }
 
     void create() {
         this.tempBodyDef = Box2DUtils.createDef(body);
+        for (Fixture f : body.getFixtureList()) {
+            tempFixtureDefs.add(Box2DUtils.createDef(f));
+        }
         verts = getVerts();
         this.destr.mustDestroy = true;
     }
 
     protected void createGround() {
-
+        if (world == null) return;
         //Iterator<BodyDef> uditbd=polyVertsBodyDef.iterator();
         System.out.println("creating polyvert:" + getClass().toString());
 //            System.out.println(groundDef.toString());
@@ -243,18 +251,22 @@ public class UserDataInterface extends Image {
 //            groundDef.active = true;
         this.destr.mustDestroy = false;
         this.destr.destroyed = false;
-        body = world.createBody(tempBodyDef);
-        body.setUserData(this);
+        Body newbody = world.createBody(tempBodyDef);
+        newbody.setUserData(this);
 //            Array<Fixture> fixtures = new Array<>();
 //            ud.verts=ud.getVerts();
 //        verts=getVerts();
         for (int y = 0; y < verts.size; y++) {
-            System.out.println("verts size" + verts.get(y).length);
             if (verts.get(y).length >= 6) {
+
                 FixtureDef fixtureDef = new FixtureDef();
-                fixtureDef.density = 10f;//ud.body.getFixtureList().get(0).getDensity();
-                fixtureDef.friction = .50f;//ud.body.getFixtureList().get(0).getFriction();
-                fixtureDef.restitution = 1f;//ud.body.getFixtureList().get(0).getRestitution();
+                FixtureDef fixtureDef1 = tempFixtureDefs.get(y);
+                fixtureDef.density = fixtureDef1.density;//ud.body.getFixtureList().get(0).getDensity();
+                fixtureDef.friction = fixtureDef1.friction;//ud.body.getFixtureList().get(0).getFriction();
+                fixtureDef.restitution = fixtureDef1.restitution;//ud.body.getFixtureList().get(0).getRestitution();
+                fixtureDef.filter.categoryBits=1;
+                fixtureDef.filter.maskBits=-1;
+                fixtureDef.filter.groupIndex=0;
                 ChainShape shape = new ChainShape();
                 float[] f = verts.get(y);
                 Polygon p = new Polygon(f);
@@ -278,10 +290,14 @@ public class UserDataInterface extends Image {
                     if (flag) break;
                 }
                 shape.createLoop(f);
-                fixtureDef.shape = shape;
-                body.createFixture(fixtureDef);
+//                FixtureDef tt = tempFixtureDefs.get(y);
+                fixtureDef.shape=shape;
+                Fixture f1=newbody.createFixture(fixtureDef);
+
+
             }
         }
+        body = newbody;
 //            polyVerts.get(i).setFixtures(fixtures);
 
     }

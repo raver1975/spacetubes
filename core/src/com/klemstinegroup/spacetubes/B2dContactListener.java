@@ -34,10 +34,11 @@ public class B2dContactListener implements ContactListener {
         String classB = contact.getFixtureB().getBody().getUserData().getClass().getName();
 
         if (debug) {
-            String collis = classA + "\tcollide with:" + classB;
+            String collis = classA + "\t: " + classB;
             if (!debugSet.contains(collis)) {
                 debugSet.add(collis);
             }
+            System.out.println(collis);
         }
         clippingGround(contact);
         try {
@@ -88,9 +89,11 @@ public class B2dContactListener implements ContactListener {
         }
 
         if (ground == null || bomb == null) {
-//            System.out.println(ground+"\t"+bomb);
-//            System.out.println(((UserDataInterface) a1.getUserData()).getDestr().getType()+"\t"+((UserDataInterface) b1.getUserData()).getDestr().getType());
-//            System.out.println(a1.getUserData().getClass().toString()+"\t"+b1.getUserData().getClass().toString());
+            System.out.println("---------------------------------");
+            System.out.println(ground+"\t"+bomb);
+            System.out.println(((UserDataInterface) a1.getUserData()).getDestr().getType()+"\t"+((UserDataInterface) b1.getUserData()).getDestr().getType());
+            System.out.println(a1.getUserData().getClass().toString()+"\t"+b1.getUserData().getClass().toString());
+            System.out.println("-------------------------------------------------");
 //
             return;
         }

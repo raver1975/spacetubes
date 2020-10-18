@@ -9,18 +9,17 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.quailshillstudio.DestructionData;
 import space.earlygrey.shapedrawer.ShapeDrawer;
-
-import java.util.Iterator;
 
 public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     PolygonSpriteBatch batch;
@@ -92,8 +91,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         pl2.setIgnoreAttachedBody(true);
 
         PointLight pl3 = new PointLight(rayHandler, 512, new Color(1, 1, .2f, 1f), 150, 0f, 10f);
-        pl3.attachToBody(windowFrame.body, 0, 50);
-        pl3.setIgnoreAttachedBody(false);
+//        pl3.attachToBody(windowFrame.body, 0, 50);
+        pl3.setIgnoreAttachedBody(true);
 
 
         rayHandler.setShadows(true);
@@ -180,8 +179,10 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         debugRenderer.render(world, stage.getCamera().combined);
 
         Array<Body> bodies = new Array<>();
-        Array<UserDataInterface> createBody = new Array<>();
+
         world.getBodies(bodies);
+
+        Array<UserDataInterface> createBody = new Array<>();
         for (int i = 0; i < world.getBodyCount(); i++) {
             try {
                 UserDataInterface datai = ((UserDataInterface) bodies.get(i).getUserData());
@@ -198,9 +199,10 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
             }
 
         }
-for (UserDataInterface ud:createBody){
-    ud.createGround();
-}
+        for (UserDataInterface ud : createBody) {
+            ud.createGround();
+        }
+
 //        if (mustCreate)
 //            createGround();
 
@@ -228,8 +230,6 @@ for (UserDataInterface ud:createBody){
 //        polyVerts.clear();
 //
 //    }
-
-
 
 
     @Override

@@ -69,7 +69,7 @@ public class GroundBoxActor extends UserDataInterface {
         groundBox.setAsBox(width, height);
 
         FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.isSensor = true;
+//        fixtureDef.isSensor = true;
         fixtureDef.shape = groundBox;
         body.createFixture(fixtureDef);
         this.setOrigin(width/2f , height/2f );

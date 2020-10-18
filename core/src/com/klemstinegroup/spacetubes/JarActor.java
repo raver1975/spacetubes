@@ -3,7 +3,6 @@ package com.klemstinegroup.spacetubes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -35,15 +34,15 @@ public class JarActor extends UserDataInterface {
         bd.type = BodyDef.BodyType.DynamicBody;
         bd.position.x = this.getX();
         bd.position.y = this.getY();
-        float scale = this.getWidth() ;
+        float scale = this.getWidth();
         body = world.createBody(bd);
-body.setUserData(this);
+        body.setUserData(this);
 
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
         fd.density = 10f;
-        fd.friction = 0f;
-        fd.restitution = 0f;
+        fd.friction = 1f;
+        fd.restitution = 1f;
 
         // 3. Create a Body, as usual.
 
@@ -53,7 +52,7 @@ body.setUserData(this);
         System.out.println("loadr x,y:" + v_offset);
         this.setOrigin(v_offset.x, v_offset.y);
 //        this.setCenter(this.getWidth()/2f,this.getHeight()/2f);
-        this.setCenter(0,0);
+        this.setCenter(0, 0);
         body.setUserData(this);
 //        createVertex();
         create();

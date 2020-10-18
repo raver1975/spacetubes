@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.graphics.ParticleEmitterBox2D;
@@ -55,10 +56,20 @@ public class BallActor extends UserDataInterface {
 
         body = world.createBody(bd);
         body.setUserData(this);
-        ChainShape circle = new ChainShape();
-        float[] circVerts = CollisionGeometry.approxCircle(0, 0, getWidth() / 2f, segments);
+        PolygonShape circle = new PolygonShape();
+
+        float[] circVerts = CollisionGeometry.approxCircle(0, 0, getWidth() / 2f, 8);
+//        Polygon p=new Polygon(circVerts);
         circle.setRadius(getWidth() / 2f);
-        circle.createLoop(circVerts);
+//        float[] c1=new float[circVerts.length+2];
+//        int c=0;
+//        for (float f:circVerts){
+//            c1[c]=circVerts[c++];
+//        }
+//        c1[c++]=c1[0];
+//        c1[c++]=c1[1];
+//        circVerts=p.getTransformedVertices();
+        circle.set(circVerts);
         exploding = false;
 
 
@@ -69,8 +80,11 @@ public class BallActor extends UserDataInterface {
         fd.restitution = 1f;
         fd.shape = circle;
 
-        Fixture fixture = body.createFixture(fd);
 
+        Fixture fixture = body.createFixture(fd);
+        System.out.println("MMM:"+fixture.getFilterData().groupIndex);
+        System.out.println("MMM:"+fixture.getFilterData().maskBits);
+        System.out.println("MMM:"+fixture.getFilterData().categoryBits);
         this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
 //        circle.dispose();
         Vector2 v = body.getPosition();

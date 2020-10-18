@@ -27,7 +27,7 @@ public class GearActor extends UserDataInterface {
         pixmap.fillCircle((int)aWidth/2,(int)aHeight/2,(int)Math.max(aWidth/2,aHeight/2));
 //        setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(pixmap))));
 //        setTextureRegion(pixmap);
-        destr = new DestructionData(DestructionData.BALL);
+        destr = new DestructionData(DestructionData.GROUND);
         this.setSize(aWidth, aHeight);
         this.setPosition(pos_x, pos_y);
 
@@ -52,7 +52,9 @@ public class GearActor extends UserDataInterface {
 
         float scale = this.getWidth();
         loader.attachFixture(body, "gear", fd, scale);
-
+        System.out.println("ddd:"+body.getFixtureList().get(0).getFilterData().groupIndex);
+        System.out.println("ddd:"+body.getFixtureList().get(0).getFilterData().maskBits);
+        System.out.println("ddd:"+body.getFixtureList().get(0).getFilterData().categoryBits);
         Vector2 v=loader.getOrigin("gear",scale);
         this.setOrigin(v.x,v.y);
         setCenter(v.x,v.y);
