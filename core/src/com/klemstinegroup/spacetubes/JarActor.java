@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -22,26 +21,13 @@ public class JarActor extends UserDataInterface {
 
     public JarActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight) {
         super(new Texture("gfx/test01.png"));
-//        super();
-        int px=1;
-        int py=1;
-        while(px<aWidth){
-            px*=2;
-        }
-        while(py<aWidth){
-            py*=2;
-        }
-        Pixmap pixmap = new Pixmap((int) px, (int) py, Pixmap.Format.RGB888);
-        pixmap.setColor(1, 0, 1, 1f);
+        Pixmap pixmap = new Pixmap((int) 1, (int) 1, Pixmap.Format.RGB888);
+        pixmap.setColor(0, 1, 1, 1f);
         pixmap.fill();
-//        pixmap.setColor(1, 0, 0, 1f);
-//        pixmap.fillCircle((int)aWidth/2,(int)aHeight/2,(int)Math.min(aWidth/2,aHeight/2));
-//        setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(pixmap))));
-        tr = new TextureRegion(new Texture(pixmap));
-        userData = new DestructionData(DestructionData.BOMB);
+//        setTextureRegion(pixmap);
+        destr = new DestructionData(DestructionData.BOMB);
         this.setSize(aWidth, aHeight);
         this.setPosition(pos_x, pos_y);
-
         world = aWorld;
         BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("test.json"));
 
@@ -49,9 +35,9 @@ public class JarActor extends UserDataInterface {
         bd.type = BodyDef.BodyType.DynamicBody;
         bd.position.x = this.getX();
         bd.position.y = this.getY();
-        float scale = (this.getWidth() + this.getHeight()) / 2;
+        float scale = this.getWidth() ;
         body = world.createBody(bd);
-
+body.setUserData(this);
 
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
@@ -66,8 +52,11 @@ public class JarActor extends UserDataInterface {
         v_offset = loader.getOrigin("test01", scale);
         System.out.println("loadr x,y:" + v_offset);
         this.setOrigin(v_offset.x, v_offset.y);
+//        this.setCenter(this.getWidth()/2f,this.getHeight()/2f);
+        this.setCenter(0,0);
         body.setUserData(this);
-        createVertex();
+//        createVertex();
+        create();
     }
 
 

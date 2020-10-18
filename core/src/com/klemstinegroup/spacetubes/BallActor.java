@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.graphics.ParticleEmitterBox2D;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
+import com.quailshillstudio.CollisionGeometry;
 import com.quailshillstudio.DestructionData;
 
 /**
@@ -45,7 +46,7 @@ public class BallActor extends UserDataInterface {
 //        setDrawable(null);
         this.setSize(4f, 4f);
         this.setPosition(pos_x, pos_y);
-        userData = new DestructionData(DestructionData.BOMB);
+        destr = new DestructionData(DestructionData.BOMB);
         world = aWorld;
         BodyDef bd = new BodyDef();
         bd.position.set(this.getX(), this.getY());
@@ -53,8 +54,11 @@ public class BallActor extends UserDataInterface {
 
 
         body = world.createBody(bd);
-        CircleShape circle = new CircleShape();
-        circle.setRadius(this.getWidth() / 2);
+        body.setUserData(this);
+        ChainShape circle = new ChainShape();
+        float[] circVerts = CollisionGeometry.approxCircle(0, 0, getWidth() / 2f, segments);
+        circle.setRadius(getWidth() / 2f);
+        circle.createLoop(circVerts);
         exploding = false;
 
 
@@ -66,16 +70,15 @@ public class BallActor extends UserDataInterface {
         fd.shape = circle;
 
         Fixture fixture = body.createFixture(fd);
-        body.setUserData(this);
 
         this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
-        circle.dispose();
+//        circle.dispose();
         Vector2 v = body.getPosition();
-        pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), 5f, v.x, v.y);
+        pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), 8f, v.x, v.y);
         pl2.attachToBody(body);
         pl2.setIgnoreAttachedBody(true);
 
-
+        create();
     }
 
     @Override
@@ -95,12 +98,12 @@ public class BallActor extends UserDataInterface {
         Vector2 v = body.getPosition();
 
         if (exploding) {
-            body.applyForceToCenter(body.getLinearVelocity().cpy().scl(.05f + MathUtils.random(.01f) - .005f, .05f + MathUtils.random(.01f) - .005f).scl(explosionScale/6f), true);
+            body.applyForceToCenter(body.getLinearVelocity().cpy().scl(.05f + MathUtils.random(.01f) - .005f, .05f + MathUtils.random(.01f) - .005f).scl(explosionScale / 6f), true);
 //            if (MathUtils.random() > .8f) {
             BallGenerator.getInstance().explode(this);
 //            }
             for (ParticleEffect explosionEffect : explosionEffect) {
-                FireEmitter.setAngle(explosionEffect, body.getAngle() * MathUtils.radiansToDegrees + 180*(explosionScale>0?1:0));
+                FireEmitter.setAngle(explosionEffect, body.getAngle() * MathUtils.radiansToDegrees + 180 * (explosionScale > 0 ? 1 : 0));
                 explosionEffect.setPosition(v.x, v.y);
                 explosionEffect.setPosition(this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2);
 //                explosionEffect.scaleEffect(0.02f);
@@ -173,15 +176,15 @@ public class BallActor extends UserDataInterface {
             explosionEffect.scaleEffect(explosionScale + MathUtils.random(.01f));
             explosionScale -= .002f;
             ParticleEmitter pe = explosionEffect.getEmitters().get(explosionEffect.getEmitters().size - 1);
-            FloatArray fa=new FloatArray();
-            int n=pe.getTint().getTimeline().length;
-            for (int i=0;i<n;i++){
-                fa.addAll(r+MathUtils.random(-.4f,.4f),g+MathUtils.random(-.4f,.4f),b+MathUtils.random(-.4f,.4f));
+            FloatArray fa = new FloatArray();
+            int n = pe.getTint().getTimeline().length;
+            for (int i = 0; i < n; i++) {
+                fa.addAll(r + MathUtils.random(-.4f, .4f), g + MathUtils.random(-.4f, .4f), b + MathUtils.random(-.4f, .4f));
             }
             pe.getTint().setColors(fa.toArray());
             explosionEffect.start();
             this.explosionEffect.add(explosionEffect);
-            pl2.setDistance(lightShrinkDist-=.1f);
+            pl2.setDistance(lightShrinkDist -= .1f);
 
             pl2.setColor(r, g, b, 1);
 

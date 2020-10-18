@@ -3,14 +3,13 @@ package com.klemstinegroup.spacetubes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.quailshillstudio.DestructionData;
+import net.dermetfan.gdx.physics.box2d.Box2DUtils;
 
 /**
  * Created by julienvillegas on 06/12/2017.
@@ -27,8 +26,8 @@ public class GearActor extends UserDataInterface {
         pixmap.setColor(1, 1, 0, 1f);
         pixmap.fillCircle((int)aWidth/2,(int)aHeight/2,(int)Math.max(aWidth/2,aHeight/2));
 //        setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(pixmap))));
-//        tr = new TextureRegion(new Texture(pixmap));
-        userData = new DestructionData(DestructionData.BOMB);
+//        setTextureRegion(pixmap);
+        destr = new DestructionData(DestructionData.BALL);
         this.setSize(aWidth, aHeight);
         this.setPosition(pos_x, pos_y);
 
@@ -36,11 +35,11 @@ public class GearActor extends UserDataInterface {
         BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("box2d_scene.json"));
 
         BodyDef bd = new BodyDef();
-        bd.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         bd.type = BodyDef.BodyType.KinematicBody;
         bd.position.x = this.getX();
         bd.position.y = this.getY();
         body=world.createBody(bd);
+        body.setUserData(this);
 
 
         // 2. Create a FixtureDef, as usual.
@@ -53,12 +52,16 @@ public class GearActor extends UserDataInterface {
 
         float scale = this.getWidth();
         loader.attachFixture(body, "gear", fd, scale);
-        createVertex();
-        this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
-        body.setAngularVelocity(clockwise);
-        body.setUserData(this);
 
+        Vector2 v=loader.getOrigin("gear",scale);
+        this.setOrigin(v.x,v.y);
+        setCenter(v.x,v.y);
+        body.setAngularVelocity(clockwise);
+
+        create();
+//        createVertex();
     }
+
 
 
 

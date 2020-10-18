@@ -66,11 +66,11 @@ task dist(dependsOn: [clean, compileGwt]) {
         }
         file("../docs").deleteDir()
         file("../docs").mkdirs()
+        delete "build/dist/WEB_INF"
         copy {
             from "build/dist"
             into "../docs"
         }
-        delete "../docs/WEB-INF"
     }
 }
 

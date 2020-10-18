@@ -15,23 +15,25 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.quailshillstudio.DestructionData;
-import net.dermetfan.gdx.physics.box2d.Box2DUtils;
 import space.earlygrey.shapedrawer.ShapeDrawer;
+
+import java.util.Iterator;
 
 public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     PolygonSpriteBatch batch;
     private World world;
     private Stage stage;
     private Box2DDebugRenderer debugRenderer;
-    public Array<UserDataInterface> polyVerts = new Array<>();
+
+    public ObjectSet<UserDataInterface> polyVerts = new ObjectSet<>();
+//    public ObjectSet<BodyDef> polyVertsBodyDef = new ObjectSet<>();
 
     private RayHandler rayHandler;
     private Texture whiteTexture;
     private ShapeDrawer drawer;
-    boolean mustCreate;
-    UserDataInterface ud;
     private GroundBoxActor windowFrame;
 
     @Override
@@ -66,20 +68,17 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //debugRenderer.setDrawVelocities(true);
 //debugRenderer.setDrawContacts(true);
 
-//        GearActor gearActor1 = new GearActor(world, -20, -15.0f, 23.5f, 23.5f, false);
-        GearActor gearActor2 = new GearActor(world, -50, 20.0f, 40.5f, 40.5f, -1.6f);
-//        GearActor gearActor3 = new GearActor(world, 20, -15.00f, 23.5f, 23.5f, false);
-        GearActor gearActor4 = new GearActor(world, 50, 20.00f, 40.5f, 40.5f, 1.6f);
-        JarActor groundActor = new JarActor(world, 0f, 120.0f, 20.35f, 34.5f);
-//        stage.addActor(gearActor1);
+        GearActor gearActor2 = new GearActor(world, -50, 20.0f, 40.5f, 40.5f, 1.6f);
+        GearActor gearActor4 = new GearActor(world, 50, 20.00f, 40.5f, 40.5f, -1.6f);
+        JarActor jarActor = new JarActor(world, 0f, 40.0f, 34.5f, 34.5f);
         stage.addActor(gearActor2);
         stage.addActor(gearActor4);
-        stage.addActor(groundActor);
+        stage.addActor(jarActor);
 
         windowFrame = new GroundBoxActor(world, -0, -50, 80, 20);
         stage.addActor(windowFrame);
 
-        rayHandler = new RayHandler(world,2048,2048);
+        rayHandler = new RayHandler(world, 2048, 2048);
         rayHandler.setAmbientLight(0.4f, 0.2f, 0.2f, .5f);
         rayHandler.setBlurNum(3);
         rayHandler.setCulling(false);
@@ -142,18 +141,23 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         mustCreate = true;*/
         //        this.mustCreate = false;
 
-        this.ud = windowFrame;
+//        this.ud = windowFrame;
 
 //        windowFrame.verts = totalRS;
 //        UserDataInterface ud1=(UserDataInterface)ground.getUserData();
-        polyVerts.add(ud);
+//        polyVerts.add(windowFrame);
+//        windowFrame.tempBodyDef = Box2DUtils.createDef(windowFrame.body);
+//        polyVerts.add(jarActor);
+//        jarActor.tempBodyDef = Box2DUtils.createDef(jarActor.body);
+//        polyVerts.add(gearActor2);
+//        polyVerts.add(gearActor4);
 //        ud.verts = totalRS;
 //        switchGround(totalRS, groundActor);
 
 //        } catch (
 //                Exception e) {
 //        }
-        mustCreate = false;
+        stage.draw();
     }
 
     @Override
@@ -164,10 +168,6 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         stage.act();
-//        debugRenderer.render(world, stage.getCamera().combined);
-        stage.draw();
-
-
 
 
         //debugRenderer.render(world, stage.getCamera().combined);
@@ -176,28 +176,33 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
         rayHandler.setCombinedMatrix(stage.getCamera().combined, 0, 0, 1, 1);
         rayHandler.updateAndRender();
+        stage.draw();
+        debugRenderer.render(world, stage.getCamera().combined);
 
-
+        Array<Body> bodies = new Array<>();
+        Array<UserDataInterface> createBody = new Array<>();
+        world.getBodies(bodies);
         for (int i = 0; i < world.getBodyCount(); i++) {
-            Array<Body> bodies = new Array<>();
-            world.getBodies(bodies);
             try {
                 UserDataInterface datai = ((UserDataInterface) bodies.get(i).getUserData());
-                DestructionData data = datai.getUserData();
+                DestructionData data = datai.getDestr();
                 if (data != null && data.getType() == DestructionData.GROUND) {
-                    if ((data.mustDestroy || mustCreate) && !data.destroyed) {
+                    if ((data.mustDestroy) && !data.destroyed) {
                         world.destroyBody(bodies.get(i));
-                        bodies.removeIndex(i);
+                        createBody.add(datai);
+//                        bodies.removeIndex(i);
                     }
                 }
             } catch (Exception e) {
-//                e.printStackTrace();
+                e.printStackTrace();
             }
 
         }
-
-        if (mustCreate)
-            createGround();
+for (UserDataInterface ud:createBody){
+    ud.createGround();
+}
+//        if (mustCreate)
+//            createGround();
 
     }
 
@@ -224,100 +229,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //
 //    }
 
-    protected void createGround() {
 
-//        BodyDef groundDef = new BodyDef();
-        BodyDef groundDef = Box2DUtils.createDef(ud.body);
-        groundDef.type = ud.body.getType();
-//        groundDef.type= BodyDef.BodyType.DynamicBody;
-        groundDef.active = true;
-//        groundDef.position.set(pos.cpy());
-//        groundDef.position.set(ud.body.getPosition().cpy());
-//        groundDef.angle=ud.body.getAngle();
-//        Body tempBody=ud.body;
-        Body nground = world.createBody(groundDef);
-//        Body nground =ud.body;
-        ud.body = nground;
-//        ud.body.setTransform(tempBody.getPosition(),tempBody.getAngle());
-//        nground.getFixtureList().clear();
-        nground.setUserData(ud);
-//        System.out.println(polyVerts.size);
-        for (int i = 0; i < polyVerts.size; i++) {
-//            Body nground = ud.getBody();
-//            nground.setTransform(ud.getX(),ud.getY(),nground.getAngle());
-//            nground.getFixtureList().clear();
-            Array<Fixture> fixtures = new Array<>();
-            for (int y = 0; y < this.polyVerts.get(i).getVerts().size; y++) {
-                if (this.polyVerts.get(i).getVerts().get(y).length >= 6) {
-                    FixtureDef fixtureDef = new FixtureDef();
-                    fixtureDef.density = 10f;//ud.body.getFixtureList().get(0).getDensity();
-                    fixtureDef.friction = .50f;//ud.body.getFixtureList().get(0).getFriction();
-                    fixtureDef.restitution = 1f;//ud.body.getFixtureList().get(0).getRestitution();
-
-//                    float[] f = ;
-//                if (f.length >= 4) {
-//                FloatArray a = new FloatArray();
-//                a.addAll(this.polyVerts.get(i).getVerts().get(y));
-//                if (a.size>0) {
-//                    while (a.size < 9) {
-//                        a.add(a.get(0) + .1f);
-//                        a.add(a.get(1) + .1f);
-//                        a.add(a.pop());
-//                        a.add(a.pop());
-//                    }
-                    ChainShape shape = new ChainShape();
-//                if (f.length >= 6) {
-                    float f[] = this.polyVerts.get(i).getVerts().get(y);
-                    Polygon p = new Polygon(f);
-//                    p.setPosition(ud.body.getPosition().x,ud.body.getPosition().y);
-//                    p.setRotation(ud.body.getAngle());
-                    f = p.getTransformedVertices();
-                    int hh = 0;
-                    while (true) {
-                        boolean flag = true;
-                        for (hh = 0; hh < f.length - 3; hh += 2) {
-                            while (b2SquaredDistance(f[hh], f[hh + 1], f[hh + 2], f[hh + 3]) < (0.000025f)) {
-                                f[hh + 2] += .00001d;
-                                f[hh + 3] += .00001d;
-                                flag = false;
-                            }
-                        }
-
-                        while (b2SquaredDistance(f[hh], f[hh + 1], f[0], f[1]) < (0.000025f)) {
-
-                            f[0] += .00001d;
-                            f[1] += .00001d;
-                            flag = false;
-                        }
-                        if (flag) break;
-                    }
-                    shape.createLoop(f);
-//                    shape.setNextVertex(this.polyVerts.get(i).getVerts().get(y)[0],this.polyVerts.get(i).getVerts().get(y)[1]);
-//                    shape.setPrevVertex(this.polyVerts.get(i).getVerts().get(y)[this.polyVerts.get(i).getVerts().get(y).length-2],this.polyVerts.get(i).getVerts().get(y)[this.polyVerts.get(i).getVerts().get(y).length-2]);
-
-                    fixtureDef.shape = shape;
-                    fixtures.add(nground.createFixture(fixtureDef));
-//                } else if (f.length >= 4) {
-//                    shape.createChain(f);
-//                    fixtureDef.shape = shape;
-//                    fixtures.add(nground.createFixture(fixtureDef));
-//                }
-//                nground.getFixtureList().add(fixtures.peek());
-//                }
-                }
-            }
-//            polyVerts.get(i).setFixtures(fixtures);
-
-        }
-        this.mustCreate = false;
-        polyVerts.clear();
-    }
-
-
-    private float b2SquaredDistance(float x1, float y1, float x2, float y2) {
-        Vector2 vec = new Vector2(x1, y1);
-        return vec.dst2(x2, y2);
-    }
 
 
     @Override
@@ -339,7 +251,6 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
         Vector3 worldCoordinates = stage.getCamera().unproject(new Vector3(screenX, screenY, 0));
-        System.out.println(screenX + "," + screenY + "\t" + worldCoordinates);
         stage.addActor(new BallActor(world, rayHandler, worldCoordinates.x, worldCoordinates.y));
         return true;
     }

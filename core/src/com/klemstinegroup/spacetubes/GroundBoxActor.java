@@ -4,12 +4,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.quailshillstudio.DestructionData;
-import sun.awt.WindowIDProvider;
 
 
 /**
@@ -18,18 +18,22 @@ import sun.awt.WindowIDProvider;
 
 public class GroundBoxActor extends UserDataInterface {
 
-    public GroundBoxActor( World aWorld, float x, float y, float width, float height) {
+
+
+    public GroundBoxActor(World aWorld, float x, float y, float width, float height) {
 //        super(new Texture("gfx/test02.png"));
-        super();
-        int px=1;
-        int py=1;
+        super(width,height);
+        int px=2;
+        int py=2;
         while(px<width){
             px*=2;
         }
-        while(py<width){
+        while(py<height){
             py*=2;
         }
-        Pixmap pixmap = new Pixmap((int) px, (int) py, Pixmap.Format.RGB888);
+//        px*=2;
+//        py*=2;
+        Pixmap pixmap = new Pixmap(px,  py, Pixmap.Format.RGB888);
         pixmap.setColor(1, 1, 1, .1f);
         pixmap.fill();
 //        pixmap.setColor(1, 0, 0, .1f);
@@ -42,34 +46,41 @@ public class GroundBoxActor extends UserDataInterface {
 //            colors[i] = Color.HSVToColor(new float[]{(float) (MIN_COLOR + (jump*i)), 1.0f, 1.0f});
 //            colors[i] = Color.HSVToColor(new float[]{(float) (MIN_COLOR + (jump*i)), 1.0f, 1.0f});
             Color colors =HSVtoRGB((float) ((jump * i)), 1.0f, 1.0f);
-            System.out.println(colors.toString());
             pixmap.setColor(colors);
-            pixmap.drawLine(i,0,i, (int) py);
+            pixmap.drawLine(i,0,i, py);
         }
-        pixmap.setColor(Color.BLACK);
-        pixmap.drawLine(0,0,0,(int)py);
-        pixmap.drawLine((int)px-1,0,(int)px-1,(int)py);
-//        setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(pixmap))));
-        tr = new TextureRegion(new Texture(pixmap));
-
+        pixmap.setColor(Color.WHITE);
+        pixmap.drawLine(0,0,0,py);
+        pixmap.drawLine(px-1,0,px-1,py);
+        scale=new Vector2(px/width,py/height);
+        setTextureRegion(pixmap);
+//tr.setRegionWidth((int) width);
+//tr.setRegionHeight((int) height);
         this.setSize(width,height);
         this.setPosition(x, y);
-        userData = new DestructionData(DestructionData.GROUND);
+        destr = new DestructionData(DestructionData.GROUND);
         world = aWorld;
         BodyDef bd = new BodyDef();
         bd.position.set(x, y);
         bd.type = BodyDef.BodyType.StaticBody;
         body=world.createBody(bd);
+        body.setUserData(this);
         PolygonShape groundBox = new PolygonShape();
         groundBox.setAsBox(width, height);
-        body.setUserData(this);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.isSensor = true;
         fixtureDef.shape = groundBox;
         body.createFixture(fixtureDef);
-        createVertex();
+        this.setOrigin(width/2f , height/2f );
+        this.setScale(2,2);
+        setCenter(px/2f,py/2f);
+        create();
+//        createVertex();
     }
+
+
+
     public static Color HSVtoRGB(float h, float s, float v)
     {
         // H is given on [0->6] or -1. S and V are given on [0->1].
