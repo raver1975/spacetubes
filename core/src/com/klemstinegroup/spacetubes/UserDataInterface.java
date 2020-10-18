@@ -50,7 +50,7 @@ public class UserDataInterface extends Image {
 
     public UserDataInterface(Texture texture) {
         super(texture);
-        setTextureRegion(texture);
+        setTextureRegion(extractPixmapFromTextureRegion(new TextureRegion(texture), texture.getWidth(), texture.getHeight()));
     }
 
     public Pixmap extractPixmapFromTextureRegion(TextureRegion textureRegion, float aWidth, float aHeight) {
@@ -93,16 +93,16 @@ public class UserDataInterface extends Image {
 
     }
 
-    public void setTextureRegion(Texture texture) {
-//        tr = texture;
-        setTextureRegion(new TextureRegion(texture));
-    }
+//    public void setTextureRegion(Texture texture) {
+////        tr = texture;
+//        setTextureRegion(new TextureRegion(texture));
+//    }
 
     public void setTextureRegion(Pixmap pixmap) {
 //        tr = new Texture(pixmap);
         TextureData texData = new PixmapTextureData(pixmap, Pixmap.Format.RGBA8888, false, false, true);
         Texture texture = new Texture(texData);
-        setTextureRegion(texture);
+        setTextureRegion(new TextureRegion(texture));
     }
 
 //    public Array<float[]> verts = new Array<>();
