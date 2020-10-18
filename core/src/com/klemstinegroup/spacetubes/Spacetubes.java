@@ -101,7 +101,13 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         pl2.setStaticLight(false);
         pl2.setSoft(true);
         pl3.setStaticLight(false);
-        pl3.setSoft(true);
+        pl3.setSoft(false);
+//        PointLight.setGlobalContactFilter((short)2,(short)-1,(short)-1);
+//        pl.setContactFilter((short)1,(short)1,(short)1);
+//        pl2.setContactFilter((short)1,(short)1,(short)1);
+        pl.setContactFilter((short)1,(short)1,(short)2);
+        pl2.setContactFilter((short)1,(short)1,(short)2);
+        pl3.setContactFilter((short)1,(short)1,(short)2);
         BallGenerator.getInstance().setup(stage, world, rayHandler);
 //        stage.addActor(new FireEmitter(world));
 
@@ -176,7 +182,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         rayHandler.setCombinedMatrix(stage.getCamera().combined, 0, 0, 1, 1);
         rayHandler.updateAndRender();
         stage.draw();
-        debugRenderer.render(world, stage.getCamera().combined);
+//        debugRenderer.render(world, stage.getCamera().combined);
 
         Array<Body> bodies = new Array<>();
 

@@ -52,8 +52,9 @@ public class GroundBoxActor extends UserDataInterface {
         pixmap.setColor(Color.WHITE);
         pixmap.drawLine(0,0,0,py);
         pixmap.drawLine(px-1,0,px-1,py);
-        scale=new Vector2(px/width,py/height);
+
         setTextureRegion(pixmap);
+        scale=new Vector2(px/width,py/height);
 //tr.setRegionWidth((int) width);
 //tr.setRegionHeight((int) height);
         this.setSize(width,height);
@@ -71,9 +72,10 @@ public class GroundBoxActor extends UserDataInterface {
         FixtureDef fixtureDef = new FixtureDef();
 //        fixtureDef.isSensor = true;
         fixtureDef.shape = groundBox;
+        fixtureDef.filter.groupIndex=1;
         body.createFixture(fixtureDef);
         this.setOrigin(width/2f , height/2f );
-        this.setScale(2,2);
+//        this.setScale(2,2);
         setCenter(px/2f,py/2f);
         create();
 //        createVertex();

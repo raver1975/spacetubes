@@ -3,12 +3,14 @@ package com.klemstinegroup.spacetubes;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.graphics.ParticleEmitterBox2D;
@@ -36,6 +38,7 @@ public class BallActor extends UserDataInterface {
     private int b;
     private float lightShrinkDist = 50;
 
+    float size = 10;
 
     public BallActor(World aWorld, RayHandler rayHandler, float pos_x, float pos_y) {
         super(texture);
@@ -44,8 +47,12 @@ public class BallActor extends UserDataInterface {
             g = MathUtils.randomBoolean() ? 1 : 0;
             b = MathUtils.randomBoolean() ? 1 : 0;
         }
-//        setDrawable(null);
-        this.setSize(4f, 4f);
+        this.setSize(size / 2, size / 2);
+        Pixmap.Format format;
+        Pixmap pixmap = new Pixmap((int) size, (int) size, Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.drawPixmap(extractPixmapFromTextureRegion(new TextureRegion(texture), size, size), 0, 0);
+        setTextureRegion(pixmap);
         this.setPosition(pos_x, pos_y);
         destr = new DestructionData(DestructionData.BOMB);
         world = aWorld;
@@ -85,11 +92,12 @@ public class BallActor extends UserDataInterface {
 //        this.setOrigin(getWidth()/2, getHeight()/2);
 //        circle.dispose();
         Vector2 v = body.getPosition();
-        pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), 5f, v.x, v.y);
+        pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), 4f, v.x, v.y);
+
         pl2.attachToBody(body);
         pl2.setIgnoreAttachedBody(true);
 
-        create();
+//        create();
     }
 
     @Override
@@ -186,6 +194,7 @@ public class BallActor extends UserDataInterface {
 
             explosionEffect.scaleEffect(explosionScale + MathUtils.random(.01f));
             explosionScale -= .002f;
+            setTextureRegion(new Pixmap(1, 1, Format.RGBA8888));
             ParticleEmitter pe = explosionEffect.getEmitters().get(explosionEffect.getEmitters().size - 1);
             FloatArray fa = new FloatArray();
             int n = pe.getTint().getTimeline().length;

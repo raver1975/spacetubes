@@ -84,8 +84,9 @@ public class UserDataInterface extends Image {
     public void setTextureRegion(TextureRegion tr) {
         this.tr=tr.getTexture();
         setDrawable(new TextureRegionDrawable(new TextureRegion(this.tr)));
-        setOrigin(getWidth(), getHeight());
-//                scale = new Vector2(tr.getRegionWidth()/getWidth(),tr.getRegionHeight()/ getHeight());
+//        setOrigin(tr.getRegionWidth(), tr.getRegionHeight());
+        setOrigin(getWidth()/2,getHeight()/2);
+                scale = new Vector2(getWidth()/tr.getRegionWidth(), getHeight()/tr.getRegionHeight());
         System.out.println("scale:\t"+scale.x+","+scale.y);
         center.x = tr.getRegionWidth() / 2f;
         center.y = tr.getRegionHeight() / 2f;
@@ -198,7 +199,7 @@ public class UserDataInterface extends Image {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (MathUtils.random() < .1f) super.draw(batch, parentAlpha);
+//        if (MathUtils.random() < .5f) super.draw(batch, parentAlpha);
         for (float[] f : verts) {
             float[] f1 = new float[f.length + 2];
             int u = 0;
