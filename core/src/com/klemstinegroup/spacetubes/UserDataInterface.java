@@ -34,6 +34,7 @@ public class UserDataInterface extends Image {
     public Array<float[]> verts = new Array<>();
     private Texture tr;
     private PixmapTextureData texData;
+    private Array<PolygonSprite> pS = new Array<PolygonSprite>();
 
 
 //    String uuid = UUID.randomUUID().toString();
@@ -175,6 +176,7 @@ public class UserDataInterface extends Image {
             }
         }
         verts = totalRS;
+        createPolgyonShapes();
 //        uuid = bomb.uuid;
         this.destr.mustDestroy = true;
     }
@@ -199,28 +201,12 @@ public class UserDataInterface extends Image {
     @Override
     public void draw(Batch batch, float parentAlpha) {
 //        if (MathUtils.random() < .5f) super.draw(batch, parentAlpha);
-        for (float[] f : verts) {
-            float[] f1 = new float[f.length + 2];
-            int u = 0;
-
-            for (u = 0; u < f.length; u += 2) {
-                f1[u] = (f[u] / (scale.x) + center.x);// + this.getWidth() / 2f;
-                f1[u + 1] = (f[u + 1] / (scale.y) + center.y);// + this.getHeight() / 2f;
-            }
-            f1[u++] = f1[0];
-            f1[u++] = f1[1];
-            ShortArray triangleIndices = triangulator.computeTriangles(f1);
-            PolygonRegion pR = new PolygonRegion(new TextureRegion(new Texture(texData)), f1, triangleIndices.toArray());
-            pR.getRegion().getTexture().setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
-            PolygonSprite pS = new PolygonSprite(pR);
-            pS.setScale(scale.x, scale.y);
-            pS.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
-            pS.setPosition(body.getPosition().x - center.x, body.getPosition().y - center.y);
-            pS.draw((PolygonSpriteBatch) batch);
+        for (PolygonSprite psa : pS) {
+            psa.setScale(scale.x, scale.y);
+            psa.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
+            psa.setPosition(body.getPosition().x - center.x, body.getPosition().y - center.y);
+            psa.draw((PolygonSpriteBatch) batch);
         }
-//        }
-
-
     }
 
     @Override
@@ -251,7 +237,27 @@ public class UserDataInterface extends Image {
             tempFixtureDefs.add(Box2DUtils.createDef(f));
         }
         verts = getVerts();
+
+createPolgyonShapes();
         this.destr.mustDestroy = true;
+    }
+
+    private void createPolgyonShapes(){
+        pS.clear();
+        for (float[] f : verts) {
+            float[] f1 = new float[f.length + 2];
+            int u = 0;
+            for (u = 0; u < f.length; u += 2) {
+                f1[u] = (f[u] / (scale.x) + center.x);// + this.getWidth() / 2f;
+                f1[u + 1] = (f[u + 1] / (scale.y) + center.y);// + this.getHeight() / 2f;
+            }
+            f1[u++] = f1[0];
+            f1[u++] = f1[1];
+            ShortArray triangleIndices = triangulator.computeTriangles(f1);
+            PolygonRegion pR = new PolygonRegion(new TextureRegion(new Texture(texData)), f1, triangleIndices.toArray());
+            pR.getRegion().getTexture().setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
+            pS.add(new PolygonSprite(pR));
+        }
     }
 
     protected void createGround() {
