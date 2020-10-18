@@ -1,7 +1,9 @@
 package com.klemstinegroup.spacetubes;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.MathUtils;
@@ -17,9 +19,6 @@ import com.quailshillstudio.DestructionData;
 import com.quailshillstudio.PolygonBox2DShape;
 import net.dermetfan.gdx.physics.box2d.Box2DUtils;
 
-import java.util.Objects;
-import java.util.UUID;
-
 public class UserDataInterface extends Image {
     public static final float circRadius = 6f;
     public static final int segments = 16;
@@ -33,6 +32,7 @@ public class UserDataInterface extends Image {
     public Vector2 center = new Vector2();
     public Vector2 scale = new Vector2(1, 1);
     public Array<float[]> verts = new Array<>();
+    private Texture tr;
 //    String uuid = UUID.randomUUID().toString();
 
     public Vector2 getCenter() {
@@ -52,6 +52,27 @@ public class UserDataInterface extends Image {
         setTextureRegion(texture);
     }
 
+    public Pixmap extractPixmapFromTextureRegion(TextureRegion textureRegion, float aWidth, float aHeight) {
+        TextureData textureData = textureRegion.getTexture().getTextureData();
+        if (!textureData.isPrepared()) {
+            textureData.prepare();
+        }
+        Pixmap pixmap = new Pixmap((int)aWidth,(int) aHeight, textureData.getFormat());
+        System.out.println("pixmap:"+aWidth+","+aHeight);
+        pixmap.drawPixmap(
+                textureData.consumePixmap(), // The other Pixmap
+                textureRegion.getRegionX(), // The source x-coordinate (top left corner)
+                textureRegion.getRegionY(), // The source y-coordinate (top left corner)
+                textureRegion.getRegionWidth(), // The width of the area from the other Pixmap in pixels
+                textureRegion.getRegionHeight(), // The height of the area from the other Pixmap in pixels
+                0, // The target x-coordinate (top left corner)
+                0, // The target y-coordinate (top left corner)
+                (int)aWidth,
+                (int)aHeight
+        );
+        return pixmap;
+    }
+
     public UserDataInterface(float w, float h) {
         super(new Texture(new Pixmap(MathUtils.ceilPositive(w), MathUtils.ceilPositive(h), Pixmap.Format.RGB888)));
     }
@@ -61,17 +82,24 @@ public class UserDataInterface extends Image {
     }
 
     public void setTextureRegion(TextureRegion tr) {
-        setDrawable(new TextureRegionDrawable(tr));
-        scale = new Vector2(tr.getRegionWidth() / getWidth(), tr.getRegionHeight() / getHeight());
+        this.tr=tr.getTexture();
+        setDrawable(new TextureRegionDrawable(new TextureRegion(this.tr)));
+        setOrigin(getWidth(), getHeight());
+//                scale = new Vector2(tr.getRegionWidth()/getWidth(),tr.getRegionHeight()/ getHeight());
+        System.out.println("scale:\t"+scale.x+","+scale.y);
         center.x = tr.getRegionWidth() / 2f;
         center.y = tr.getRegionHeight() / 2f;
+
+
     }
 
     public void setTextureRegion(Texture texture) {
+//        tr = texture;
         setTextureRegion(new TextureRegion(texture));
     }
 
     public void setTextureRegion(Pixmap pixmap) {
+//        tr = new Texture(pixmap);
         setTextureRegion(new Texture(pixmap));
     }
 
@@ -94,10 +122,6 @@ public class UserDataInterface extends Image {
         this.destr = destr;
     }
 
-    public UserDataInterface(DestructionData userData) {
-        this.destr = userData;
-    }
-
     public Body getBody() {
         return body;
     }
@@ -116,9 +140,9 @@ public class UserDataInterface extends Image {
 
         Array<PolygonBox2DShape> shapes = new Array<>();
         for (Vector2 vv : points) {
-            Vector2 v = new Vector2(vv.x - this.body.getPosition().x, vv.y - this.body.getPosition().y );
+            Vector2 v = new Vector2(vv.x - this.body.getPosition().x, vv.y - this.body.getPosition().y);
             v.rotateRad(-this.body.getAngle());
-            float[] circVerts = CollisionGeometry.approxCircle(v.x, v.y, circRadius, segments);
+            float[] circVerts = CollisionGeometry.approxCircle(v.x, v.y, circRadius / 2, segments);
             ChainShape shape = new ChainShape();
             shape.createLoop(circVerts);
             PolygonBox2DShape circlePoly = new PolygonBox2DShape(shape);
@@ -174,19 +198,8 @@ public class UserDataInterface extends Image {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-//        if (tr == null) {
-        //super.draw(batch, parentAlpha);
-//        if (true) return;
-//        }
-//        else
-//        if (verts != null) {
-//        if (verts==null||verts.size==0){
-//            verts=getVerts();
-
-//        }
-
+        if (MathUtils.random() < .1f) super.draw(batch, parentAlpha);
         for (float[] f : verts) {
-//                if (f!=null)sd.filledPolygon(f);
             float[] f1 = new float[f.length + 2];
             int u = 0;
 
@@ -196,9 +209,8 @@ public class UserDataInterface extends Image {
             }
             f1[u++] = f1[0];
             f1[u++] = f1[1];
-
             ShortArray triangleIndices = triangulator.computeTriangles(f1);
-            PolygonRegion pR = new PolygonRegion(((TextureRegionDrawable) this.getDrawable()).getRegion(), f1, triangleIndices.toArray());
+            PolygonRegion pR = new PolygonRegion(new TextureRegion(tr), f1, triangleIndices.toArray());
             pR.getRegion().getTexture().setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
             PolygonSprite pS = new PolygonSprite(pR);
             pS.setScale(scale.x, scale.y);
@@ -264,9 +276,9 @@ public class UserDataInterface extends Image {
                 fixtureDef.density = fixtureDef1.density;//ud.body.getFixtureList().get(0).getDensity();
                 fixtureDef.friction = fixtureDef1.friction;//ud.body.getFixtureList().get(0).getFriction();
                 fixtureDef.restitution = fixtureDef1.restitution;//ud.body.getFixtureList().get(0).getRestitution();
-                fixtureDef.filter.categoryBits=1;
-                fixtureDef.filter.maskBits=-1;
-                fixtureDef.filter.groupIndex=0;
+                fixtureDef.filter.categoryBits = 1;
+                fixtureDef.filter.maskBits = -1;
+                fixtureDef.filter.groupIndex = 0;
                 ChainShape shape = new ChainShape();
                 float[] f = verts.get(y);
                 Polygon p = new Polygon(f);
@@ -291,14 +303,15 @@ public class UserDataInterface extends Image {
                 }
                 shape.createLoop(f);
 //                FixtureDef tt = tempFixtureDefs.get(y);
-                fixtureDef.shape=shape;
-                Fixture f1=newbody.createFixture(fixtureDef);
+                fixtureDef.shape = shape;
+                Fixture f1 = newbody.createFixture(fixtureDef);
 
 
             }
         }
         body = newbody;
 //            polyVerts.get(i).setFixtures(fixtures);
+
 
     }
 

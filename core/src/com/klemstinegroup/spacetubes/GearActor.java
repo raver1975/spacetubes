@@ -1,6 +1,7 @@
 package com.klemstinegroup.spacetubes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -9,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.quailshillstudio.DestructionData;
-import net.dermetfan.gdx.physics.box2d.Box2DUtils;
 
 /**
  * Created by julienvillegas on 06/12/2017.
@@ -20,13 +20,18 @@ public class GearActor extends UserDataInterface {
     public GearActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight, float clockwise) {
         super(new Texture("gear.png"));
 //        super();
+//        setTextureRegion(new Texture("gear.png"));
         Pixmap pixmap = new Pixmap((int) aWidth, (int) aHeight, Pixmap.Format.RGB888);
-        pixmap.setColor(1, 0, 1, 1f);
-        pixmap.fill();
-        pixmap.setColor(1, 1, 0, 1f);
-        pixmap.fillCircle((int)aWidth/2,(int)aHeight/2,(int)Math.max(aWidth/2,aHeight/2));
-//        setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(pixmap))));
-//        setTextureRegion(pixmap);
+        final int MAX_COLOR = 6;
+        final int MIN_COLOR = 0;
+        double jump = (MAX_COLOR - MIN_COLOR) / (aWidth * 1.0);
+        for (int i = 0; i < aWidth; i++) {
+            Color colors = GroundBoxActor.HSVtoRGB((float) ((jump * i)), 1.0f, 1.0f);
+            pixmap.setColor(colors);
+            pixmap.drawLine(i, 0, i, (int) aHeight);
+        }
+        pixmap.drawPixmap(extractPixmapFromTextureRegion(new TextureRegion(new Texture("gear.png")), aWidth, aHeight),0,0);
+        this.setTextureRegion(pixmap);
         destr = new DestructionData(DestructionData.GROUND);
         this.setSize(aWidth, aHeight);
         this.setPosition(pos_x, pos_y);
@@ -38,7 +43,7 @@ public class GearActor extends UserDataInterface {
         bd.type = BodyDef.BodyType.KinematicBody;
         bd.position.x = this.getX();
         bd.position.y = this.getY();
-        body=world.createBody(bd);
+        body = world.createBody(bd);
         body.setUserData(this);
 
 
@@ -52,19 +57,20 @@ public class GearActor extends UserDataInterface {
 
         float scale = this.getWidth();
         loader.attachFixture(body, "gear", fd, scale);
-        System.out.println("ddd:"+body.getFixtureList().get(0).getFilterData().groupIndex);
-        System.out.println("ddd:"+body.getFixtureList().get(0).getFilterData().maskBits);
-        System.out.println("ddd:"+body.getFixtureList().get(0).getFilterData().categoryBits);
-        Vector2 v=loader.getOrigin("gear",scale);
-        this.setOrigin(v.x,v.y);
-        setCenter(v.x,v.y);
+        System.out.println("ddd:" + body.getFixtureList().get(0).getFilterData().groupIndex);
+        System.out.println("ddd:" + body.getFixtureList().get(0).getFilterData().maskBits);
+        System.out.println("ddd:" + body.getFixtureList().get(0).getFilterData().categoryBits);
+        Vector2 v = loader.getOrigin("gear", scale);
+//        setTextureRegion(pixmap);
+//        setTextureRegion(new Texture("gear.png"));
+//        this.setOrigin(v.x,v.y);
+//        setCenter(v.x,v.y);
+//        setDrawable(new TextureRegionDrawable(new Texture("gear.png")));
         body.setAngularVelocity(clockwise);
 
         create();
 //        createVertex();
     }
-
-
 
 
 //    @Override

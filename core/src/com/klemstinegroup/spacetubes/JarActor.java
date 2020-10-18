@@ -1,8 +1,10 @@
 package com.klemstinegroup.spacetubes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -20,10 +22,19 @@ public class JarActor extends UserDataInterface {
 
     public JarActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight) {
         super(new Texture("gfx/test01.png"));
-        Pixmap pixmap = new Pixmap((int) 1, (int) 1, Pixmap.Format.RGB888);
-        pixmap.setColor(0, 1, 1, 1f);
-        pixmap.fill();
-//        setTextureRegion(pixmap);
+//        this.setTextureRegion(extractPixmapFromTextureRegion(new TextureRegion(new Texture("gfx/test01.png")), aWidth, aHeight));
+        Pixmap pixmap = new Pixmap((int) aWidth, (int) aHeight, Pixmap.Format.RGB888);
+        final int MAX_COLOR = 6;
+        final int MIN_COLOR = 0;
+        double jump = (MAX_COLOR - MIN_COLOR) / (aWidth * 1.0);
+        for (int i = 0; i < aWidth; i++) {
+            Color colors = GroundBoxActor.HSVtoRGB((float) ((jump * i)), 1.0f, 1.0f);
+            pixmap.setColor(colors);
+            pixmap.drawLine(i, 0, i, (int) aHeight);
+        }
+        pixmap.drawPixmap(extractPixmapFromTextureRegion(new TextureRegion(new Texture("gfx/test01.png")), aWidth, aHeight),0,0);
+        setTextureRegion(pixmap);
+//        setTextureRegion(new Texture("gfx/test01.png"));
         destr = new DestructionData(DestructionData.BOMB);
         this.setSize(aWidth, aHeight);
         this.setPosition(pos_x, pos_y);
@@ -40,9 +51,9 @@ public class JarActor extends UserDataInterface {
 
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
-        fd.density = 10f;
+        fd.density = 1f;
         fd.friction = 1f;
-        fd.restitution = 1f;
+        fd.restitution = .1f;
 
         // 3. Create a Body, as usual.
 
@@ -50,9 +61,10 @@ public class JarActor extends UserDataInterface {
         loader.attachFixture(body, "test01", fd, scale);
         v_offset = loader.getOrigin("test01", scale);
         System.out.println("loadr x,y:" + v_offset);
-        this.setOrigin(v_offset.x, v_offset.y);
+//        this.setCenter(v_offset.x/2, v_offset.y/2);
 //        this.setCenter(this.getWidth()/2f,this.getHeight()/2f);
-        this.setCenter(0, 0);
+//        this.setCenter(0, 0);
+//        this.setCenter(this.getWidth() / 2, this.getHeight() / 2);
         body.setUserData(this);
 //        createVertex();
         create();

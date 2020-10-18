@@ -75,20 +75,17 @@ public class BallActor extends UserDataInterface {
 
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
-        fd.density = .001f;
+        fd.density = 2f;
         fd.friction = 0.5f;
         fd.restitution = 1f;
         fd.shape = circle;
 
 
         Fixture fixture = body.createFixture(fd);
-        System.out.println("MMM:"+fixture.getFilterData().groupIndex);
-        System.out.println("MMM:"+fixture.getFilterData().maskBits);
-        System.out.println("MMM:"+fixture.getFilterData().categoryBits);
-        this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
+//        this.setOrigin(getWidth()/2, getHeight()/2);
 //        circle.dispose();
         Vector2 v = body.getPosition();
-        pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), 8f, v.x, v.y);
+        pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), 5f, v.x, v.y);
         pl2.attachToBody(body);
         pl2.setIgnoreAttachedBody(true);
 

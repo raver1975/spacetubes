@@ -99,7 +99,19 @@ public class B2dContactListener implements ContactListener {
         }
         System.out.println("collision:" + ground.getClass().getName() + "\t" + bomb.getClass().getName());
 
-        ground.collide(bomb,contact.getWorldManifold().getPoints());
+        if (contact.getWorldManifold().getNumberOfContactPoints()==2){
+            Vector2 point1 = contact.getWorldManifold().getPoints()[0];
+            Vector2 point2 = contact.getWorldManifold().getPoints()[1];
+            int n=5;
+            Vector2[] t=new Vector2[n];
+            for (int i=0;i<n;i++){
+                t[i]=point1.lerp(point2,(float)i/(float)n).cpy();
+            }
+            ground.collide(bomb,t);
+        }
+        else{
+            ground.collide(bomb,contact.getWorldManifold().getPoints());
+        }
 
         spacetubes.polyVerts.add(ground);
 
