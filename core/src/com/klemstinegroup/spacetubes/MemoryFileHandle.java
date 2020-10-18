@@ -1,28 +1,14 @@
 package com.klemstinegroup.spacetubes;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.ByteArray;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+import java.io.*;
 
-/**
- * Managed file handle. Uses an instance of StorageManager to persist file data.
- */
-public class UnmanagedFileHandle extends FileHandle {
-
+public class MemoryFileHandle extends FileHandle {
     private final ByteArray byteArray = new ByteArray();
 
-    /**
-     * Storage manager persists FileHandle data.
-     */
-
-    public UnmanagedFileHandle() {
+    public MemoryFileHandle() {
         file = new File(".");
     }
 
@@ -72,12 +58,9 @@ public class UnmanagedFileHandle extends FileHandle {
     public Writer writer(boolean append, String charset) {
         try {
             return new OutputStreamWriter(write(append), charset);
-        } catch (UnsupportedEncodingException e) {
-            Gdx.app.error("UnmanagedFileHandle", e.getMessage());
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
-
-
 }

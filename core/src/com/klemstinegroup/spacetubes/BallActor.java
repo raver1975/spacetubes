@@ -93,7 +93,6 @@ public class BallActor extends UserDataInterface {
 //        circle.dispose();
         Vector2 v = body.getPosition();
         pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), 4f, v.x, v.y);
-
         pl2.attachToBody(body);
         pl2.setIgnoreAttachedBody(true);
 
@@ -205,7 +204,7 @@ public class BallActor extends UserDataInterface {
             explosionEffect.start();
             this.explosionEffect.add(explosionEffect);
             pl2.setDistance(lightShrinkDist -= .1f);
-
+            pl2.setContactFilter((short)1,(short)1,(short)2);
             pl2.setColor(r, g, b, 1);
 
 

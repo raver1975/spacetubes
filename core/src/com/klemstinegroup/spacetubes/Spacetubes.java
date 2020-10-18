@@ -67,9 +67,9 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //debugRenderer.setDrawVelocities(true);
 //debugRenderer.setDrawContacts(true);
 
-        GearActor gearActor2 = new GearActor(world, -50, 20.0f, 40.5f, 40.5f, 1.6f);
-        GearActor gearActor4 = new GearActor(world, 50, 20.00f, 40.5f, 40.5f, -1.6f);
-        JarActor jarActor = new JarActor(world, 0f, 40.0f, 34.5f, 34.5f);
+        GearActor gearActor2 = new GearActor(world, -50, 20.0f, 32f, 32f, 1.6f);
+        GearActor gearActor4 = new GearActor(world, 50, 20.00f, 32f, 32f, -1.6f);
+        JarActor jarActor = new JarActor(world, 0f, 40.0f, 32f, 32f);
         stage.addActor(gearActor2);
         stage.addActor(gearActor4);
         stage.addActor(jarActor);
@@ -101,7 +101,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         pl2.setStaticLight(false);
         pl2.setSoft(true);
         pl3.setStaticLight(false);
-        pl3.setSoft(false);
+        pl3.setSoft(true);
 //        PointLight.setGlobalContactFilter((short)2,(short)-1,(short)-1);
 //        pl.setContactFilter((short)1,(short)1,(short)1);
 //        pl2.setContactFilter((short)1,(short)1,(short)1);

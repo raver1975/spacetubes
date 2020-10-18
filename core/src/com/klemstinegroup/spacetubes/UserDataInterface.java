@@ -58,7 +58,6 @@ public class UserDataInterface extends Image {
             textureData.prepare();
         }
         Pixmap pixmap = new Pixmap((int)aWidth,(int) aHeight, textureData.getFormat());
-        System.out.println("pixmap:"+aWidth+","+aHeight);
         pixmap.drawPixmap(
                 textureData.consumePixmap(), // The other Pixmap
                 textureRegion.getRegionX(), // The source x-coordinate (top left corner)
@@ -87,7 +86,6 @@ public class UserDataInterface extends Image {
 //        setOrigin(tr.getRegionWidth(), tr.getRegionHeight());
         setOrigin(getWidth()/2,getHeight()/2);
                 scale = new Vector2(getWidth()/tr.getRegionWidth(), getHeight()/tr.getRegionHeight());
-        System.out.println("scale:\t"+scale.x+","+scale.y);
         center.x = tr.getRegionWidth() / 2f;
         center.y = tr.getRegionHeight() / 2f;
 

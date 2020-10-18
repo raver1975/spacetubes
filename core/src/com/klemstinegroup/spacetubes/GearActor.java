@@ -22,16 +22,17 @@ public class GearActor extends UserDataInterface {
 //        super();
 //        setTextureRegion(new Texture("gear.png"));
         this.setSize(aWidth, aHeight);
-        Pixmap pixmap = new Pixmap((int) aWidth*10, (int) aHeight*10, Pixmap.Format.RGB888);
+        int scale1=16;
+        Pixmap pixmap = new Pixmap((int) aWidth*scale1, (int) aHeight*scale1, Pixmap.Format.RGB888);
         final int MAX_COLOR = 6;
         final int MIN_COLOR = 0;
-        double jump = (MAX_COLOR - MIN_COLOR) / (aWidth * 10.0);
-        for (int i = 0; i < aWidth*10; i++) {
+        double jump = (MAX_COLOR - MIN_COLOR) / (aWidth * scale1);
+        for (int i = 0; i < aWidth*scale1; i++) {
             Color colors = GroundBoxActor.HSVtoRGB((float) ((jump * i)), 1.0f, 1.0f);
             pixmap.setColor(colors);
-            pixmap.drawLine(i, 0, i, (int) aHeight*10);
+            pixmap.drawLine(i, 0, i, (int) aHeight*scale1);
         }
-        pixmap.drawPixmap(extractPixmapFromTextureRegion(new TextureRegion(new Texture("gear.png")), aWidth*10, aHeight*10),0,0);
+        pixmap.drawPixmap(extractPixmapFromTextureRegion(new TextureRegion(new Texture("gear.png")), aWidth*scale1, aHeight*scale1),0,0);
         this.setTextureRegion(pixmap);
         destr = new DestructionData(DestructionData.GROUND);
 
@@ -58,9 +59,6 @@ fd.filter.groupIndex=1;
 
         float scale = this.getWidth();
         loader.attachFixture(body, "gear", fd, scale);
-        System.out.println("ddd:" + body.getFixtureList().get(0).getFilterData().groupIndex);
-        System.out.println("ddd:" + body.getFixtureList().get(0).getFilterData().maskBits);
-        System.out.println("ddd:" + body.getFixtureList().get(0).getFilterData().categoryBits);
         Vector2 v = loader.getOrigin("gear", scale);
 //        setTextureRegion(pixmap);
 //        setTextureRegion(new Texture("gear.png"));
