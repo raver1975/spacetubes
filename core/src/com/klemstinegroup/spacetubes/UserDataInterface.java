@@ -1,6 +1,5 @@
 package com.klemstinegroup.spacetubes;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
@@ -34,6 +33,9 @@ public class UserDataInterface extends Image {
     public Vector2 scale = new Vector2(1, 1);
     public Array<float[]> verts = new Array<>();
     private Texture tr;
+    private PixmapTextureData texData;
+
+
 //    String uuid = UUID.randomUUID().toString();
 
     public Vector2 getCenter() {
@@ -58,7 +60,7 @@ public class UserDataInterface extends Image {
         if (!textureData.isPrepared()) {
             textureData.prepare();
         }
-        Pixmap pixmap = new Pixmap((int)aWidth,(int) aHeight, textureData.getFormat());
+        Pixmap pixmap = new Pixmap((int) aWidth, (int) aHeight, textureData.getFormat());
         pixmap.drawPixmap(
                 textureData.consumePixmap(), // The other Pixmap
                 textureRegion.getRegionX(), // The source x-coordinate (top left corner)
@@ -67,8 +69,8 @@ public class UserDataInterface extends Image {
                 textureRegion.getRegionHeight(), // The height of the area from the other Pixmap in pixels
                 0, // The target x-coordinate (top left corner)
                 0, // The target y-coordinate (top left corner)
-                (int)aWidth,
-                (int)aHeight
+                (int) aWidth,
+                (int) aHeight
         );
         return pixmap;
     }
@@ -77,16 +79,12 @@ public class UserDataInterface extends Image {
         super(new Texture(new Pixmap(MathUtils.ceilPositive(w), MathUtils.ceilPositive(h), Pixmap.Format.RGB888)));
     }
 
-    public TextureRegion getTextureRegion() {
-        return ((TextureRegionDrawable) getDrawable()).getRegion();
-    }
-
     public void setTextureRegion(TextureRegion tr) {
-        this.tr=tr.getTexture();
+        this.tr = tr.getTexture();
         setDrawable(new TextureRegionDrawable(new TextureRegion(this.tr)));
 //        setOrigin(tr.getRegionWidth(), tr.getRegionHeight());
-        setOrigin(getWidth()/2,getHeight()/2);
-                scale = new Vector2(getWidth()/tr.getRegionWidth(), getHeight()/tr.getRegionHeight());
+        setOrigin(getWidth() / 2, getHeight() / 2);
+        scale = new Vector2(getWidth() / tr.getRegionWidth(), getHeight() / tr.getRegionHeight());
         center.x = tr.getRegionWidth() / 2f;
         center.y = tr.getRegionHeight() / 2f;
 
@@ -100,7 +98,7 @@ public class UserDataInterface extends Image {
 
     public void setTextureRegion(Pixmap pixmap) {
 //        tr = new Texture(pixmap);
-        TextureData texData = new PixmapTextureData(pixmap, Pixmap.Format.RGBA8888, false, false, true);
+        texData = new PixmapTextureData(pixmap, Pixmap.Format.RGBA8888, false, false, true);
         Texture texture = new Texture(texData);
         setTextureRegion(new TextureRegion(texture));
     }
@@ -212,7 +210,7 @@ public class UserDataInterface extends Image {
             f1[u++] = f1[0];
             f1[u++] = f1[1];
             ShortArray triangleIndices = triangulator.computeTriangles(f1);
-            PolygonRegion pR = new PolygonRegion(new TextureRegion(tr), f1, triangleIndices.toArray());
+            PolygonRegion pR = new PolygonRegion(new TextureRegion(new Texture(texData)), f1, triangleIndices.toArray());
             pR.getRegion().getTexture().setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
             PolygonSprite pS = new PolygonSprite(pR);
             pS.setScale(scale.x, scale.y);
