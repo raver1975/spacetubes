@@ -36,6 +36,7 @@ public class JarActor extends UserDataInterface {
         this.setSize(aWidth, aHeight);
 //        pixmap.drawPixmap(extractPixmapFromTextureRegion(new TextureRegion(new Texture("gfx/test01.png")), aWidth*scale, aHeight*scale),0,0);
         setTextureRegion(pixmap);
+
 //        setTextureRegion(new Texture("gfx/test01.png"));
         destr = new DestructionData(DestructionData.BOMB);
 

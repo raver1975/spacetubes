@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
@@ -99,7 +100,9 @@ public class UserDataInterface extends Image {
 
     public void setTextureRegion(Pixmap pixmap) {
 //        tr = new Texture(pixmap);
-        setTextureRegion(new Texture(pixmap));
+        TextureData texData = new PixmapTextureData(pixmap, Pixmap.Format.RGBA8888, false, false, true);
+        Texture texture = new Texture(texData);
+        setTextureRegion(texture);
     }
 
 //    public Array<float[]> verts = new Array<>();
