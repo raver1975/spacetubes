@@ -22,17 +22,17 @@ public class GearActor extends UserDataInterface {
 //        super();
 //        setTextureRegion(new Texture("gear.png"));
         this.setSize(aWidth, aHeight);
-        int scale1=16;
-        Pixmap pixmap = new Pixmap((int) aWidth*scale1, (int) aHeight*scale1, Pixmap.Format.RGB888);
+        int scale1 = 16;
+        Pixmap pixmap = new Pixmap((int) aWidth * scale1, (int) aHeight * scale1, Pixmap.Format.RGB888);
         final int MAX_COLOR = 6;
         final int MIN_COLOR = 0;
         double jump = (MAX_COLOR - MIN_COLOR) / (aWidth * scale1);
-        for (int i = 0; i < aWidth*scale1; i++) {
+        for (int i = 0; i < aWidth * scale1; i++) {
             Color colors = GroundBoxActor.HSVtoRGB((float) ((jump * i)), 1.0f, 1.0f);
             pixmap.setColor(colors);
-            pixmap.drawLine(i, 0, i, (int) aHeight*scale1);
+            pixmap.drawLine(i, 0, i, (int) aHeight * scale1);
         }
-        pixmap.drawPixmap(extractPixmapFromTextureRegion(new TextureRegion(new Texture("gear.png")), aWidth*scale1, aHeight*scale1),0,0);
+        pixmap.drawPixmap(extractPixmapFromTextureRegion(new TextureRegion(new Texture("gear.png")), aWidth * scale1, aHeight * scale1), 0, 0);
         this.setTextureRegion(pixmap);
         destr = new DestructionData(DestructionData.GROUND);
 
@@ -54,7 +54,7 @@ public class GearActor extends UserDataInterface {
         fd.density = 1;
         fd.friction = 0.1f;
         fd.restitution = 0f;
-fd.filter.groupIndex=1;
+        fd.filter.groupIndex = 1;
         // 3. Create a Body, as usual.
 
         float scale = this.getWidth();

@@ -200,7 +200,7 @@ public class UserDataInterface extends Image {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-//        if (MathUtils.random() < .5f) super.draw(batch, parentAlpha);
+        if (MathUtils.random() < .25f) super.draw(batch, parentAlpha);
 //        createPolgyonShapes();
         for (PolygonRegion psa : pS) {
 //            Gdx.app.log("debug:","Sc:"+scale);
@@ -208,7 +208,6 @@ public class UserDataInterface extends Image {
 //            psa.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
 //            psa.setPosition(body.getPosition().x - center.x, body.getPosition().y - center.y);
 //            ((PolygonSpriteBatch)batch).draw(psa,body.getPosition().x - center.x,body.getPosition().y - center.y);
-            TextureRegion r = psa.getRegion();
             float scx=texData.getWidth()/getWidth();
             float scy=texData.getHeight()/getHeight();
             scx=1f/scx;
@@ -251,6 +250,7 @@ public class UserDataInterface extends Image {
             float scy=texData.getHeight()/getHeight();
             scx=1f/scx;
             scy=1f/scy;
+            Gdx.app.log("debug","scale::"+scx+","+scy);
 //            float scx = 1f;
 //            float scy = 1f;
             for (u = 0; u < f.length; u += 2) {
@@ -261,7 +261,7 @@ public class UserDataInterface extends Image {
             f1[u++] = f1[1];
             ShortArray triangleIndices = triangulator.computeTriangles(f1);
             PolygonRegion pR = new PolygonRegion(new TextureRegion(new Texture(texData)), f1, triangleIndices.toArray());
-
+//this.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(texData))));
             pR.getRegion().getTexture().setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
             pS.add(pR);
         }

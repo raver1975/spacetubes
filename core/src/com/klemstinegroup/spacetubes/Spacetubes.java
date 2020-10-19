@@ -49,7 +49,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         pixmap.setColor(Color.WHITE);
         pixmap.drawPixel(0, 0);
         this.whiteTexture = new Texture(pixmap); //remember to dispose of later
-        pixmap.dispose();
+//        pixmap.dispose();
         TextureRegion region = new TextureRegion(whiteTexture, 0, 0, 1, 1);
         drawer = new ShapeDrawer(batch, region);
 
