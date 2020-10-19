@@ -118,7 +118,7 @@ public class BallActor extends UserDataInterface {
         if (exploding) {
             body.applyForceToCenter(body.getLinearVelocity().cpy().scl(.05f + MathUtils.random(.01f) - .005f, .05f + MathUtils.random(.01f) - .005f).scl(explosionScale / 6f), true);
 //            if (MathUtils.random() > .8f) {
-//            BallGenerator.getInstance().explode(this);
+            BallGenerator.getInstance().explode(this);
 //            }
             for (ParticleEffect explosionEffect : explosionEffect) {
                 FireEmitter.setAngle(explosionEffect, body.getAngle() * MathUtils.radiansToDegrees + 180 * (explosionScale > 0 ? 1 : 0));
@@ -193,7 +193,7 @@ public class BallActor extends UserDataInterface {
 
             explosionEffect.scaleEffect(explosionScale + MathUtils.random(.01f));
             explosionScale -= .002f;
-            setTextureRegion(new Pixmap(1, 1, Format.RGBA8888));
+//            setTextureRegion(new Pixmap(1, 1, Format.RGBA8888));
             ParticleEmitter pe = explosionEffect.getEmitters().get(explosionEffect.getEmitters().size - 1);
             FloatArray fa = new FloatArray();
             int n = pe.getTint().getTimeline().length;
