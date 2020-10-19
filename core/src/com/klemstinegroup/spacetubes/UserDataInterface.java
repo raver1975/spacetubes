@@ -130,6 +130,7 @@ public class UserDataInterface extends Image {
     }
 
     public void collide(UserDataInterface bomb, Vector2[] points) {
+//        if(true)return;
         tempBodyDef = Box2DUtils.createDef(body);
         for (Fixture f : body.getFixtureList()) {
             tempFixtureDefs.add(Box2DUtils.createDef(f));
@@ -200,7 +201,7 @@ public class UserDataInterface extends Image {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (MathUtils.random() < .25f) super.draw(batch, parentAlpha);
+//        if (MathUtils.random() < .25f) super.draw(batch, parentAlpha);
 //        createPolgyonShapes();
         for (PolygonRegion psa : pS) {
 //            Gdx.app.log("debug:","Sc:"+scale);

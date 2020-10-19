@@ -41,19 +41,18 @@ public class B2dContactListener implements ContactListener {
             }
             System.out.println(collis);
         }
+
         clippingGround(contact);
-        try {
-            BallActor ball = (BallActor) (contact.getFixtureA().getBody().getUserData());
-            BallGenerator.getInstance().explode(ball);
-//            ball.userData.type=UserData.BALL;
-        } catch (Exception e) {
-        }
-        try {
-            BallActor ball = (BallActor) (contact.getFixtureB().getBody().getUserData());
-            BallGenerator.getInstance().explode(ball);
-//            ball.userData.type=UserData.BALL;
-        } catch (Exception e) {
-        }
+//        try {
+//            BallActor ball = (BallActor) (contact.getFixtureA().getBody().getUserData());
+//            BallGenerator.getInstance().explode(ball);
+//        } catch (Exception e) {
+//        }
+//        try {
+//            BallActor ball = (BallActor) (contact.getFixtureB().getBody().getUserData());
+//            BallGenerator.getInstance().explode(ball);
+//        } catch (Exception e) {
+//        }
 
     }
 
@@ -114,7 +113,7 @@ public class B2dContactListener implements ContactListener {
             ground.collide(bomb,contact.getWorldManifold().getPoints());
         }
 
-        spacetubes.polyVerts.add(ground);
+//        spacetubes.polyVerts.add(ground);
 
     }
 

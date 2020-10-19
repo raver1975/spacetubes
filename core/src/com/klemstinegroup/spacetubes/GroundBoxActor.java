@@ -48,6 +48,7 @@ public class GroundBoxActor extends UserDataInterface {
 //tr.setRegionHeight((int) height);
         this.setSize(width, height);
         this.setPosition(x, y);
+        this.setScale(2,2);
         destr = new DestructionData(DestructionData.GROUND);
         world = aWorld;
         BodyDef bd = new BodyDef();

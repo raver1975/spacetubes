@@ -29,7 +29,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private Stage stage;
     private Box2DDebugRenderer debugRenderer;
 
-    public ObjectSet<UserDataInterface> polyVerts = new ObjectSet<>();
+//    public ObjectSet<UserDataInterface> polyVerts = new ObjectSet<>();
 //    public ObjectSet<BodyDef> polyVertsBodyDef = new ObjectSet<>();
 
     private RayHandler rayHandler;
