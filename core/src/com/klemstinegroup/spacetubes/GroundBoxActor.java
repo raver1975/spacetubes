@@ -36,11 +36,11 @@ public class GroundBoxActor extends UserDataInterface {
             pixmap.setColor(colors);
             pixmap.drawLine(i, 0, i, (int) height * scale1);
         }
-        pixmap.setColor(Color.GREEN);
-        pixmap.drawLine(0, 0, 0, (int) height * scale1 - 1);
-        pixmap.drawLine((int) width * scale1 - 1, 0, (int) width * scale1 - 1, (int) height * scale1 - 1);
-        pixmap.drawLine(0, 0, (int) width * scale1 - 1, 0);
-        pixmap.drawLine((int) width * scale1 - 1, (int) height * scale1 - 1, (int) width * scale1 - 1, (int) height * scale1 - 1);
+//        pixmap.setColor(Color.GREEN);
+//        pixmap.drawLine(0, 0, 0, (int) height * scale1 - 1);
+//        pixmap.drawLine((int) width * scale1 - 1, 0, (int) width * scale1 - 1, (int) height * scale1 - 1);
+//        pixmap.drawLine(0, 0, (int) width * scale1 - 1, 0);
+//        pixmap.drawLine((int) width * scale1 - 1, (int) height * scale1 - 1, (int) width * scale1 - 1, (int) height * scale1 - 1);
 
         setTextureRegion(pixmap);
 //        scale=new Vector2(px/width,py/height);

@@ -19,7 +19,7 @@ import java.util.Random;
 public class BallGenerator {
 
 
-    public static final int MAX_NBR = 10;
+    public static final int MAX_NBR = 5;
     Random rand = new Random();
     private World world;
     private Stage stage;

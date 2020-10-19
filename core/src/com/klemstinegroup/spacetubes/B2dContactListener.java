@@ -3,11 +3,7 @@ package com.klemstinegroup.spacetubes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.Array;
-import com.quailshillstudio.CollisionGeometry;
-import com.quailshillstudio.PolygonBox2DShape;
 import com.quailshillstudio.DestructionData;
-import net.dermetfan.gdx.physics.box2d.Box2DUtils;
 
 import java.util.HashSet;
 
@@ -43,16 +39,16 @@ public class B2dContactListener implements ContactListener {
         }
 
         clippingGround(contact);
-//        try {
-//            BallActor ball = (BallActor) (contact.getFixtureA().getBody().getUserData());
-//            BallGenerator.getInstance().explode(ball);
-//        } catch (Exception e) {
-//        }
-//        try {
-//            BallActor ball = (BallActor) (contact.getFixtureB().getBody().getUserData());
-//            BallGenerator.getInstance().explode(ball);
-//        } catch (Exception e) {
-//        }
+        try {
+            BallActor ball = (BallActor) (contact.getFixtureA().getBody().getUserData());
+            BallGenerator.getInstance().explode(ball);
+        } catch (Exception e) {
+        }
+        try {
+            BallActor ball = (BallActor) (contact.getFixtureB().getBody().getUserData());
+            BallGenerator.getInstance().explode(ball);
+        } catch (Exception e) {
+        }
 
     }
 
@@ -79,7 +75,8 @@ public class B2dContactListener implements ContactListener {
             bomb = (UserDataInterface) a1.getUserData();
         }
         if (((UserDataInterface) b1.getUserData()).getDestr().getType() == DestructionData.BOMB) {
-            bomb = (UserDataInterface) b1.getUserData();;
+            bomb = (UserDataInterface) b1.getUserData();
+            ;
         }
         if (((UserDataInterface) a1.getUserData()).getDestr().getType() == DestructionData.GROUND) {
             ground = (UserDataInterface) a1.getUserData();
@@ -90,27 +87,26 @@ public class B2dContactListener implements ContactListener {
 
         if (ground == null || bomb == null) {
             System.out.println("---------------------------------");
-            System.out.println(ground+"\t"+bomb);
-            System.out.println(((UserDataInterface) a1.getUserData()).getDestr().getType()+"\t"+((UserDataInterface) b1.getUserData()).getDestr().getType());
-            System.out.println(a1.getUserData().getClass().toString()+"\t"+b1.getUserData().getClass().toString());
+            System.out.println(ground + "\t" + bomb);
+            System.out.println(((UserDataInterface) a1.getUserData()).getDestr().getType() + "\t" + ((UserDataInterface) b1.getUserData()).getDestr().getType());
+            System.out.println(a1.getUserData().getClass().toString() + "\t" + b1.getUserData().getClass().toString());
             System.out.println("-------------------------------------------------");
 //
             return;
         }
-        Gdx.app.log("debug:","collision:" + ground.getClass().getName() + "\t" + bomb.getClass().getName());
+        Gdx.app.log("debug:", "collision:" + ground.getClass().getName() + "\t" + bomb.getClass().getName());
 
-        if (contact.getWorldManifold().getNumberOfContactPoints()==2){
+        if (contact.getWorldManifold().getNumberOfContactPoints() == 2) {
             Vector2 point1 = contact.getWorldManifold().getPoints()[0];
             Vector2 point2 = contact.getWorldManifold().getPoints()[1];
-            int n=5;
-            Vector2[] t=new Vector2[n];
-            for (int i=0;i<n;i++){
-                t[i]=point1.lerp(point2,(float)i/(float)n).cpy();
+            int n = 5;
+            Vector2[] t = new Vector2[n];
+            for (int i = 0; i < n; i++) {
+                t[i] = point1.cpy().lerp(point2, (float) i / (float) n).cpy();
             }
-            ground.collide(bomb,t);
-        }
-        else{
-            ground.collide(bomb,contact.getWorldManifold().getPoints());
+            ground.collide(bomb, t);
+        } else {
+            ground.collide(bomb, contact.getWorldManifold().getPoints());
         }
 
 //        spacetubes.polyVerts.add(ground);

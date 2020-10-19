@@ -60,7 +60,7 @@ project(":desktop") {
     }
 }
 
-/*project(":android") {
+project(":android") {
     apply plugin: "android"
 
     configurations { natives }
@@ -84,7 +84,7 @@ project(":desktop") {
         api "de.tomgrill.gdxdialogs:gdx-dialogs-android:1.2.5"
 
     }
-}*/
+}
 
 project(":ios") {
     apply plugin: "java-library"
