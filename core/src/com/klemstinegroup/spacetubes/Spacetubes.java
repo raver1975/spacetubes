@@ -20,7 +20,6 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.quailshillstudio.DestructionData;
-import jdk.internal.event.Event;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class Spacetubes extends ApplicationAdapter implements InputProcessor {
