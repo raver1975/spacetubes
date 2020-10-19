@@ -132,6 +132,7 @@ public class UserDataInterface extends Image {
     }
 
     public void collide(UserDataInterface bomb, Vector2[] points) {
+
         tempBodyDef = Box2DUtils.createDef(body);
         for (Fixture f : body.getFixtureList()) {
             tempFixtureDefs.add(Box2DUtils.createDef(f));
@@ -141,6 +142,7 @@ public class UserDataInterface extends Image {
 
         Array<PolygonBox2DShape> shapes = new Array<>();
         for (Vector2 vv : points) {
+            this.getStage().addActor(new FireEmitter(world,vv));
             Vector2 v = new Vector2(vv.x - this.body.getPosition().x, vv.y - this.body.getPosition().y);
             v.rotateRad(-this.body.getAngle());
             float[] circVerts = CollisionGeometry.approxCircle(v.x, v.y, circRadius / 2, segments);

@@ -3,6 +3,7 @@ package com.klemstinegroup.spacetubes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.graphics.ParticleEmitterBox2D;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -16,14 +17,14 @@ public class FireEmitter extends Actor {
 
     ParticleEffect fireEmitter;
 
-    public FireEmitter(World aWorld) {
+    public FireEmitter(World aWorld, Vector2 vv) {
         TextureAtlas textureAtlas = new TextureAtlas();
         textureAtlas.addRegion("particle", new TextureRegion(new Texture("particle.png")));
         fireEmitter = new ParticleEffect();
         fireEmitter.load(Gdx.files.internal("continous.p"), textureAtlas);
         fireEmitter.getEmitters().add(new ParticleEmitterBox2D(aWorld, fireEmitter.getEmitters().first()));
         fireEmitter.getEmitters().removeIndex(0);
-        fireEmitter.setPosition(5, 2);
+        fireEmitter.setPosition(vv.x,vv.y);
         fireEmitter.scaleEffect(.021f);
         fireEmitter.start();
 

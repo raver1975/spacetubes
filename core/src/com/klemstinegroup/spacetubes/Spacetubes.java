@@ -17,8 +17,10 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.quailshillstudio.DestructionData;
+import jdk.internal.event.Event;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class Spacetubes extends ApplicationAdapter implements InputProcessor {
@@ -34,6 +36,10 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private Texture whiteTexture;
     private ShapeDrawer drawer;
     private GroundBoxActor windowFrame;
+    private BallActor tempDraggedBallAcor;
+    private Vector3 testpoint=new Vector3();
+    private long touchDownTime;
+    private Vector3 touchDownPoint;
 
     @Override
     public void create() {
@@ -255,20 +261,29 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-        Vector3 worldCoordinates = stage.getCamera().unproject(new Vector3(screenX, screenY, 0));
-        stage.addActor(new BallActor(world, rayHandler, worldCoordinates.x, worldCoordinates.y));
+        stage.getCamera().unproject(testpoint.set(screenX, screenY, 0));
+        touchDownTime= TimeUtils.millis();
+        touchDownPoint=testpoint.cpy();
+        tempDraggedBallAcor=new BallActor(world, rayHandler, testpoint.x, testpoint.y);
+        stage.addActor(tempDraggedBallAcor);
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
+        long time=TimeUtils.timeSinceMillis(touchDownTime);
+        stage.getCamera().unproject(testpoint.set(screenX, screenY, 0));
+        testpoint.sub(touchDownPoint).scl(1000000f/time);
+        System.out.println("force:"+testpoint);
+        tempDraggedBallAcor.body.applyForceToCenter(testpoint.x,testpoint.y,true);
+        return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
+        stage.getCamera().unproject(testpoint.set(screenX,screenY,0));
+        tempDraggedBallAcor.body.setTransform(testpoint.x, testpoint.y, 0);
+        return true;
     }
 
     @Override
