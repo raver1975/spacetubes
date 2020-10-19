@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -35,6 +36,7 @@ public class UserDataInterface extends Image {
     public Array<float[]> verts = new Array<>();
     private PixmapTextureData texData;
     private Array<PolygonRegion> pS = new Array<PolygonRegion>();
+    private Vector2 offset=new Vector2();
 
 
 //    String uuid = UUID.randomUUID().toString();
@@ -201,26 +203,12 @@ public class UserDataInterface extends Image {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-//        if (MathUtils.random() < .25f) super.draw(batch, parentAlpha);
-//        createPolgyonShapes();
         for (PolygonRegion psa : pS) {
-//            Gdx.app.log("debug:","Sc:"+scale);
-//            psa.setScale(scale.x, scale.y);
-//            psa.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
-//            psa.setPosition(body.getPosition().x - center.x, body.getPosition().y - center.y);
-//            ((PolygonSpriteBatch)batch).draw(psa,body.getPosition().x - center.x,body.getPosition().y - center.y);
-            float scx=texData.getWidth()/getWidth();
-            float scy=texData.getHeight()/getHeight();
-            scx=1f/scx;
-            scy=1f/scy;
-            scx=1f;
-            scy=1f;
-            float bx=(body.getPosition().x-psa.getRegion().getRegionX())/scx;
-            float by=(body.getPosition().y-psa.getRegion().getRegionY())/scy;
-            ((PolygonSpriteBatch) batch).draw(psa, body.getPosition().x-getOriginX(), body.getPosition().y-getOriginY(), getOriginX(), getOriginY(), getWidth(), getHeight(),
-                    scx, scy, body.getAngle() * MathUtils.radiansToDegrees);
+            ((PolygonSpriteBatch) batch).draw(psa, body.getPosition().x-getOriginX()*getScaleX()+offset.x, body.getPosition().y-getOriginY()*getScaleY()+offset.y, getOriginX()*getScaleX(), getOriginY()*getScaleY(), getWidth(), getHeight(),
+                    getScaleX(), getScaleY(), body.getAngle() * MathUtils.radiansToDegrees);
 //            psa.draw((PolygonSpriteBatch) batch);
         }
+                if (MathUtils.random() < .25f) super.draw(batch, parentAlpha);
     }
 
     @Override
@@ -255,8 +243,8 @@ public class UserDataInterface extends Image {
 //            float scx = 1f;
 //            float scy = 1f;
             for (u = 0; u < f.length; u += 2) {
-                f1[u] = ((f[u]+getOriginX()) / (scx) );// + this.getWidth() / 2f;
-                f1[u + 1] = ((f[u + 1]+getOriginY()) / (scy) );// + this.getHeight() / 2f;
+                f1[u] = (f[u]+getOriginX()*getScaleX()) / (scx*getScaleX()) ;// + this.getWidth() / 2f;
+                f1[u + 1] =(f[u + 1]+getOriginY()*getScaleY()) / (scy*getScaleY()) ;// + this.getHeight() / 2f;
             }
             f1[u++] = f1[0];
             f1[u++] = f1[1];
@@ -336,5 +324,9 @@ public class UserDataInterface extends Image {
     private float b2SquaredDistance(float x1, float y1, float x2, float y2) {
         Vector2 vec = new Vector2(x1, y1);
         return vec.dst2(x2, y2);
+    }
+
+    protected void setOffset(float x,float y) {
+        this.offset.set(x,y);
     }
 }

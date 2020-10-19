@@ -70,9 +70,6 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         stage.getCamera().viewportWidth = 200;
         stage.getCamera().viewportHeight = 200 / ratio;
         debugRenderer = new Box2DDebugRenderer();
-//debugRenderer.setDrawVelocities(true);
-//debugRenderer.setDrawContacts(true);
-
         GearActor gearActor2 = new GearActor(world, -50, 20.0f, 32f, 32f, 1.6f);
         GearActor gearActor4 = new GearActor(world, 50, 20.00f, 32f, 32f, -1.6f);
         stage.addActor(gearActor2);

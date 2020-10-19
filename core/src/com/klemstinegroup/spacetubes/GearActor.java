@@ -62,7 +62,7 @@ public class GearActor extends UserDataInterface {
         Vector2 v = loader.getOrigin("gear", scale);
 //        setTextureRegion(pixmap);
 //        setTextureRegion(new Texture("gear.png"));
-//        this.setOrigin(v.x,v.y);
+        this.setOrigin(v.x,v.y);
 //        setCenter(v.x,v.y);
 //        setDrawable(new TextureRegionDrawable(new Texture("gear.png")));
         body.setAngularVelocity(clockwise);

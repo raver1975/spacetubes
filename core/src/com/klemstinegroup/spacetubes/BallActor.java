@@ -118,7 +118,7 @@ public class BallActor extends UserDataInterface {
         if (exploding) {
             body.applyForceToCenter(body.getLinearVelocity().cpy().scl(.05f + MathUtils.random(.01f) - .005f, .05f + MathUtils.random(.01f) - .005f).scl(explosionScale / 6f), true);
 //            if (MathUtils.random() > .8f) {
-            BallGenerator.getInstance().explode(this);
+//            BallGenerator.getInstance().explode(this);
 //            }
             for (ParticleEffect explosionEffect : explosionEffect) {
                 FireEmitter.setAngle(explosionEffect, body.getAngle() * MathUtils.radiansToDegrees + 180 * (explosionScale > 0 ? 1 : 0));
@@ -153,7 +153,7 @@ public class BallActor extends UserDataInterface {
                     break;
                 }
             }
-            if (explosionEffect.size > 200 || body.getPosition().y < -500f) {
+            if (explosionEffect.size > 200 || body.getPosition().y < -200f) {
                 dead = true;
             }
             ;
