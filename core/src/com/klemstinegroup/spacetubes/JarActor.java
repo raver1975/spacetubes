@@ -1,5 +1,7 @@
 package com.klemstinegroup.spacetubes;
 
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -18,9 +20,10 @@ import com.quailshillstudio.DestructionData;
 public class JarActor extends UserDataInterface {
 
     private final Vector2 v_offset;
+    private final PointLight pl2;
     private World world;
 
-    public JarActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight) {
+    public JarActor(World aWorld, RayHandler rayHandler,float pos_x, float pos_y, float aWidth, float aHeight) {
         super(new Texture("gfx/test01.png"));
 //        this.setTextureRegion(extractPixmapFromTextureRegion(new TextureRegion(new Texture("gfx/test01.png")), aWidth, aHeight));
         int scale1=16;
@@ -72,6 +75,10 @@ public class JarActor extends UserDataInterface {
 //        this.setCenter(this.getWidth() / 2, this.getHeight() / 2);
         body.setUserData(this);
 //        createVertex();
+        pl2 = new PointLight(rayHandler, 65, new Color(1, 0, 0, 1f), 100f, bd.position.x, bd.position.y);
+        pl2.attachToBody(body,0,this.getHeight()/2f-5);
+        pl2.setSoft(true);
+        pl2.setIgnoreAttachedBody(false);
         create();
     }
 

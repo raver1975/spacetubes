@@ -1,5 +1,6 @@
 package com.klemstinegroup.spacetubes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
@@ -97,7 +98,7 @@ public class B2dContactListener implements ContactListener {
 //
             return;
         }
-        System.out.println("collision:" + ground.getClass().getName() + "\t" + bomb.getClass().getName());
+        Gdx.app.log("debug:","collision:" + ground.getClass().getName() + "\t" + bomb.getClass().getName());
 
         if (contact.getWorldManifold().getNumberOfContactPoints()==2){
             Vector2 point1 = contact.getWorldManifold().getPoints()[0];

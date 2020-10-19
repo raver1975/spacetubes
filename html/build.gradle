@@ -115,7 +115,7 @@ task tagRelease {dependsOn addToIPFS
     description = 'Tags the current head with the project\'s version.'
     doLast {
         grgit.tag.add {
-            name = version
+            name = version+"-"+UUID.randomUUID().toString().substring(5);
             message = "Release of ${version}"
         }
     }

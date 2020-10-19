@@ -29,11 +29,11 @@ public class HtmlLauncher extends GwtApplication {
          @Override
          public GwtApplicationConfiguration getConfig() {
 
-             int w = Window.getClientWidth() - PADDING;
-             int h = Window.getClientHeight() - PADDING;
+//             int w = Window.getClientWidth() - PADDING;
+//             int h = Window.getClientHeight() - PADDING;
 
-//             int w=640;
-//             int h=480;
+             int w=1024;
+             int h=768;
              cfg = new GwtApplicationConfiguration(w, h);
 //             cfg.fullscreenOrientation = GwtGraphics.OrientationLockType.LANDSCAPE;
              Window.enableScrolling(false);

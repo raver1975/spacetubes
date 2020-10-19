@@ -75,19 +75,19 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
         GearActor gearActor2 = new GearActor(world, -50, 20.0f, 32f, 32f, 1.6f);
         GearActor gearActor4 = new GearActor(world, 50, 20.00f, 32f, 32f, -1.6f);
-        JarActor jarActor = new JarActor(world, 0f, 40.0f, 32f, 32f);
         stage.addActor(gearActor2);
         stage.addActor(gearActor4);
-        stage.addActor(jarActor);
 
-        windowFrame = new GroundBoxActor(world, -0, -50, 80, 20);
+        windowFrame = new GroundBoxActor(world, -0, -32, 64, 16);
         stage.addActor(windowFrame);
 
-        rayHandler = new RayHandler(world, 2048, 2048);
+        rayHandler = new RayHandler(world, 1024, 1024);
         rayHandler.setAmbientLight(0.4f, 0.2f, 0.2f, .5f);
         rayHandler.setBlurNum(3);
         rayHandler.setCulling(false);
         rayHandler.setLightMapRendering(true);
+        JarActor jarActor = new JarActor(world,rayHandler, 0f, 40.0f, 32f, 32f);
+        stage.addActor(jarActor);
 
 
         PointLight pl = new PointLight(rayHandler, 512, new Color(0.2f, 1, 1, 1f), 150, -80f, 10f);
@@ -115,59 +115,6 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         pl2.setContactFilter((short)1,(short)1,(short)2);
         pl3.setContactFilter((short)1,(short)1,(short)2);
         BallGenerator.getInstance().setup(stage, world, rayHandler);
-//        stage.addActor(new FireEmitter(world));
-
-//        try {
-
-//            float[] points = {-50, 0, -50, -50f, 50, -50f, 50, 0};
-//            Array<float[]> verts = new Array<>();
-//            verts.add(points);
-//            GroundFixture grFix = new GroundFixture(verts);
-//            polyVerts.add(grFix);
-
-//            float[] points1 = {-50, 20, -50, 10f, 0, 10f, 0, 20};
-//            Array<float[]> verts1 = new Array<>();
-//            verts1.add(points1);
-//            GroundFixture grFix1 = new GroundFixture(verts1);
-//            polyVerts.add(grFix1);
-//            gearActor2.body.getFixtureList().clear();
-/*            for (int ii = 0; ii < groundActor.body.getFixtureList().size; ii++) {
-                System.out.println("ii:" + ii);
-                Array<float[]> verts = new Array<>();
-                PolygonShape s = (PolygonShape) groundActor.body.getFixtureList().get(ii).getShape();
-                float[] p = new float[s.getVertexCount()*2];
-                Vector2 v = new Vector2();
-                for (int i = 0; i < s.getVertexCount(); i++) {
-                    s.getVertex(i, v);
-                    p[i * 2] = v.x * groundActor.getWidth();
-                    p[i * 2 + 1] = v.y * groundActor.getHeight();
-                    verts.add(p);
-                    System.out.println("+++" + v);
-                }
-                System.out.println();
-                GroundFixture grFix = new GroundFixture(verts);
-                polyVerts.add(grFix);
-            }
-//        this.ud=groundActor;
-        mustCreate = true;*/
-        //        this.mustCreate = false;
-
-//        this.ud = windowFrame;
-
-//        windowFrame.verts = totalRS;
-//        UserDataInterface ud1=(UserDataInterface)ground.getUserData();
-//        polyVerts.add(windowFrame);
-//        windowFrame.tempBodyDef = Box2DUtils.createDef(windowFrame.body);
-//        polyVerts.add(jarActor);
-//        jarActor.tempBodyDef = Box2DUtils.createDef(jarActor.body);
-//        polyVerts.add(gearActor2);
-//        polyVerts.add(gearActor4);
-//        ud.verts = totalRS;
-//        switchGround(totalRS, groundActor);
-
-//        } catch (
-//                Exception e) {
-//        }
         stage.draw();
     }
 
@@ -188,7 +135,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         rayHandler.setCombinedMatrix(stage.getCamera().combined, 0, 0, 1, 1);
         rayHandler.updateAndRender();
         stage.draw();
-//        debugRenderer.render(world, stage.getCamera().combined);
+        debugRenderer.render(world, stage.getCamera().combined);
 
         Array<Body> bodies = new Array<>();
 
@@ -274,7 +221,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         long time=TimeUtils.timeSinceMillis(touchDownTime);
         stage.getCamera().unproject(testpoint.set(screenX, screenY, 0));
         testpoint.sub(touchDownPoint).scl(1000000f/time);
-        System.out.println("force:"+testpoint);
+        Gdx.app.log("debug:","force:"+testpoint);
         tempDraggedBallAcor.body.applyForceToCenter(testpoint.x,testpoint.y,true);
         return true;
     }

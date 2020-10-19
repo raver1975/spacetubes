@@ -1,14 +1,15 @@
 package com.klemstinegroup.spacetubes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
-import com.badlogic.gdx.math.EarClippingTriangulator;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -29,27 +30,26 @@ public class UserDataInterface extends Image {
     public World world;
     public BodyDef tempBodyDef;
     public Array<FixtureDef> tempFixtureDefs = new Array<>();
-    public Vector2 center = new Vector2();
-    public Vector2 scale = new Vector2(1, 1);
+//    public Vector2 center = new Vector2();
+    //    public Vector2 scale = new Vector2(1, 1);
     public Array<float[]> verts = new Array<>();
-    private Texture tr;
     private PixmapTextureData texData;
-    private Array<PolygonSprite> pS = new Array<PolygonSprite>();
+    private Array<PolygonRegion> pS = new Array<PolygonRegion>();
 
 
 //    String uuid = UUID.randomUUID().toString();
 
-    public Vector2 getCenter() {
-        return center;
-    }
-
-    public void setCenter(Vector2 center) {
-        this.center = center.cpy();
-    }
-
-    public void setCenter(float x, float y) {
-        this.center = new Vector2(x, y);
-    }
+//    public Vector2 getCenter() {
+//        return center;
+//    }
+//
+//    public void setCenter(Vector2 center) {
+//        this.center = center.cpy();
+//    }
+//
+//    public void setCenter(float x, float y) {
+//        this.center = new Vector2(x, y);
+//    }
 
     public UserDataInterface(Texture texture) {
         super(texture);
@@ -81,13 +81,11 @@ public class UserDataInterface extends Image {
     }
 
     public void setTextureRegion(TextureRegion tr) {
-        this.tr = tr.getTexture();
-        setDrawable(new TextureRegionDrawable(new TextureRegion(this.tr)));
-//        setOrigin(tr.getRegionWidth(), tr.getRegionHeight());
+        setDrawable(new TextureRegionDrawable(new TextureRegion(tr)));
         setOrigin(getWidth() / 2, getHeight() / 2);
-        scale = new Vector2(getWidth() / tr.getRegionWidth(), getHeight() / tr.getRegionHeight());
-        center.x = tr.getRegionWidth() / 2f;
-        center.y = tr.getRegionHeight() / 2f;
+//        scale = new Vector2(getWidth() / tr.getRegionWidth(), getHeight() / tr.getRegionHeight());
+//        center.x = tr.getRegionWidth() / 2f;
+//        center.y = tr.getRegionHeight() / 2f;
 
 
     }
@@ -132,7 +130,6 @@ public class UserDataInterface extends Image {
     }
 
     public void collide(UserDataInterface bomb, Vector2[] points) {
-
         tempBodyDef = Box2DUtils.createDef(body);
         for (Fixture f : body.getFixtureList()) {
             tempFixtureDefs.add(Box2DUtils.createDef(f));
@@ -142,7 +139,8 @@ public class UserDataInterface extends Image {
 
         Array<PolygonBox2DShape> shapes = new Array<>();
         for (Vector2 vv : points) {
-            this.getStage().addActor(new FireEmitter(world,vv));
+            if (MathUtils.random() < .2f)
+                this.getStage().addActor(new FireEmitter(world, new Vector3(vv.x, vv.y, this.body.getAngle())));
             Vector2 v = new Vector2(vv.x - this.body.getPosition().x, vv.y - this.body.getPosition().y);
             v.rotateRad(-this.body.getAngle());
             float[] circVerts = CollisionGeometry.approxCircle(v.x, v.y, circRadius / 2, segments);
@@ -203,11 +201,25 @@ public class UserDataInterface extends Image {
     @Override
     public void draw(Batch batch, float parentAlpha) {
 //        if (MathUtils.random() < .5f) super.draw(batch, parentAlpha);
-        for (PolygonSprite psa : pS) {
-            psa.setScale(scale.x, scale.y);
-            psa.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
-            psa.setPosition(body.getPosition().x - center.x, body.getPosition().y - center.y);
-            psa.draw((PolygonSpriteBatch) batch);
+//        createPolgyonShapes();
+        for (PolygonRegion psa : pS) {
+//            Gdx.app.log("debug:","Sc:"+scale);
+//            psa.setScale(scale.x, scale.y);
+//            psa.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
+//            psa.setPosition(body.getPosition().x - center.x, body.getPosition().y - center.y);
+//            ((PolygonSpriteBatch)batch).draw(psa,body.getPosition().x - center.x,body.getPosition().y - center.y);
+            TextureRegion r = psa.getRegion();
+            float scx=texData.getWidth()/getWidth();
+            float scy=texData.getHeight()/getHeight();
+            scx=1f/scx;
+            scy=1f/scy;
+            scx=1f;
+            scy=1f;
+            float bx=(body.getPosition().x-psa.getRegion().getRegionX())/scx;
+            float by=(body.getPosition().y-psa.getRegion().getRegionY())/scy;
+            ((PolygonSpriteBatch) batch).draw(psa, body.getPosition().x-getOriginX(), body.getPosition().y-getOriginY(), getOriginX(), getOriginY(), getWidth(), getHeight(),
+                    scx, scy, body.getAngle() * MathUtils.radiansToDegrees);
+//            psa.draw((PolygonSpriteBatch) batch);
         }
     }
 
@@ -216,22 +228,8 @@ public class UserDataInterface extends Image {
         super.act(delta);
         this.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
         this.setPosition(body.getPosition().x - getOriginX(), body.getPosition().y - getOriginY());
-
-//        new FireEmitter(world);
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof UserDataInterface)) return false;
-//        UserDataInterface that = (UserDataInterface) o;
-//        return uuid.equals(that.uuid);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(uuid);
-//    }
 
     void create() {
         this.tempBodyDef = Box2DUtils.createDef(body);
@@ -240,32 +238,39 @@ public class UserDataInterface extends Image {
         }
         verts = getVerts();
 
-createPolgyonShapes();
+        createPolgyonShapes();
         this.destr.mustDestroy = true;
     }
 
-    private void createPolgyonShapes(){
+    private void createPolgyonShapes() {
         pS.clear();
         for (float[] f : verts) {
             float[] f1 = new float[f.length + 2];
             int u = 0;
+            float scx=texData.getWidth()/getWidth();
+            float scy=texData.getHeight()/getHeight();
+            scx=1f/scx;
+            scy=1f/scy;
+//            float scx = 1f;
+//            float scy = 1f;
             for (u = 0; u < f.length; u += 2) {
-                f1[u] = (f[u] / (scale.x) + center.x);// + this.getWidth() / 2f;
-                f1[u + 1] = (f[u + 1] / (scale.y) + center.y);// + this.getHeight() / 2f;
+                f1[u] = ((f[u]+getOriginX()) / (scx) );// + this.getWidth() / 2f;
+                f1[u + 1] = ((f[u + 1]+getOriginY()) / (scy) );// + this.getHeight() / 2f;
             }
             f1[u++] = f1[0];
             f1[u++] = f1[1];
             ShortArray triangleIndices = triangulator.computeTriangles(f1);
             PolygonRegion pR = new PolygonRegion(new TextureRegion(new Texture(texData)), f1, triangleIndices.toArray());
+
             pR.getRegion().getTexture().setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
-            pS.add(new PolygonSprite(pR));
+            pS.add(pR);
         }
     }
 
     protected void createGround() {
         if (world == null) return;
         //Iterator<BodyDef> uditbd=polyVertsBodyDef.iterator();
-        System.out.println("creating polyvert:" + getClass().toString());
+        Gdx.app.log("debug:", "creating polyvert:" + getClass().toString());
 //            System.out.println(groundDef.toString());
 //            groundDef.type = ud.body.getType();
 //            groundDef.active = true;
@@ -290,6 +295,9 @@ createPolgyonShapes();
                 ChainShape shape = new ChainShape();
                 float[] f = verts.get(y);
                 Polygon p = new Polygon(f);
+                float scx=texData.getWidth()/getWidth();
+                float scy=texData.getHeight()/getHeight();
+//                p.setScale(scx,scy);
                 f = p.getTransformedVertices();
                 int hh = 0;
 //                Array<Fixture> fixtures = new Array<>();

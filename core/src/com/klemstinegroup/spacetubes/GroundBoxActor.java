@@ -23,38 +23,31 @@ public class GroundBoxActor extends UserDataInterface {
     public GroundBoxActor(World aWorld, float x, float y, float width, float height) {
 //        super(new Texture("gfx/test02.png"));
         super(width,height);
-        int px=2;
-        int py=2;
-        while(px<width){
-            px*=2;
-        }
-        while(py<height){
-            py*=2;
-        }
-//        px*=2;
-//        py*=2;
-        Pixmap pixmap = new Pixmap(px,  py, Pixmap.Format.RGB888);
+
+        Pixmap pixmap = new Pixmap((int)width,  (int)height, Pixmap.Format.RGB888);
         pixmap.setColor(1, 1, 1, .1f);
         pixmap.fill();
 //        pixmap.setColor(1, 0, 0, .1f);
 //        pixmap.fillCircle((int)width/2,(int)height/2,(int)Math.min(width/2,height/2));
         final int MAX_COLOR = 6;
         final int MIN_COLOR = 0;
-        double jump = (MAX_COLOR-MIN_COLOR) / (px*1.0);
+        double jump = (MAX_COLOR-MIN_COLOR) / (width*1.0);
 //        Color[] colors = new colors[ARRAY_SIZE];
-        for (int i = 0; i < px; i++) {
+        for (int i = 0; i < width; i++) {
 //            colors[i] = Color.HSVToColor(new float[]{(float) (MIN_COLOR + (jump*i)), 1.0f, 1.0f});
 //            colors[i] = Color.HSVToColor(new float[]{(float) (MIN_COLOR + (jump*i)), 1.0f, 1.0f});
             Color colors =HSVtoRGB((float) ((jump * i)), 1.0f, 1.0f);
             pixmap.setColor(colors);
-            pixmap.drawLine(i,0,i, py);
+            pixmap.drawLine(i,0,i, (int)height);
         }
         pixmap.setColor(Color.WHITE);
-        pixmap.drawLine(0,0,0,py);
-        pixmap.drawLine(px-1,0,px-1,py);
+        pixmap.drawLine(0,0,0,(int)height-1);
+        pixmap.drawLine((int)width-1,0,(int)width-1,(int)height-1);
+        pixmap.drawLine(0,0,(int)width-1,0);
+        pixmap.drawLine((int)width-1,(int)height-1,(int)width-1,(int)height-1);
 
         setTextureRegion(pixmap);
-        scale=new Vector2(px/width,py/height);
+//        scale=new Vector2(px/width,py/height);
 //tr.setRegionWidth((int) width);
 //tr.setRegionHeight((int) height);
         this.setSize(width,height);
@@ -68,7 +61,6 @@ public class GroundBoxActor extends UserDataInterface {
         body.setUserData(this);
         PolygonShape groundBox = new PolygonShape();
         groundBox.setAsBox(width, height);
-
         FixtureDef fixtureDef = new FixtureDef();
 //        fixtureDef.isSensor = true;
         fixtureDef.shape = groundBox;
@@ -76,7 +68,6 @@ public class GroundBoxActor extends UserDataInterface {
         body.createFixture(fixtureDef);
         this.setOrigin(width/2f , height/2f );
 //        this.setScale(2,2);
-        setCenter(px/2f,py/2f);
         create();
 //        createVertex();
     }
