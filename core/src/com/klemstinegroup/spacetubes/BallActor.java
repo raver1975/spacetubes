@@ -153,7 +153,7 @@ public class BallActor extends UserDataInterface {
                     break;
                 }
             }
-            if (explosionEffect.size > 200 || body.getPosition().y < -200f) {
+            if (explosionEffect.size > 100 || body.getPosition().y < -200f) {
                 dead = true;
             }
             ;
@@ -183,7 +183,7 @@ public class BallActor extends UserDataInterface {
 //            getStage().addActor(b);
 //            b.setScale(this.getScaleX(), this.getScaleY());
 //        }
-//        BallGenerator.getInstance().explode(b);
+        BallGenerator.getInstance().emit();
 
         if (!dead) {
             explosionEffect.getEmitters().add(new ParticleEmitterBox2D(world, explosionEffect.getEmitters().first()));
@@ -204,7 +204,7 @@ public class BallActor extends UserDataInterface {
             explosionEffect.start();
             this.explosionEffect.add(explosionEffect);
             pl2.setDistance(lightShrinkDist -= .1f);
-            pl2.setContactFilter((short)1,(short)1,(short)2);
+            pl2.setContactFilter((short) 1, (short) 1, (short) 2);
             pl2.setColor(r, g, b, 1);
 
 

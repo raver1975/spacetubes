@@ -109,11 +109,11 @@ public class ShipActor extends UserDataInterface {
     @Override
     public void act(float delta) {
         super.act(delta);
-        body.setAngularDamping(.11f);
+        body.setAngularDamping(.31f);
         body.setLinearDamping(.1f);
         if (engineOn){
             pl2.setColor(MathUtils.clamp(pl2.getColor().r+MathUtils.random(.1f),0,1),MathUtils.clamp(pl2.getColor().g+MathUtils.random(.1f),0,1),MathUtils.clamp(pl2.getColor().b+MathUtils.random(.1f),0,1),MathUtils.clamp(pl2.getColor().a+MathUtils.random(.1f),.8f,1));
-            body.applyForceToCenter(new Vector2(0,30000).rotateRad(body.getAngle()),true);
+            body.applyForceToCenter(new Vector2(0,50000).rotateRad(body.getAngle()),true);
         }
         else{
             pl2.setColor(pl2.getColor().r,pl2.getColor().g,pl2.getColor().b,.0f);

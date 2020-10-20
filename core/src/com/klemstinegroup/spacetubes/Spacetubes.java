@@ -133,7 +133,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         rayHandler.setCombinedMatrix(stage.getCamera().combined, 0, 0, 1, 1);
         rayHandler.updateAndRender();
         stage.draw();
-//        debugRenderer.render(world, stage.getCamera().combined);
+        debugRenderer.render(world, stage.getCamera().combined);
 
         Array<Body> bodies = new Array<>();
 
