@@ -3,12 +3,12 @@ package com.klemstinegroup.spacetubes;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -16,8 +16,6 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectSet;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.quailshillstudio.DestructionData;
 import space.earlygrey.shapedrawer.ShapeDrawer;
@@ -26,7 +24,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     PolygonSpriteBatch batch;
     private World world;
     private Stage stage;
-    private Box2DDebugRenderer debugRenderer;
+    private static Box2DDebugRenderer debugRenderer;
 
 //    public ObjectSet<UserDataInterface> polyVerts = new ObjectSet<>();
 //    public ObjectSet<BodyDef> polyVertsBodyDef = new ObjectSet<>();
@@ -39,6 +37,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private Vector3 testpoint=new Vector3();
     private long touchDownTime;
     private Vector3 touchDownPoint;
+    private ShipActor shipActor;
 
     @Override
     public void create() {
@@ -66,8 +65,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         multiplexer.addProcessor(stage);
         stage.getCamera().position.set(0, 0, 10);
         stage.getCamera().lookAt(0, 0, 0);
-        stage.getCamera().viewportWidth = 200;
-        stage.getCamera().viewportHeight = 200 / ratio;
+        stage.getCamera().viewportWidth = 300;
+        stage.getCamera().viewportHeight = 300 / ratio;
         debugRenderer = new Box2DDebugRenderer();
         GearActor gearActor2 = new GearActor(world, -50, 20.0f, 32f, 32f, 1.6f);
         GearActor gearActor4 = new GearActor(world, 50, 20.00f, 32f, 32f, -1.6f);
@@ -84,15 +83,17 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         rayHandler.setLightMapRendering(true);
         JarActor jarActor = new JarActor(world,rayHandler, 0f, 40.0f, 32f, 32f);
         stage.addActor(jarActor);
+        shipActor = new ShipActor(world,rayHandler, 0f, 20.0f, 16f, 16f);
+        stage.addActor(shipActor);
 
 
-        PointLight pl = new PointLight(rayHandler, 512, new Color(0.2f, 1, 1, 1f), 150, -80f, 10f);
+        PointLight pl = new PointLight(rayHandler, 512, new Color(0f, .4f, .4f, 1f), 150, -80f, 10f);
         pl.setIgnoreAttachedBody(true);
 
-        PointLight pl2 = new PointLight(rayHandler, 512, new Color(1, 0, 1, 1f), 150, 80f, 10f);
+        PointLight pl2 = new PointLight(rayHandler, 512, new Color(.4f, 0, .4f, 1f), 150, 80f, 10f);
         pl2.setIgnoreAttachedBody(true);
 
-        PointLight pl3 = new PointLight(rayHandler, 512, new Color(1, 1, .2f, 1f), 150, 0f, 10f);
+        PointLight pl3 = new PointLight(rayHandler, 512, new Color(.4f, .4f, 0f, 1f), 150, 0f, 10f);
 //        pl3.attachToBody(windowFrame.body, 0, 50);
         pl3.setIgnoreAttachedBody(true);
 
@@ -116,7 +117,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public void render() {
-
+        stage.getCamera().position.set(shipActor.getX(), shipActor.getY(), 0);
+        stage.getCamera().update();
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -189,12 +191,22 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        return false;
+        if (keycode== Input.Keys.UP){
+//            shipActor.body.applyLinearImpulse(new Vector2(0,1000),shipActor.body.getLocalCenter(),true);
+shipActor.thrust(true);
+        }
+        return true;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        return false;
+
+        if (keycode== Input.Keys.UP){
+//            shipActor.body.applyLinearImpulse(new Vector2(0,1000),shipActor.body.getLocalCenter(),true);
+            shipActor.thrust(false);
+        }
+        return true;
+
     }
 
     @Override
@@ -205,27 +217,36 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         stage.getCamera().unproject(testpoint.set(screenX, screenY, 0));
-        touchDownTime= TimeUtils.millis();
-        touchDownPoint=testpoint.cpy();
-        tempDraggedBallAcor=new BallActor(world, rayHandler, testpoint.x, testpoint.y);
-        stage.addActor(tempDraggedBallAcor);
+//        touchDownTime= TimeUtils.millis();
+//        touchDownPoint=testpoint.cpy();
+//        tempDraggedBallAcor=new BallActor(world, rayHandler, testpoint.x, testpoint.y);
+//        stage.addActor(tempDraggedBallAcor);
+        float ang=new Vector2(testpoint.x,testpoint.y).sub(shipActor.body.getPosition()).angleRad()-shipActor.body.getAngle();
+        ang-=45*MathUtils.degRad;
+        while ( ang > MathUtils.PI){ang -= MathUtils.PI2;}
+        while ( ang < -MathUtils.PI){ang += MathUtils.PI2;}
+        System.out.println("ang:"+ang*MathUtils.radDeg);
+        shipActor.thrust(true);
+        shipActor.turn(true);
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        long time=TimeUtils.timeSinceMillis(touchDownTime);
-        stage.getCamera().unproject(testpoint.set(screenX, screenY, 0));
-        testpoint.sub(touchDownPoint).scl(1000000f/time);
-        Gdx.app.log("debug:","force:"+testpoint);
-        tempDraggedBallAcor.body.applyForceToCenter(testpoint.x,testpoint.y,true);
+//        long time=TimeUtils.timeSinceMillis(touchDownTime);
+//        stage.getCamera().unproject(testpoint.set(screenX, screenY, 0));
+//        testpoint.sub(touchDownPoint).scl(1000000f/time);
+//        Gdx.app.log("debug:","force:"+testpoint);
+//        tempDraggedBallAcor.body.applyForceToCenter(testpoint.x,testpoint.y,true);
+        shipActor.thrust(false);
+        shipActor.turn(false);
         return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        stage.getCamera().unproject(testpoint.set(screenX,screenY,0));
-        tempDraggedBallAcor.body.setTransform(testpoint.x, testpoint.y, 0);
+//        stage.getCamera().unproject(testpoint.set(screenX,screenY,0));
+//        tempDraggedBallAcor.body.setTransform(testpoint.x, testpoint.y, 0);
         return true;
     }
 
@@ -235,7 +256,18 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     }
 
     @Override
-    public boolean scrolled(float amountX, float amountY) {
-        return false;
+    public boolean scrolled (float x,  float y) {
+        OrthographicCamera camera = (OrthographicCamera)stage.getCamera();
+        camera.unproject(testpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
+        float px = testpoint.x;
+        float py = testpoint.y;
+        camera.zoom += y * camera.zoom * 0.1f;
+        camera.update();
+
+        camera.unproject(testpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
+        camera.position.add(px - testpoint.x, py- testpoint.y, 0);
+        camera.update();
+        return true;
     }
+
 }

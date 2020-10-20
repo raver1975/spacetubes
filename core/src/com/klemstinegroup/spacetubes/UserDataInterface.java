@@ -239,9 +239,6 @@ public class UserDataInterface extends Image {
             float scy=texData.getHeight()/getHeight();
             scx=1f/scx;
             scy=1f/scy;
-            Gdx.app.log("debug","scale::"+scx+","+scy);
-//            float scx = 1f;
-//            float scy = 1f;
             for (u = 0; u < f.length; u += 2) {
                 f1[u] = (f[u]+getOriginX()*getScaleX()) / (scx*getScaleX()) ;// + this.getWidth() / 2f;
                 f1[u + 1] =(f[u + 1]+getOriginY()*getScaleY()) / (scy*getScaleY()) ;// + this.getHeight() / 2f;
