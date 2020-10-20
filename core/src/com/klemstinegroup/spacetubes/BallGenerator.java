@@ -65,6 +65,7 @@ public class BallGenerator {
 
     public void explode(BallActor aBall) {
         ParticleEffectPool.PooledEffect effect = ballExplosionPool.obtain();
+        emit();
         aBall.explode(effect);
     }
 }

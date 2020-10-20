@@ -183,7 +183,7 @@ public class BallActor extends UserDataInterface {
 //            getStage().addActor(b);
 //            b.setScale(this.getScaleX(), this.getScaleY());
 //        }
-        BallGenerator.getInstance().emit();
+
 
         if (!dead) {
             explosionEffect.getEmitters().add(new ParticleEmitterBox2D(world, explosionEffect.getEmitters().first()));
