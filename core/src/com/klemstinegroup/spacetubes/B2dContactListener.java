@@ -16,9 +16,6 @@ public class B2dContactListener implements ContactListener {
     public int segments = 16;
 
     private final Spacetubes spacetubes;
-    private HashSet<String> debugSet = new HashSet<>();
-    private static final boolean debug = true;
-
     public B2dContactListener(Spacetubes spacetubes) {
         super();
         this.spacetubes = spacetubes;
@@ -29,15 +26,6 @@ public class B2dContactListener implements ContactListener {
     public void beginContact(Contact contact) {
         String classA = contact.getFixtureA().getBody().getUserData().getClass().getName();
         String classB = contact.getFixtureB().getBody().getUserData().getClass().getName();
-
-        if (debug) {
-            String collis = classA + "\t: " + classB;
-            if (!debugSet.contains(collis)) {
-                debugSet.add(collis);
-            }
-            System.out.println(collis);
-        }
-
         clippingGround(contact);
         try {
             BallActor ball = (BallActor) (contact.getFixtureA().getBody().getUserData());

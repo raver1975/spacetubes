@@ -23,6 +23,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private World world;
     private Stage stage;
     private static Box2DDebugRenderer debugRenderer;
+    public static boolean debug = true;
 
 //    public ObjectSet<UserDataInterface> polyVerts = new ObjectSet<>();
 //    public ObjectSet<BodyDef> polyVertsBodyDef = new ObjectSet<>();
@@ -79,7 +80,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         rayHandler.setBlurNum(3);
         rayHandler.setCulling(false);
         rayHandler.setLightMapRendering(true);
-        JarActor jarActor = new JarActor(world, rayHandler, 0f, 40.0f, 32f, 32f);
+        JarActor jarActor = new JarActor(world, rayHandler, 0f, -10.0f, 32f, 32f);
         stage.addActor(jarActor);
         shipActor = new ShipActor(world, rayHandler, 0f, 20.0f, 16f, 16f);
         stage.addActor(shipActor);
@@ -136,16 +137,10 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         }
 
         stage.act();
-
-
-        //debugRenderer.render(world, stage.getCamera().combined);
-
-        BallGenerator.getInstance().emit();
-
         rayHandler.setCombinedMatrix(stage.getCamera().combined, 0, 0, 1, 1);
         rayHandler.updateAndRender();
         stage.draw();
-        debugRenderer.render(world, stage.getCamera().combined);
+        if(debug)debugRenderer.render(world, stage.getCamera().combined);
         world.getBodies(bodies);
 
         Array<UserDataInterface> createBody = new Array<>();
@@ -210,6 +205,9 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
 
+        if (keycode == Input.Keys.D) {
+            debug=!debug;
+        }
         if (keycode == Input.Keys.UP) {
 //            shipActor.body.applyLinearImpulse(new Vector2(0,1000),shipActor.body.getLocalCenter(),true);
             shipActor.thrust(false);
@@ -244,9 +242,9 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
             shipActor.turn(true);
         }
         if (button == 0) {
-            Vector2 tip = new Vector2(shipActor.body.getWorldCenter().x + MathUtils.cos(shipActor.body.getAngle() + 45 * MathUtils.degRad) * 16, shipActor.body.getWorldCenter().y + MathUtils.sin(shipActor.body.getAngle() + 45 * MathUtils.degRad) * 16);
+            Vector2 tip = new Vector2(shipActor.body.getWorldCenter().x + MathUtils.cos(shipActor.body.getAngle() + 45 * MathUtils.degRad) * 17, shipActor.body.getWorldCenter().y + MathUtils.sin(shipActor.body.getAngle() + 45 * MathUtils.degRad) * 17);
             BallActor b = new BallActor(world, rayHandler, tip.x, tip.y);
-            tip.set(MathUtils.cos(shipActor.body.getAngle() + 45 * MathUtils.degRad) * 22, MathUtils.sin(shipActor.body.getAngle() + 45 * MathUtils.degRad) * 22);
+            tip.set(MathUtils.cos(shipActor.body.getAngle() + 45 * MathUtils.degRad), MathUtils.sin(shipActor.body.getAngle() + 45 * MathUtils.degRad));
             ;
 //            tip.rotateDeg(-45);
             stage.addActor(b);
