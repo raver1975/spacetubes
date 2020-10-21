@@ -109,11 +109,11 @@ public class ShipActor extends UserDataInterface {
     @Override
     public void act(float delta) {
         super.act(delta);
-        body.setAngularDamping(.31f);
-        body.setLinearDamping(.1f);
+        body.setAngularDamping(.7f);
+        body.setLinearDamping(.2f);
         if (engineOn){
             pl2.setColor(MathUtils.clamp(pl2.getColor().r+MathUtils.random(.1f),0,1),MathUtils.clamp(pl2.getColor().g+MathUtils.random(.1f),0,1),MathUtils.clamp(pl2.getColor().b+MathUtils.random(.1f),0,1),MathUtils.clamp(pl2.getColor().a+MathUtils.random(.1f),.8f,1));
-            body.applyForceToCenter(new Vector2(0,50000).rotateRad(body.getAngle()),true);
+            body.applyForceToCenter(new Vector2(0,100000).rotateRad(body.getAngle()),true);
         }
         else{
             pl2.setColor(pl2.getColor().r,pl2.getColor().g,pl2.getColor().b,.0f);
@@ -128,8 +128,8 @@ public class ShipActor extends UserDataInterface {
             while ( ang < -MathUtils.PI){ang += MathUtils.PI2;}
             ang=MathUtils.clamp(ang,-MathUtils.HALF_PI,MathUtils.HALF_PI);
 //            body.applyForce(new Vector2((ang>0?1:-1)*(ang*1000), 0).rotateRad(body.getAngle()-45*MathUtils.degRad), body.getLocalCenter().cpy().add(0, 4), true);
-            body.applyTorque(-(MathUtils.sin(ang))*100000,true);
-            System.out.println("DD:"+-(MathUtils.sin(ang)));
+            body.applyTorque((-(MathUtils.sin(ang)*MathUtils.sin(ang)*MathUtils.sin(ang)))*200000,true);
+            System.out.println("DD:"+-(MathUtils.sin(ang))+"\t"+ang*MathUtils.radDeg);
         }
     }
 

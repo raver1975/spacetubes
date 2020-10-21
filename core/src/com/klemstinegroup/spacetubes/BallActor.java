@@ -83,7 +83,7 @@ public class BallActor extends UserDataInterface {
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
         fd.density = 2f;
-        fd.friction = 0.5f;
+        fd.friction = 0.0f;
         fd.restitution = 1f;
         fd.shape = circle;
 
@@ -173,6 +173,7 @@ public class BallActor extends UserDataInterface {
         if (delete) {
             this.remove();
             pl2.remove();
+
         }
 
     }

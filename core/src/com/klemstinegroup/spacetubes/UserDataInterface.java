@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.*;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -31,12 +30,13 @@ public class UserDataInterface extends Image {
     public World world;
     public BodyDef tempBodyDef;
     public Array<FixtureDef> tempFixtureDefs = new Array<>();
-//    public Vector2 center = new Vector2();
+    //    public Vector2 center = new Vector2();
     //    public Vector2 scale = new Vector2(1, 1);
     public Array<float[]> verts = new Array<>();
     private PixmapTextureData texData;
     private Array<PolygonRegion> pS = new Array<PolygonRegion>();
-    private Vector2 offset=new Vector2();
+    private Vector2 offset = new Vector2();
+    private Array<Vector2> linearVelocities=new Array<>();
 
 
 //    String uuid = UUID.randomUUID().toString();
@@ -138,10 +138,12 @@ public class UserDataInterface extends Image {
             tempFixtureDefs.add(Box2DUtils.createDef(f));
         }
         Array<float[]> totalRS = new Array<>();
-        bomb.body.applyForceToCenter(new Vector2(0, 40000), true);
-
         Array<PolygonBox2DShape> shapes = new Array<>();
         for (Vector2 vv : points) {
+            Vector2 t = new Vector2(body.getWorldCenter().cpy().sub(vv)).nor().scl(-100000000);
+            bomb.body.applyForceToCenter(t, true);
+            t = new Vector2(bomb.body.getWorldCenter().cpy().sub(vv)).nor().scl(-100000000);
+            body.applyForceToCenter(t, true);
             if (MathUtils.random() < .2f)
                 this.getStage().addActor(new FireEmitter(world, new Vector3(vv.x, vv.y, this.body.getAngle())));
             Vector2 v = new Vector2(vv.x - this.body.getPosition().x, vv.y - this.body.getPosition().y);
@@ -204,7 +206,7 @@ public class UserDataInterface extends Image {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         for (PolygonRegion psa : pS) {
-            ((PolygonSpriteBatch) batch).draw(psa, body.getPosition().x-getOriginX()*getScaleX()+offset.x, body.getPosition().y-getOriginY()*getScaleY()+offset.y, getOriginX()*getScaleX(), getOriginY()*getScaleY(), getWidth(), getHeight(),
+            ((PolygonSpriteBatch) batch).draw(psa, body.getPosition().x - getOriginX() * getScaleX() + offset.x, body.getPosition().y - getOriginY() * getScaleY() + offset.y, getOriginX() * getScaleX(), getOriginY() * getScaleY(), getWidth(), getHeight(),
                     getScaleX(), getScaleY(), body.getAngle() * MathUtils.radiansToDegrees);
 //            psa.draw((PolygonSpriteBatch) batch);
         }
@@ -235,13 +237,13 @@ public class UserDataInterface extends Image {
         for (float[] f : verts) {
             float[] f1 = new float[f.length + 2];
             int u = 0;
-            float scx=texData.getWidth()/getWidth();
-            float scy=texData.getHeight()/getHeight();
-            scx=1f/scx;
-            scy=1f/scy;
+            float scx = texData.getWidth() / getWidth();
+            float scy = texData.getHeight() / getHeight();
+            scx = 1f / scx;
+            scy = 1f / scy;
             for (u = 0; u < f.length; u += 2) {
-                f1[u] = (f[u]+getOriginX()*getScaleX()) / (scx*getScaleX()) ;// + this.getWidth() / 2f;
-                f1[u + 1] =(f[u + 1]+getOriginY()*getScaleY()) / (scy*getScaleY()) ;// + this.getHeight() / 2f;
+                f1[u] = (f[u] + getOriginX() * getScaleX()) / (scx * getScaleX());// + this.getWidth() / 2f;
+                f1[u + 1] = (f[u + 1] + getOriginY() * getScaleY()) / (scy * getScaleY());// + this.getHeight() / 2f;
             }
             f1[u++] = f1[0];
             f1[u++] = f1[1];
@@ -281,8 +283,8 @@ public class UserDataInterface extends Image {
                 ChainShape shape = new ChainShape();
                 float[] f = verts.get(y);
                 Polygon p = new Polygon(f);
-                float scx=texData.getWidth()/getWidth();
-                float scy=texData.getHeight()/getHeight();
+                float scx = texData.getWidth() / getWidth();
+                float scy = texData.getHeight() / getHeight();
 //                p.setScale(scx,scy);
                 f = p.getTransformedVertices();
                 int hh = 0;
@@ -323,7 +325,17 @@ public class UserDataInterface extends Image {
         return vec.dst2(x2, y2);
     }
 
-    protected void setOffset(float x,float y) {
-        this.offset.set(x,y);
+    protected void setOffset(float x, float y) {
+        this.offset.set(x, y);
+    }
+
+    public void addLinearVelocity(Vector2 add) {
+        linearVelocities.add(add);
+    }
+    public void clearLinearVelocities(){
+        linearVelocities.clear();
+    }
+    public Array<Vector2> getLinearVelocities(){
+        return linearVelocities;
     }
 }

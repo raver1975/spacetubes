@@ -6,9 +6,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -34,7 +32,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private ShapeDrawer drawer;
     private GroundBoxActor windowFrame;
     private BallActor tempDraggedBallAcor;
-    private Vector3 testpoint=new Vector3();
+    private Vector3 testpoint = new Vector3();
     private long touchDownTime;
     private Vector3 touchDownPoint;
     private ShipActor shipActor;
@@ -81,9 +79,9 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         rayHandler.setBlurNum(3);
         rayHandler.setCulling(false);
         rayHandler.setLightMapRendering(true);
-        JarActor jarActor = new JarActor(world,rayHandler, 0f, 40.0f, 32f, 32f);
+        JarActor jarActor = new JarActor(world, rayHandler, 0f, 40.0f, 32f, 32f);
         stage.addActor(jarActor);
-        shipActor = new ShipActor(world,rayHandler, 0f, 20.0f, 16f, 16f);
+        shipActor = new ShipActor(world, rayHandler, 0f, 20.0f, 16f, 16f);
         stage.addActor(shipActor);
 
 
@@ -108,9 +106,9 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //        PointLight.setGlobalContactFilter((short)2,(short)-1,(short)-1);
 //        pl.setContactFilter((short)1,(short)1,(short)1);
 //        pl2.setContactFilter((short)1,(short)1,(short)1);
-        pl.setContactFilter((short)1,(short)1,(short)2);
-        pl2.setContactFilter((short)1,(short)1,(short)2);
-        pl3.setContactFilter((short)1,(short)1,(short)2);
+        pl.setContactFilter((short) 1, (short) 1, (short) 2);
+        pl2.setContactFilter((short) 1, (short) 1, (short) 2);
+        pl3.setContactFilter((short) 1, (short) 1, (short) 2);
         BallGenerator.getInstance().setup(stage, world, rayHandler);
         stage.draw();
     }
@@ -121,8 +119,22 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         stage.getCamera().update();
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        Array<Body> bodies = new Array<>();
+        world.getBodies(bodies);
+        Vector2 g = new Vector2();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
+        for (Body b : bodies) {
+            Array<Vector2> temp = ((UserDataInterface) b.getUserData()).getLinearVelocities();
+            if (temp.size > 0) {
+                g.set(0, 0);
+                for (Vector2 v : temp) {
+                    g.add(v);
+                }
+                b.setLinearVelocity(g);
+                ((UserDataInterface) b.getUserData()).clearLinearVelocities();
+            }
+        }
+
         stage.act();
 
 
@@ -134,9 +146,6 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         rayHandler.updateAndRender();
         stage.draw();
         debugRenderer.render(world, stage.getCamera().combined);
-
-        Array<Body> bodies = new Array<>();
-
         world.getBodies(bodies);
 
         Array<UserDataInterface> createBody = new Array<>();
@@ -191,9 +200,9 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode== Input.Keys.UP){
+        if (keycode == Input.Keys.UP) {
 //            shipActor.body.applyLinearImpulse(new Vector2(0,1000),shipActor.body.getLocalCenter(),true);
-shipActor.thrust(true);
+            shipActor.thrust(true);
         }
         return true;
     }
@@ -201,7 +210,7 @@ shipActor.thrust(true);
     @Override
     public boolean keyUp(int keycode) {
 
-        if (keycode== Input.Keys.UP){
+        if (keycode == Input.Keys.UP) {
 //            shipActor.body.applyLinearImpulse(new Vector2(0,1000),shipActor.body.getLocalCenter(),true);
             shipActor.thrust(false);
         }
@@ -221,13 +230,29 @@ shipActor.thrust(true);
 //        touchDownPoint=testpoint.cpy();
 //        tempDraggedBallAcor=new BallActor(world, rayHandler, testpoint.x, testpoint.y);
 //        stage.addActor(tempDraggedBallAcor);
-        float ang=new Vector2(testpoint.x,testpoint.y).sub(shipActor.body.getPosition()).angleRad()-shipActor.body.getAngle();
-        ang-=45*MathUtils.degRad;
-        while ( ang > MathUtils.PI){ang -= MathUtils.PI2;}
-        while ( ang < -MathUtils.PI){ang += MathUtils.PI2;}
-        System.out.println("ang:"+ang*MathUtils.radDeg);
-        shipActor.thrust(true);
-        shipActor.turn(true);
+        if (button == 1) {
+            float ang = new Vector2(testpoint.x, testpoint.y).sub(shipActor.body.getPosition()).angleRad() - shipActor.body.getAngle();
+            ang -= 45 * MathUtils.degRad;
+            while (ang > MathUtils.PI) {
+                ang -= MathUtils.PI2;
+            }
+            while (ang < -MathUtils.PI) {
+                ang += MathUtils.PI2;
+            }
+            System.out.println("ang:" + ang * MathUtils.radDeg);
+            shipActor.thrust(true);
+            shipActor.turn(true);
+        }
+        if (button == 0) {
+            Vector2 tip = new Vector2(shipActor.body.getWorldCenter().x + MathUtils.cos(shipActor.body.getAngle() + 45 * MathUtils.degRad) * 16, shipActor.body.getWorldCenter().y + MathUtils.sin(shipActor.body.getAngle() + 45 * MathUtils.degRad) * 16);
+            BallActor b = new BallActor(world, rayHandler, tip.x, tip.y);
+            tip.set(MathUtils.cos(shipActor.body.getAngle() + 45 * MathUtils.degRad) * 22, MathUtils.sin(shipActor.body.getAngle() + 45 * MathUtils.degRad) * 22);
+            ;
+//            tip.rotateDeg(-45);
+            stage.addActor(b);
+            System.out.println("tip:" + tip);
+            b.addLinearVelocity(tip.scl(100000).add(shipActor.body.getLinearVelocity()));
+        }
         return true;
     }
 
@@ -256,16 +281,16 @@ shipActor.thrust(true);
     }
 
     @Override
-    public boolean scrolled (float x,  float y) {
-        OrthographicCamera camera = (OrthographicCamera)stage.getCamera();
-        camera.unproject(testpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
+    public boolean scrolled(float x, float y) {
+        OrthographicCamera camera = (OrthographicCamera) stage.getCamera();
+        camera.unproject(testpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
         float px = testpoint.x;
         float py = testpoint.y;
         camera.zoom += y * camera.zoom * 0.1f;
         camera.update();
 
-        camera.unproject(testpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
-        camera.position.add(px - testpoint.x, py- testpoint.y, 0);
+        camera.unproject(testpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+        camera.position.add(px - testpoint.x, py - testpoint.y, 0);
         camera.update();
         return true;
     }
