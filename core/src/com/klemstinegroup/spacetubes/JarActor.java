@@ -24,7 +24,7 @@ public class JarActor extends UserDataInterface {
     private World world;
 
     public JarActor(World aWorld, RayHandler rayHandler,float pos_x, float pos_y, float aWidth, float aHeight) {
-        super(new Texture("gfx/test01.png"));
+        super(aWorld,rayHandler,new Texture("gfx/test01.png"));
 //        this.setTextureRegion(extractPixmapFromTextureRegion(new TextureRegion(new Texture("gfx/test01.png")), aWidth, aHeight));
         int scale1=16;
         Pixmap pixmap = new Pixmap((int) aWidth*scale1, (int) aHeight*scale1, Pixmap.Format.RGB888);

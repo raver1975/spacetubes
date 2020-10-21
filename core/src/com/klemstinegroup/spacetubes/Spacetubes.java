@@ -68,14 +68,9 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         stage.getCamera().viewportWidth = 300;
         stage.getCamera().viewportHeight = 300 / ratio;
         debugRenderer = new Box2DDebugRenderer();
-        GearActor gearActor2 = new GearActor(world, -50, 20.0f, 32f, 32f, 1.6f);
-        GearActor gearActor4 = new GearActor(world, 50, 20.00f, 32f, 32f, -1.6f);
-        stage.addActor(gearActor2);
-        stage.addActor(gearActor4);
 
-        windowFrame = new GroundBoxActor(world, -0, -32, 64, 16);
+        windowFrame = new GroundBoxActor(world, rayHandler,-0, -32, 64, 16);
         stage.addActor(windowFrame);
-
         rayHandler = new RayHandler(world, 1024, 1024);
         rayHandler.setAmbientLight(0.4f, 0.2f, 0.2f, .5f);
         rayHandler.setBlurNum(3);
@@ -83,9 +78,14 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         rayHandler.setLightMapRendering(true);
         JarActor jarActor = new JarActor(world, rayHandler, 0f, -10.0f, 32f, 32f);
         stage.addActor(jarActor);
+        PlanetActor planetActor = new PlanetActor(world, rayHandler,new Vector2(0,300),100);
+        stage.addActor(planetActor);
         shipActor = new ShipActor(world, rayHandler, 0f, 20.0f, 16f, 16f);
         stage.addActor(shipActor);
-
+        GearActor gearActor2 = new GearActor(world,rayHandler, -50, 20.0f, 32f, 32f, 1.6f);
+        stage.addActor(gearActor2);
+        GearActor gearActor4 = new GearActor(world,rayHandler, 50, 20.00f, 32f, 32f, -1.6f);
+        stage.addActor(gearActor4);
 
         PointLight pl = new PointLight(rayHandler, 512, new Color(0f, .4f, .4f, 1f), 150, -80f, 10f);
         pl.setIgnoreAttachedBody(true);

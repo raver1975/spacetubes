@@ -1,5 +1,6 @@
 package com.klemstinegroup.spacetubes;
 
+import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -17,8 +18,8 @@ import com.quailshillstudio.DestructionData;
 
 public class GearActor extends UserDataInterface {
 
-    public GearActor(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight, float clockwise) {
-        super(new Texture("gear.png"));
+    public GearActor(World aWorld, RayHandler rayHandler,float pos_x, float pos_y, float aWidth, float aHeight, float clockwise) {
+        super(aWorld,rayHandler,new Texture("gear.png"));
 //        super();
 //        setTextureRegion(new Texture("gear.png"));
         this.setSize(aWidth, aHeight);

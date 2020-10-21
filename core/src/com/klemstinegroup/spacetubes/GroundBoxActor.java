@@ -1,5 +1,6 @@
 package com.klemstinegroup.spacetubes;
 
+import box2dLight.RayHandler;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -16,41 +17,26 @@ import com.quailshillstudio.DestructionData;
 public class GroundBoxActor extends UserDataInterface {
 
 
-    public GroundBoxActor(World aWorld, float x, float y, float width, float height) {
+    public GroundBoxActor(World world, RayHandler rayHandler, float x, float y, float width, float height) {
 //        super(new Texture("gfx/test02.png"));
-        super(width, height);
+        super(world,rayHandler);
         int scale1 = 16;
         Pixmap pixmap = new Pixmap((int) width * scale1, (int) height * scale1, Pixmap.Format.RGB888);
         pixmap.setColor(1, 1, 1, .1f);
         pixmap.fill();
-//        pixmap.setColor(1, 0, 0, .1f);
-//        pixmap.fillCircle((int)width/2,(int)height/2,(int)Math.min(width/2,height/2));
         final int MAX_COLOR = 6;
         final int MIN_COLOR = 0;
         double jump = (MAX_COLOR - MIN_COLOR) / (width * scale1);
-//        Color[] colors = new colors[ARRAY_SIZE];
         for (int i = 0; i < width * scale1; i++) {
-//            colors[i] = Color.HSVToColor(new float[]{(float) (MIN_COLOR + (jump*i)), 1.0f, 1.0f});
-//            colors[i] = Color.HSVToColor(new float[]{(float) (MIN_COLOR + (jump*i)), 1.0f, 1.0f});
             Color colors = HSVtoRGB((float) ((jump * i)), 1.0f, 1.0f);
             pixmap.setColor(colors);
             pixmap.drawLine(i, 0, i, (int) height * scale1);
         }
-//        pixmap.setColor(Color.GREEN);
-//        pixmap.drawLine(0, 0, 0, (int) height * scale1 - 1);
-//        pixmap.drawLine((int) width * scale1 - 1, 0, (int) width * scale1 - 1, (int) height * scale1 - 1);
-//        pixmap.drawLine(0, 0, (int) width * scale1 - 1, 0);
-//        pixmap.drawLine((int) width * scale1 - 1, (int) height * scale1 - 1, (int) width * scale1 - 1, (int) height * scale1 - 1);
-
         setTextureRegion(pixmap);
-//        scale=new Vector2(px/width,py/height);
-//tr.setRegionWidth((int) width);
-//tr.setRegionHeight((int) height);
         this.setSize(width, height);
         this.setPosition(x, y);
         this.setScale(2,2);
         destr = new DestructionData(DestructionData.GROUND);
-        world = aWorld;
         BodyDef bd = new BodyDef();
         bd.position.set(x, y);
         bd.type = BodyDef.BodyType.StaticBody;
@@ -59,15 +45,12 @@ public class GroundBoxActor extends UserDataInterface {
         PolygonShape groundBox = new PolygonShape();
         groundBox.setAsBox(width, height);
         FixtureDef fixtureDef = new FixtureDef();
-//        fixtureDef.isSensor = true;
         fixtureDef.shape = groundBox;
         fixtureDef.filter.groupIndex = 1;
         body.createFixture(fixtureDef);
         this.setOrigin(width/2 , height/2);
         this.setOffset(width,height);
-//        this.setScale(2,2);
         create();
-//        createVertex();
     }
 
 

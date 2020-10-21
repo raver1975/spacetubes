@@ -37,7 +37,7 @@ public class ShipActor extends UserDataInterface {
     private float ang;
 
     public ShipActor(World aWorld, RayHandler rayHandler, float pos_x, float pos_y, float aWidth, float aHeight) {
-        super(new Texture("rocket.png"));
+        super(aWorld,rayHandler,new Texture("rocket.png"));
         this.rayHandler=rayHandler;
         Pixmap.Format format;
         Pixmap px = new Pixmap(1, 1, Format.RGBA8888);

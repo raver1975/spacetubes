@@ -41,7 +41,7 @@ public class BallActor extends UserDataInterface {
     float size = 10;
 
     public BallActor(World aWorld, RayHandler rayHandler, float pos_x, float pos_y) {
-        super(texture);
+        super(aWorld,rayHandler,texture);
         while (r + g + b == 0) {
             r = MathUtils.randomBoolean() ? 1 : 0;
             g = MathUtils.randomBoolean() ? 1 : 0;
@@ -53,6 +53,7 @@ public class BallActor extends UserDataInterface {
         pixmap.setColor(Color.WHITE);
         pixmap.drawPixmap(extractPixmapFromTextureRegion(new TextureRegion(texture), size, size), 0, 0);
         setTextureRegion(pixmap);
+
         this.setPosition(pos_x, pos_y);
         destr = new DestructionData(DestructionData.BOMB);
         world = aWorld;

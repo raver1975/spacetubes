@@ -31,8 +31,6 @@ public class UserDataInterface extends Image {
     public World world;
     public BodyDef tempBodyDef;
     public Array<FixtureDef> tempFixtureDefs = new Array<>();
-    //    public Vector2 center = new Vector2();
-    //    public Vector2 scale = new Vector2(1, 1);
     public Array<float[]> verts = new Array<>();
     protected RayHandler rayHandler;
     private PixmapTextureData texData;
@@ -40,24 +38,15 @@ public class UserDataInterface extends Image {
     private Vector2 offset = new Vector2();
     private Array<Vector2> linearVelocities=new Array<>();
 
-
-//    String uuid = UUID.randomUUID().toString();
-
-//    public Vector2 getCenter() {
-//        return center;
-//    }
-//
-//    public void setCenter(Vector2 center) {
-//        this.center = center.cpy();
-//    }
-//
-//    public void setCenter(float x, float y) {
-//        this.center = new Vector2(x, y);
-//    }
-
-    public UserDataInterface(Texture texture) {
+    public UserDataInterface(World world, RayHandler rayHandler,Texture texture) {
         super(texture);
         setTextureRegion(extractPixmapFromTextureRegion(new TextureRegion(texture), texture.getWidth(), texture.getHeight()));
+        this.world=world;
+        this.rayHandler=rayHandler;
+    }
+    public Pixmap getPixmap(){
+        TextureRegion temp = ((TextureRegionDrawable) getDrawable()).getRegion();
+        return extractPixmapFromTextureRegion(temp,temp.getRegionWidth(),temp.getRegionHeight());
     }
 
     public Pixmap extractPixmapFromTextureRegion(TextureRegion textureRegion, float aWidth, float aHeight) {
@@ -80,34 +69,21 @@ public class UserDataInterface extends Image {
         return pixmap;
     }
 
-    public UserDataInterface(float w, float h) {
-        super(new Texture(new Pixmap(MathUtils.ceilPositive(w), MathUtils.ceilPositive(h), Pixmap.Format.RGB888)));
+    public UserDataInterface(World world, RayHandler rayHandler) {
+        this.world=world;
+        this.rayHandler=rayHandler;
     }
 
     public void setTextureRegion(TextureRegion tr) {
         setDrawable(new TextureRegionDrawable(new TextureRegion(tr)));
         setOrigin(getWidth() / 2, getHeight() / 2);
-//        scale = new Vector2(getWidth() / tr.getRegionWidth(), getHeight() / tr.getRegionHeight());
-//        center.x = tr.getRegionWidth() / 2f;
-//        center.y = tr.getRegionHeight() / 2f;
-
-
     }
 
-//    public void setTextureRegion(Texture texture) {
-////        tr = texture;
-//        setTextureRegion(new TextureRegion(texture));
-//    }
-
     public void setTextureRegion(Pixmap pixmap) {
-//        tr = new Texture(pixmap);
         texData = new PixmapTextureData(pixmap, Pixmap.Format.RGBA8888, false, false, true);
         Texture texture = new Texture(texData);
         setTextureRegion(new TextureRegion(texture));
     }
-
-//    public Array<float[]> verts = new Array<>();
-
 
     public World getWorld() {
         return world;
