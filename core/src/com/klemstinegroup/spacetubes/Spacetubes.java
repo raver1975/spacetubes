@@ -100,11 +100,11 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
         rayHandler.setShadows(true);
         pl.setStaticLight(false);
-        pl.setSoft(true);
+        pl.setSoft(false);
         pl2.setStaticLight(false);
-        pl2.setSoft(true);
+        pl2.setSoft(false);
         pl3.setStaticLight(false);
-        pl3.setSoft(true);
+        pl3.setSoft(false);
 //        PointLight.setGlobalContactFilter((short)2,(short)-1,(short)-1);
 //        pl.setContactFilter((short)1,(short)1,(short)1);
 //        pl2.setContactFilter((short)1,(short)1,(short)1);
