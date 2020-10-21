@@ -188,7 +188,7 @@ public class UserDataInterface extends Image {
                     getScaleX(), getScaleY(), body.getAngle() * MathUtils.radiansToDegrees);
 //            psa.draw((PolygonSpriteBatch) batch);
         }
-//                if (MathUtils.random() < .25f) super.draw(batch, parentAlpha);
+                if (Spacetubes.debug&&MathUtils.random() < .05f) super.draw(batch, parentAlpha);
     }
 
     @Override
