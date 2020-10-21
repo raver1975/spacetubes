@@ -25,19 +25,20 @@ import com.quailshillstudio.DestructionData;
 
 public class ShipActor extends UserDataInterface {
 
+    public  enum TURNTYPE  {MOUSE,LEFT,RIGHT,OFF};
     private final Vector2 v_offset;
     private final PointLight engineLight;
     private final Texture whiteTexture;
-//    private final PointLight shotLight;
     private World world;
     private boolean engineOn;
-    private boolean turnOn;
+    private TURNTYPE turnType=TURNTYPE.OFF;
     private Vector3 testpoint = new Vector3();
     private BitmapFont font = new BitmapFont();
     private float ang;
 
     public ShipActor(World aWorld, RayHandler rayHandler, float pos_x, float pos_y, float aWidth, float aHeight) {
         super(new Texture("rocket.png"));
+        this.rayHandler=rayHandler;
         Pixmap.Format format;
         Pixmap px = new Pixmap(1, 1, Format.RGBA8888);
         px.setColor(Color.WHITE);
@@ -123,9 +124,20 @@ public class ShipActor extends UserDataInterface {
         } else {
             engineLight.setColor(engineLight.getColor().r, engineLight.getColor().g, engineLight.getColor().b, .0f);
         }
-        if (turnOn) {
-            getStage().getCamera().unproject(testpoint.set((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0f));
-            Vector2 f = new Vector2(-MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad), MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad)).scl(1);
+        if (turnType!=TURNTYPE.OFF) {
+            switch (turnType){
+                case MOUSE:
+                    getStage().getCamera().unproject(testpoint.set((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0f));
+                    break;
+                case LEFT:
+                    testpoint.set(body.getWorldCenter().x + MathUtils.cos(body.getAngle() + 135 * MathUtils.degRad) * 17, body.getWorldCenter().y + MathUtils.sin(body.getAngle() + 135 * MathUtils.degRad) * 17,0);
+//                    getStage().getCamera().unproject(testpoint.set((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0f));
+                    break;
+                case RIGHT:
+                    testpoint.set(body.getWorldCenter().x + MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad) * 17, body.getWorldCenter().y + MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad) * 17,0);
+                    break;
+            }
+            Vector2 f=new Vector2(new Vector2(-MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad), MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad)).scl(1));
 //            Vector2 f1=new Vector2(testpoint.x,testpoint.y).sub(body.getPosition());
             Vector2 f1 = body.getPosition().sub(new Vector2(testpoint.x, testpoint.y));
             ang = MathUtils.PI - f1.angleRad(f);
@@ -142,8 +154,8 @@ public class ShipActor extends UserDataInterface {
         }
     }
 
-    public void turn(boolean turn) {
-        turnOn = turn;
+    public void turn(TURNTYPE turn) {
+        turnType = turn;
     }
 
 
@@ -174,5 +186,13 @@ public class ShipActor extends UserDataInterface {
         float angle = MathUtils.radiansToDegrees * MathUtils.atan2(dy, dx);
         angle = angle - 180;
         batch.draw(tex, v1.x, v1.y, 0f, thickness * 0.5f, length, thickness, 1f, 1f, angle, 0, 0, tex.getWidth(), tex.getHeight(), false, false);
+    }
+
+    public void fire() {
+        Vector2 tip = new Vector2(body.getWorldCenter().x + MathUtils.cos(body.getAngle() + 45 * MathUtils.degRad) * 17, body.getWorldCenter().y + MathUtils.sin(body.getAngle() + 45 * MathUtils.degRad) * 17);
+        BallActor b = new BallActor(world, rayHandler, tip.x, tip.y);
+        tip.set(MathUtils.cos(body.getAngle() + 45 * MathUtils.degRad), MathUtils.sin(body.getAngle() + 45 * MathUtils.degRad));
+        getStage().addActor(b);
+        b.addLinearVelocity(tip.scl(100000).add(body.getLinearVelocity().cpy()));
     }
 }

@@ -1,5 +1,6 @@
 package com.klemstinegroup.spacetubes;
 
+import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -33,6 +34,7 @@ public class UserDataInterface extends Image {
     //    public Vector2 center = new Vector2();
     //    public Vector2 scale = new Vector2(1, 1);
     public Array<float[]> verts = new Array<>();
+    protected RayHandler rayHandler;
     private PixmapTextureData texData;
     private Array<PolygonRegion> pS = new Array<PolygonRegion>();
     private Vector2 offset = new Vector2();
@@ -293,14 +295,14 @@ public class UserDataInterface extends Image {
                     boolean flag = true;
                     for (hh = 0; hh < f.length - 3; hh += 2) {
                         while (b2SquaredDistance(f[hh], f[hh + 1], f[hh + 2], f[hh + 3]) < (0.000025f)) {
-                            f[hh + 2] += .00001d;
-                            f[hh + 3] += .00001d;
+                            f[hh + 2] += MathUtils.random(.0001f);
+                            f[hh + 3] += MathUtils.random(.0001f);
                             flag = false;
                         }
                     }
                     while (b2SquaredDistance(f[hh], f[hh + 1], f[0], f[1]) < (0.000025f)) {
-                        f[0] += .00001d;
-                        f[1] += .00001d;
+                        f[0] += MathUtils.random(.0001f);
+                        f[1] += MathUtils.random(.0001f);
                         flag = false;
                     }
                     if (flag) break;

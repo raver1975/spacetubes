@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -23,7 +24,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private World world;
     private Stage stage;
     private static Box2DDebugRenderer debugRenderer;
-    public static boolean debug = true;
+    public static boolean debug = false;
 
 //    public ObjectSet<UserDataInterface> polyVerts = new ObjectSet<>();
 //    public ObjectSet<BodyDef> polyVertsBodyDef = new ObjectSet<>();
@@ -140,7 +141,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         rayHandler.setCombinedMatrix(stage.getCamera().combined, 0, 0, 1, 1);
         rayHandler.updateAndRender();
         stage.draw();
-        if(debug)debugRenderer.render(world, stage.getCamera().combined);
+        if (debug) debugRenderer.render(world, stage.getCamera().combined);
         world.getBodies(bodies);
 
         Array<UserDataInterface> createBody = new Array<>();
@@ -195,9 +196,26 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.SPACE) {
+            shipActor.fire();
+        }
+
         if (keycode == Input.Keys.UP) {
 //            shipActor.body.applyLinearImpulse(new Vector2(0,1000),shipActor.body.getLocalCenter(),true);
             shipActor.thrust(true);
+//            shipActor.turn(ShipActor.TURNTYPE.RIGHT);
+        }
+        if (keycode == Input.Keys.LEFT) {
+//            shipActor.body.applyLinearImpulse(new Vector2(0,1000),shipActor.body.getLocalCenter(),true);
+            shipActor.turn(ShipActor.TURNTYPE.LEFT);
+        }
+        if (keycode == Input.Keys.RIGHT) {
+//            shipActor.body.applyLinearImpulse(new Vector2(0,1000),shipActor.body.getLocalCenter(),true);
+            shipActor.turn(ShipActor.TURNTYPE.RIGHT);
+        }
+
+        if (keycode == Input.Keys.D) {
+            debug = !debug;
         }
         return true;
     }
@@ -205,13 +223,12 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
 
-        if (keycode == Input.Keys.D) {
-            debug=!debug;
-        }
+
         if (keycode == Input.Keys.UP) {
 //            shipActor.body.applyLinearImpulse(new Vector2(0,1000),shipActor.body.getLocalCenter(),true);
-            shipActor.thrust(false);
         }
+        shipActor.thrust(false);
+        shipActor.turn(ShipActor.TURNTYPE.OFF);
         return true;
 
     }
@@ -228,29 +245,18 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //        touchDownPoint=testpoint.cpy();
 //        tempDraggedBallAcor=new BallActor(world, rayHandler, testpoint.x, testpoint.y);
 //        stage.addActor(tempDraggedBallAcor);
-        if (button == 1) {
-            float ang = new Vector2(testpoint.x, testpoint.y).sub(shipActor.body.getPosition()).angleRad() - shipActor.body.getAngle();
-            ang -= 45 * MathUtils.degRad;
-            while (ang > MathUtils.PI) {
-                ang -= MathUtils.PI2;
-            }
-            while (ang < -MathUtils.PI) {
-                ang += MathUtils.PI2;
-            }
-            System.out.println("ang:" + ang * MathUtils.radDeg);
-            shipActor.thrust(true);
-            shipActor.turn(true);
+        float ang = new Vector2(testpoint.x, testpoint.y).sub(shipActor.body.getPosition()).angleRad() - shipActor.body.getAngle();
+        ang -= 45 * MathUtils.degRad;
+        while (ang > MathUtils.PI) {
+            ang -= MathUtils.PI2;
         }
-        if (button == 0) {
-            Vector2 tip = new Vector2(shipActor.body.getWorldCenter().x + MathUtils.cos(shipActor.body.getAngle() + 45 * MathUtils.degRad) * 17, shipActor.body.getWorldCenter().y + MathUtils.sin(shipActor.body.getAngle() + 45 * MathUtils.degRad) * 17);
-            BallActor b = new BallActor(world, rayHandler, tip.x, tip.y);
-            tip.set(MathUtils.cos(shipActor.body.getAngle() + 45 * MathUtils.degRad), MathUtils.sin(shipActor.body.getAngle() + 45 * MathUtils.degRad));
-            ;
-//            tip.rotateDeg(-45);
-            stage.addActor(b);
-            System.out.println("tip:" + tip);
-            b.addLinearVelocity(tip.scl(100000).add(shipActor.body.getLinearVelocity()));
+        while (ang < -MathUtils.PI) {
+            ang += MathUtils.PI2;
         }
+        System.out.println("ang:" + ang * MathUtils.radDeg);
+        shipActor.thrust(true);
+        stage.getCamera().unproject(testpoint.set((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0f));
+        shipActor.turn(ShipActor.TURNTYPE.MOUSE);
         return true;
     }
 
@@ -262,7 +268,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //        Gdx.app.log("debug:","force:"+testpoint);
 //        tempDraggedBallAcor.body.applyForceToCenter(testpoint.x,testpoint.y,true);
         shipActor.thrust(false);
-        shipActor.turn(false);
+        shipActor.turn(ShipActor.TURNTYPE.OFF);
         return true;
     }
 
