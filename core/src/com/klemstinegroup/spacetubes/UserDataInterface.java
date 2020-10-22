@@ -36,7 +36,7 @@ public class UserDataInterface extends Image {
     private PixmapTextureData texData;
     private Array<PolygonRegion> pS = new Array<PolygonRegion>();
     private Vector2 offset = new Vector2();
-    private Array<Vector2> linearVelocities=new Array<>();
+//    private Array<Vector2> linearVelocities=new Array<>();
 
     public UserDataInterface(World world, RayHandler rayHandler,Texture texture) {
         super(texture);
@@ -307,13 +307,13 @@ public class UserDataInterface extends Image {
         this.offset.set(x, y);
     }
 
-    public void addLinearVelocity(Vector2 add) {
-        linearVelocities.add(add);
-    }
-    public void clearLinearVelocities(){
-        linearVelocities.clear();
-    }
-    public Array<Vector2> getLinearVelocities(){
-        return linearVelocities;
-    }
+//    public void addLinearVelocity(Vector2 add) {
+//        linearVelocities.add(add);
+//    }
+//    public void clearLinearVelocities(){
+//        linearVelocities.clear();
+//    }
+//    public Array<Vector2> getLinearVelocities(){
+//        return linearVelocities;
+//    }
 }

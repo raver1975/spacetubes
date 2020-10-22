@@ -13,7 +13,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
@@ -43,12 +42,14 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private Vector3 touchDownPoint;
     private ShipActor shipActor;
     private Stage starStage;
+    private GravityHandler gravityHandler;
 
 
     @Override
     public void create() {
 //        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 //        scene = new Scene();
+        gravityHandler = new GravityHandler();
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
         pixmap.drawPixel(0, 0);
@@ -58,7 +59,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         drawer = new ShapeDrawer(batch, region);
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        world = new World(new Vector2(0, -5), true);
+        world = new World(new Vector2(), true);
         world.setContactListener(new B2dContactListener(this));
         batch = new PolygonSpriteBatch();
         Gdx.input.setInputProcessor(stage);
@@ -99,7 +100,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
                 camera.update();
                 Vector3 oldUnprojection = camera.unproject(origin.cpy()).cpy();
                 camera.zoom = scale; //Larger value of zoom = small images, border view
-                camera.zoom = Math.min(2.0f, Math.max(camera.zoom, 0.5f));
+                camera.zoom = Math.min(5.0f, Math.max(camera.zoom, 0.25f));
                 camera.update();
                 Vector3 newUnprojection = camera.unproject(origin.cpy()).cpy();
                 camera.position.add(oldUnprojection.cpy().add(newUnprojection.cpy().scl(-1f)));
@@ -114,16 +115,16 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         multiplexer.addProcessor(gd);
         stage.getCamera().position.set(0, 0, 10);
         stage.getCamera().lookAt(0, 0, 0);
-        stage.getCamera().viewportWidth = 400;
-        stage.getCamera().viewportHeight = 400 / ratio;
+        stage.getCamera().viewportWidth = 20;
+        stage.getCamera().viewportHeight = 20 / ratio;
         starStage.getCamera().position.set(0, 0, 10);
         starStage.getCamera().lookAt(0, 0, 0);
-        starStage.getCamera().viewportWidth = 400;
-        starStage.getCamera().viewportHeight = 400 / ratio;
+        starStage.getCamera().viewportWidth = 200;
+        starStage.getCamera().viewportHeight = 200 / ratio;
         createStars(1000);
         debugRenderer = new Box2DDebugRenderer();
 
-        windowFrame = new GroundBoxActor(world, rayHandler, -0, -32, 64, 16);
+        windowFrame = new GroundBoxActor(world, rayHandler, -32, -32, 64, 8);
         stage.addActor(windowFrame);
         rayHandler = new RayHandler(world, 1024, 1024);
         rayHandler.setAmbientLight(0.4f, 0.2f, 0.2f, .5f);
@@ -133,16 +134,17 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         JarActor jarActor = new JarActor(world, rayHandler, 0f, -10.0f, 32f, 32f);
         stage.addActor(jarActor);
         for (int i = 0; i < 5; i++) {
-            PlanetActor planetActor = new PlanetActor(world, rayHandler, new Vector2(MathUtils.random(-1000, 1000), MathUtils.random(-1000, 1000)), MathUtils.random(100, 300));
+            PlanetActor planetActor = new PlanetActor(world, rayHandler, new Vector2(MathUtils.random(-500, 500), MathUtils.random(-500, 500)), MathUtils.random(10, 30));
             stage.addActor(planetActor);
             PointLight pl2 = new PointLight(rayHandler, 128, new Color(0, 1, 0, 1f), planetActor.getWidth() / 2 + 100, planetActor.getX(), planetActor.getY());
+            gravityHandler.add(new GravityHandler.DataAndForce(planetActor, planetActor.getWidth()*100));
             System.out.println("processed planet #" + i);
         }
-        shipActor = new ShipActor(world, rayHandler, 0f, 20.0f, 16f, 16f);
+        shipActor = new ShipActor(world, rayHandler, 0f, 40.0f, 1f, 1f);
         stage.addActor(shipActor);
-        GearActor gearActor2 = new GearActor(world, rayHandler, -50, 20.0f, 32f, 32f, 1.6f);
+        GearActor gearActor2 = new GearActor(world, rayHandler, -50, 20.0f, 16f, 16f, 1.6f);
         stage.addActor(gearActor2);
-        GearActor gearActor4 = new GearActor(world, rayHandler, 50, 20.00f, 32f, 32f, -1.6f);
+        GearActor gearActor4 = new GearActor(world, rayHandler, 50, 20.00f, 16f, 16f, -1.6f);
         stage.addActor(gearActor4);
 
         PointLight pl = new PointLight(rayHandler, 512, new Color(0f, .4f, .4f, 1f), 150, -80f, 10f);
@@ -188,6 +190,21 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
             ang += MathUtils.PI2;
         }
         ang = MathUtils.clamp(ang, -MathUtils.HALF_PI, MathUtils.HALF_PI);
+        Array<Body> bodies = new Array<>();
+        world.getBodies(bodies);
+        //gravity
+        for (GravityHandler.DataAndForce daf : gravityHandler.getGravity()) {
+            for (Body body : bodies) {
+                Vector2 planetCenter = daf.ud.body.getWorldCenter();
+                Vector2 bodyCenter = body.getWorldCenter();
+//                bodyCenter.sub(planetCenter);
+                Vector2 dist = planetCenter.cpy().sub(bodyCenter);
+                Vector2 dd=dist.cpy().nor().scl(daf.force/(dist.len()));
+                System.out.println(dd);
+                body.applyForceToCenter(dd,true);
+
+            }
+        }
 
         stage.getCamera().position.set(shipActor.getX(), shipActor.getY(), 0);
         stage.getCamera().update();
@@ -195,28 +212,26 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         starStage.draw();
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Array<Body> bodies = new Array<>();
-        world.getBodies(bodies);
+
+
         Vector2 g = new Vector2();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
-        for (Body b : bodies) {
-            Array<Vector2> temp = ((UserDataInterface) b.getUserData()).getLinearVelocities();
-            if (temp.size > 0) {
-                g.set(0, 0);
-                for (Vector2 v : temp) {
-                    g.add(v);
-                }
-                b.setLinearVelocity(g);
-                ((UserDataInterface) b.getUserData()).clearLinearVelocities();
-            }
-        }
+//        for (Body b : bodies) {
+//            Array<Vector2> temp = ((UserDataInterface) b.getUserData()).getLinearVelocities();
+//            if (temp.size > 0) {
+//                g.set(0, 0);
+//                for (Vector2 v : temp) {
+//                    b.applyForceToCenter(v,true);
+//                }
+//                ((UserDataInterface) b.getUserData()).clearLinearVelocities();
+//            }
+//        }
 
         stage.act();
         rayHandler.setCombinedMatrix(stage.getCamera().combined, 0, 0, 1, 1);
         rayHandler.updateAndRender();
         stage.draw();
         if (debug) debugRenderer.render(world, stage.getCamera().combined);
-        world.getBodies(bodies);
 
         Array<UserDataInterface> createBody = new Array<>();
         for (int i = 0; i < world.getBodyCount(); i++) {
@@ -315,7 +330,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        stage.getCamera().unproject(testpoint.set(screenX, screenY, 0));
+        if (pointer == 0) {
+            stage.getCamera().unproject(testpoint.set(screenX, screenY, 0));
 //        touchDownTime= TimeUtils.millis();
 //        touchDownPoint=testpoint.cpy();
 //        tempDraggedBallAcor=new BallActor(world, rayHandler, testpoint.x, testpoint.y);
@@ -329,9 +345,13 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //            ang += MathUtils.PI2;
 //        }
 //        System.out.println("ang:" + ang * MathUtils.radDeg);
-        shipActor.thrust(true);
+
+            shipActor.thrust(true);
 //        stage.getCamera().unproject(testpoint.set((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0f));
-        shipActor.turn(ShipActor.TURNTYPE.MOUSE);
+            shipActor.turn(ShipActor.TURNTYPE.MOUSE);
+        } else {
+            shipActor.fire();
+        }
         return false;
     }
 
@@ -342,8 +362,10 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //        testpoint.sub(touchDownPoint).scl(1000000f/time);
 //        Gdx.app.log("debug:","force:"+testpoint);
 //        tempDraggedBallAcor.body.applyForceToCenter(testpoint.x,testpoint.y,true);
-        shipActor.thrust(false);
-        shipActor.turn(ShipActor.TURNTYPE.OFF);
+        if (pointer == 0) {
+            shipActor.thrust(false);
+            shipActor.turn(ShipActor.TURNTYPE.OFF);
+        }
         return false;
     }
 
