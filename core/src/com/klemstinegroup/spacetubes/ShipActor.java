@@ -66,7 +66,7 @@ public class ShipActor extends UserDataInterface {
 //        setTextureRegion(pixmap);
 
 //        setTextureRegion(new Texture("gfx/test01.png"));
-        destr = new DestructionData(DestructionData.BOMB);
+        destr = new DestructionData(DestructionData.BALL);
 
         this.setPosition(pos_x, pos_y);
         world = aWorld;
@@ -84,8 +84,8 @@ public class ShipActor extends UserDataInterface {
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
         fd.density = 10f;
-        fd.friction = .01f;
-        fd.restitution = 1f;
+        fd.friction = .9f;
+        fd.restitution = .1f;
         fd.filter.groupIndex = 1;
 
         // 3. Create a Body, as usual.
@@ -123,8 +123,8 @@ public class ShipActor extends UserDataInterface {
     @Override
     public void act(float delta) {
         super.act(delta);
-        body.setAngularDamping(.7f);
-        body.setLinearDamping(.7f);
+        body.setAngularDamping(.3f);
+        body.setLinearDamping(.2f);
 //        body.setAngularDamping(.7f);
 //        body.setLinearDamping(.2f);
         Vector2 f = new Vector2(new Vector2(-MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad), MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad)).scl(1));
@@ -204,11 +204,11 @@ public class ShipActor extends UserDataInterface {
     }
 
     public void fire() {
-        Vector2 tip = new Vector2(body.getWorldCenter().x - MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad) * 2f, body.getWorldCenter().y + MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad) * 2f);
+        Vector2 tip = new Vector2(body.getWorldCenter().x - MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad) * 1.3f, body.getWorldCenter().y + MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad) * 1.3f);
         BallActor b = new BallActor(world, rayHandler, tip.x, tip.y);
         tip.set(-MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad), MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad));
         getStage().addActor(b);
-        b.body.setLinearVelocity(tip.scl(100000000).add(body.getLinearVelocity().cpy()));
+        b.body.setLinearVelocity(tip.scl(1000000000).add(body.getLinearVelocity().cpy()));
 //
 //        b.body.setLinearVelocity(tip.scl(100000000));
     }

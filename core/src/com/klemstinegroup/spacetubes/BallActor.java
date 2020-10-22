@@ -36,7 +36,7 @@ public class BallActor extends UserDataInterface {
     private int r;
     private int g;
     private int b;
-    private float lightShrinkDist = 50;
+    private float lightShrinkDist = 200;
 
     float size = 1f;
 
@@ -93,8 +93,10 @@ public class BallActor extends UserDataInterface {
 //        this.setOrigin(getWidth()/2, getHeight()/2);
 //        circle.dispose();
         Vector2 v = body.getPosition();
-        pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), size, v.x, v.y);
-        pl2.setSoft(true);
+        pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), size*10, v.x, v.y);
+        pl2.setSoft(false);
+        pl2.setSoftnessLength(100);
+        pl2.setXray(true);
         pl2.attachToBody(body);
         pl2.setIgnoreAttachedBody(true);
 
@@ -136,7 +138,7 @@ public class BallActor extends UserDataInterface {
 
 
             CircleShape circle = new CircleShape();
-            ballScale += .05f;
+            ballScale += .1f;
             circle.setRadius(this.getWidth() / ballScale);
             body.getFixtureList().first().getShape().setRadius(this.getWidth() / ballScale);
             this.setScale(2f / ballScale);
@@ -156,7 +158,7 @@ public class BallActor extends UserDataInterface {
                     break;
                 }
             }
-            if (explosionEffect.size > 100 || body.getPosition().y < -200f) {
+            if (explosionEffect.size > 200) {
                 dead = true;
             }
             ;
@@ -207,9 +209,10 @@ public class BallActor extends UserDataInterface {
             pe.getTint().setColors(fa.toArray());
             explosionEffect.start();
             this.explosionEffect.add(explosionEffect);
-            pl2.setDistance(lightShrinkDist -= .1f);
+            pl2.setDistance(lightShrinkDist -= .01f);
             pl2.setContactFilter((short) 1, (short) 1, (short) 2);
             pl2.setColor(r, g, b, 1);
+            pl2.setSoft(true);
 
 
             exploding = true;

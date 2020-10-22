@@ -116,7 +116,7 @@ public class UserDataInterface extends Image {
         for (Fixture f : body.getFixtureList()) {
             tempFixtureDefs.add(Box2DUtils.createDef(f));
         }
-        Array<float[]> totalRS = new Array<>();
+         Array<float[]> totalRS = new Array<>();
         Array<PolygonBox2DShape> shapes = new Array<>();
         for (Vector2 vv : points) {
             Vector2 t = new Vector2(body.getWorldCenter().cpy().sub(vv)).nor().scl(-100000000);

@@ -134,10 +134,13 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         JarActor jarActor = new JarActor(world, rayHandler, 0f, -10.0f, 32f, 32f);
         stage.addActor(jarActor);
         for (int i = 0; i < 50; i++) {
-            PlanetActor planetActor = new PlanetActor(world, rayHandler, new Vector2(MathUtils.random(-1500, 1500), MathUtils.random(-1500, 1500)), MathUtils.random(10, 50));
+            PlanetActor planetActor = new PlanetActor(world, rayHandler, new Vector2(MathUtils.random(-1500, 1500), MathUtils.random(-1500, 1500)), MathUtils.random(1, 20));
             stage.addActor(planetActor);
-            PointLight pl2 = new PointLight(rayHandler, 128, new Color(0, 1, 0, 1f), planetActor.getWidth() / 2 + 100, planetActor.getX(), planetActor.getY());
-            gravityHandler.add(new GravityHandler.DataAndForce(planetActor, planetActor.getWidth()*100));
+            PointLight pl2 = new PointLight(rayHandler, 128, new Color(1, 1f, 0f, 1f), planetActor.getWidth() / 2+20, planetActor.getX(), planetActor.getY());
+            PointLight pl3 = new PointLight(rayHandler, 128, new Color(1, 0f, 0f, 1f), planetActor.getWidth() / 2+5, planetActor.getX(), planetActor.getY());
+            pl3.setSoft(true);
+//            pl2.setXray(true);
+            gravityHandler.add(new GravityHandler.DataAndForce(planetActor, planetActor.getWidth()*600));
             System.out.println("processed planet #" + i);
         }
         shipActor = new ShipActor(world, rayHandler, 0f, 40.0f, 1.2f, 1.2f);

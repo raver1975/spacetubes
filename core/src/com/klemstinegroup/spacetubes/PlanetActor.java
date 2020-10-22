@@ -1,6 +1,5 @@
 package com.klemstinegroup.spacetubes;
 
-import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -14,30 +13,30 @@ import com.quailshillstudio.CollisionGeometry;
 import com.quailshillstudio.DestructionData;
 import zk.planet_generator.generators.NoiseGenerator;
 
-public class PlanetActor extends UserDataInterface{
+public class PlanetActor extends UserDataInterface {
 
     public static final int BUFFER_WIDTH = 640;
     public static final int BUFFER_HEIGHT = 480;
     public static final int CENTER_X = BUFFER_WIDTH / 2;
     public static final int CENTER_Y = BUFFER_HEIGHT / 2;
-//    private Planet planet;
+    //    private Planet planet;
     private ShaderProgram planetShader;
     private float time;
     private float rotationSpeed;
-    private float direction=1;
+    private float direction = 1;
 
-    public PlanetActor(World world, RayHandler rayHandler, Vector2 position, float radius){
-        super(world,rayHandler);
-        Pixmap p=new Pixmap((int)radius*2, (int)radius*2, Format.RGBA8888);
+    public PlanetActor(World world, RayHandler rayHandler, Vector2 position, float radius) {
+        super(world, rayHandler);
+        Pixmap p = new Pixmap((int) radius * 2, (int) radius * 2, Format.RGBA8888);
         p.setColor(Color.GREEN);
-        p.fillCircle((int)radius,(int)radius,(int)radius);
+        p.fillCircle((int) radius, (int) radius, (int) radius);
         setTextureRegion(p);
 
-        this.setPosition(position.x,position.y);
-        this.setSize(radius*2,radius*2);
-        this.setOrigin(radius , radius);
-        this.setOffset(radius*2,radius*2);
-        this.setScale(2,2);
+        this.setPosition(position.x, position.y);
+        this.setSize(radius * 2, radius * 2);
+        this.setOrigin(radius, radius);
+        this.setOffset(radius * 2, radius * 2);
+        this.setScale(2, 2);
         destr = new DestructionData(DestructionData.GROUND);
         BodyDef bd = new BodyDef();
         bd.position.set(position.cpy());
@@ -57,9 +56,9 @@ public class PlanetActor extends UserDataInterface{
         Vector2 v = body.getPosition();
 
         createPlanet();
-        rotationSpeed = 1/50f;
+        rotationSpeed = 1 / 25f;
         planetShader = new ShaderProgram(Gdx.files.internal("shaders/planet.vsh"), Gdx.files.internal("shaders/planet.fsh"));
-        if(!planetShader.isCompiled()) {
+        if (!planetShader.isCompiled()) {
             Gdx.app.error("Planet Shader Error", "\n" + planetShader.getLog());
         }
         create();
