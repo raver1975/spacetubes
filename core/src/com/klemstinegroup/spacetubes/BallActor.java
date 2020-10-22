@@ -36,7 +36,7 @@ public class BallActor extends UserDataInterface {
     private int r;
     private int g;
     private int b;
-    private float lightShrinkDist = 200;
+    private float lightShrinkDist = 150;
 
     float size = 1f;
 
@@ -209,7 +209,7 @@ public class BallActor extends UserDataInterface {
             pe.getTint().setColors(fa.toArray());
             explosionEffect.start();
             this.explosionEffect.add(explosionEffect);
-            pl2.setDistance(lightShrinkDist -= .01f);
+            pl2.setDistance(lightShrinkDist -= .1f);
             pl2.setContactFilter((short) 1, (short) 1, (short) 2);
             pl2.setColor(r, g, b, 1);
             pl2.setSoft(true);

@@ -87,7 +87,7 @@ public class PlanetActor extends UserDataInterface {
     }
 
     private void createPlanet() {
-        setTextureRegion(generatePlanetPixmap(1024));
+        setTextureRegion(generatePlanetPixmap(256));
 
 //        int size = MathUtils.random(100, 148);
 //        planet.setSize(size, size);
