@@ -38,15 +38,16 @@ public class UserDataInterface extends Image {
     private Vector2 offset = new Vector2();
 //    private Array<Vector2> linearVelocities=new Array<>();
 
-    public UserDataInterface(World world, RayHandler rayHandler,Texture texture) {
+    public UserDataInterface(World world, RayHandler rayHandler, Texture texture) {
         super(texture);
         setTextureRegion(extractPixmapFromTextureRegion(new TextureRegion(texture), texture.getWidth(), texture.getHeight()));
-        this.world=world;
-        this.rayHandler=rayHandler;
+        this.world = world;
+        this.rayHandler = rayHandler;
     }
-    public Pixmap getPixmap(){
+
+    public Pixmap getPixmap() {
         TextureRegion temp = ((TextureRegionDrawable) getDrawable()).getRegion();
-        return extractPixmapFromTextureRegion(temp,temp.getRegionWidth(),temp.getRegionHeight());
+        return extractPixmapFromTextureRegion(temp, temp.getRegionWidth(), temp.getRegionHeight());
     }
 
     public Pixmap extractPixmapFromTextureRegion(TextureRegion textureRegion, float aWidth, float aHeight) {
@@ -70,8 +71,8 @@ public class UserDataInterface extends Image {
     }
 
     public UserDataInterface(World world, RayHandler rayHandler) {
-        this.world=world;
-        this.rayHandler=rayHandler;
+        this.world = world;
+        this.rayHandler = rayHandler;
     }
 
     public void setTextureRegion(TextureRegion tr) {
@@ -122,8 +123,7 @@ public class UserDataInterface extends Image {
             bomb.body.applyForceToCenter(t, true);
             t = new Vector2(bomb.body.getWorldCenter().cpy().sub(vv)).nor().scl(-100000000);
             body.applyForceToCenter(t, true);
-            if (MathUtils.random() < .2f)
-                this.getStage().addActor(new FireEmitter(world, new Vector3(vv.x, vv.y, this.body.getAngle())));
+            this.getStage().addActor(new FireEmitter(world, new Vector3(vv.x, vv.y, this.body.getAngle())));
             Vector2 v = new Vector2(vv.x - this.body.getPosition().x, vv.y - this.body.getPosition().y);
             v.rotateRad(-this.body.getAngle());
             float[] circVerts = CollisionGeometry.approxCircle(v.x, v.y, circRadius / 2, segments);
@@ -188,7 +188,7 @@ public class UserDataInterface extends Image {
                     getScaleX(), getScaleY(), body.getAngle() * MathUtils.radiansToDegrees);
 //            psa.draw((PolygonSpriteBatch) batch);
         }
-                if (Spacetubes.debug&&MathUtils.random() < .05f) super.draw(batch, parentAlpha);
+        if (Spacetubes.debug && MathUtils.random() < .05f) super.draw(batch, parentAlpha);
     }
 
     @Override

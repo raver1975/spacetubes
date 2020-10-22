@@ -119,8 +119,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         stage.getCamera().viewportHeight = 20 / ratio;
         starStage.getCamera().position.set(0, 0, 10);
         starStage.getCamera().lookAt(0, 0, 0);
-        starStage.getCamera().viewportWidth = 200;
-        starStage.getCamera().viewportHeight = 200 / ratio;
+        starStage.getCamera().viewportWidth = 20;
+        starStage.getCamera().viewportHeight = 20 / ratio;
         createStars(1000);
         debugRenderer = new Box2DDebugRenderer();
 
@@ -133,14 +133,14 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         rayHandler.setLightMapRendering(true);
         JarActor jarActor = new JarActor(world, rayHandler, 0f, -10.0f, 32f, 32f);
         stage.addActor(jarActor);
-        for (int i = 0; i < 5; i++) {
-            PlanetActor planetActor = new PlanetActor(world, rayHandler, new Vector2(MathUtils.random(-500, 500), MathUtils.random(-500, 500)), MathUtils.random(10, 30));
+        for (int i = 0; i < 50; i++) {
+            PlanetActor planetActor = new PlanetActor(world, rayHandler, new Vector2(MathUtils.random(-1500, 1500), MathUtils.random(-1500, 1500)), MathUtils.random(10, 50));
             stage.addActor(planetActor);
             PointLight pl2 = new PointLight(rayHandler, 128, new Color(0, 1, 0, 1f), planetActor.getWidth() / 2 + 100, planetActor.getX(), planetActor.getY());
             gravityHandler.add(new GravityHandler.DataAndForce(planetActor, planetActor.getWidth()*100));
             System.out.println("processed planet #" + i);
         }
-        shipActor = new ShipActor(world, rayHandler, 0f, 40.0f, 1f, 1f);
+        shipActor = new ShipActor(world, rayHandler, 0f, 40.0f, 1.2f, 1.2f);
         stage.addActor(shipActor);
         GearActor gearActor2 = new GearActor(world, rayHandler, -50, 20.0f, 16f, 16f, 1.6f);
         stage.addActor(gearActor2);
@@ -199,8 +199,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
                 Vector2 bodyCenter = body.getWorldCenter();
 //                bodyCenter.sub(planetCenter);
                 Vector2 dist = planetCenter.cpy().sub(bodyCenter);
-                Vector2 dd=dist.cpy().nor().scl(daf.force/(dist.len()));
-                System.out.println(dd);
+                Vector2 dd=dist.cpy().nor().scl((float) (daf.force/(dist.len()*dist.len())));
                 body.applyForceToCenter(dd,true);
 
             }
@@ -364,7 +363,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //        tempDraggedBallAcor.body.applyForceToCenter(testpoint.x,testpoint.y,true);
         if (pointer == 0) {
             shipActor.thrust(false);
-            shipActor.turn(ShipActor.TURNTYPE.OFF);
+//            shipActor.turn(ShipActor.TURNTYPE.OFF);
         }
         return false;
     }

@@ -38,7 +38,7 @@ public class BallActor extends UserDataInterface {
     private int b;
     private float lightShrinkDist = 50;
 
-    float size = 10;
+    float size = 1f;
 
     public BallActor(World aWorld, RayHandler rayHandler, float pos_x, float pos_y) {
         super(aWorld,rayHandler,texture);
@@ -47,7 +47,7 @@ public class BallActor extends UserDataInterface {
             g = MathUtils.randomBoolean() ? 1 : 0;
             b = MathUtils.randomBoolean() ? 1 : 0;
         }
-        this.setSize(size / 2, size / 2);
+        this.setSize(size / 2f, size / 2f);
         Pixmap.Format format;
         Pixmap pixmap = new Pixmap((int) size, (int) size, Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
@@ -93,7 +93,8 @@ public class BallActor extends UserDataInterface {
 //        this.setOrigin(getWidth()/2, getHeight()/2);
 //        circle.dispose();
         Vector2 v = body.getPosition();
-        pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), 5f, v.x, v.y);
+        pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), size, v.x, v.y);
+        pl2.setSoft(true);
         pl2.attachToBody(body);
         pl2.setIgnoreAttachedBody(true);
 
@@ -117,6 +118,7 @@ public class BallActor extends UserDataInterface {
         Vector2 v = body.getPosition();
 
         if (exploding) {
+            BallGenerator.getInstance().explode(this);
             body.applyForceToCenter(body.getLinearVelocity().cpy().scl(.05f + MathUtils.random(.01f) - .005f, .05f + MathUtils.random(.01f) - .005f).scl(explosionScale / 6f), true);
 //            if (MathUtils.random() > .8f) {
             BallGenerator.getInstance().explode(this);

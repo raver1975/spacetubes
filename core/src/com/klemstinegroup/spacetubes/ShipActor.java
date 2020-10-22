@@ -124,10 +124,20 @@ public class ShipActor extends UserDataInterface {
     public void act(float delta) {
         super.act(delta);
         body.setAngularDamping(.7f);
-        body.setLinearDamping(.2f);
+        body.setLinearDamping(.7f);
 //        body.setAngularDamping(.7f);
 //        body.setLinearDamping(.2f);
-        if (engineOn) {
+        Vector2 f = new Vector2(new Vector2(-MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad), MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad)).scl(1));
+//            Vector2 f1=new Vector2(testpoint.x,testpoint.y).sub(body.getPosition());
+        Vector2 f1 = body.getPosition().sub(new Vector2(testpoint.x, testpoint.y));
+        ang = MathUtils.PI - f1.angleRad(f);
+        while (ang > MathUtils.PI) {
+            ang -= MathUtils.PI2;
+        }
+        while (ang < -MathUtils.PI) {
+            ang += MathUtils.PI2;
+        }
+        if (engineOn && (turnType != TURNTYPE.MOUSE || Math.abs(ang) < 1f)) {
             engineLight.setColor(MathUtils.clamp(engineLight.getColor().r + MathUtils.random(-.07f, .07f), 0, 1), MathUtils.clamp(engineLight.getColor().g + MathUtils.random(-.07f, .07f), 0, 1), MathUtils.clamp(engineLight.getColor().b + MathUtils.random(-.07f, .07f), 0, 1), MathUtils.clamp(engineLight.getColor().a + MathUtils.random(-.07f, .07f), .95f, 1));
             body.applyForceToCenter(new Vector2(0, 400).rotateRad(body.getAngle() - 45 * MathUtils.degRad), true);
         } else {
@@ -146,23 +156,16 @@ public class ShipActor extends UserDataInterface {
                     testpoint.set(body.getWorldCenter().x + MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad) * 17, body.getWorldCenter().y + MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad) * 17, 0);
                     break;
             }
-            Vector2 f = new Vector2(new Vector2(-MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad), MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad)).scl(1));
-//            Vector2 f1=new Vector2(testpoint.x,testpoint.y).sub(body.getPosition());
-            Vector2 f1 = body.getPosition().sub(new Vector2(testpoint.x, testpoint.y));
-            ang = MathUtils.PI - f1.angleRad(f);
-            while (ang > MathUtils.PI) {
-                ang -= MathUtils.PI2;
-            }
-            while (ang < -MathUtils.PI) {
-                ang += MathUtils.PI2;
-            }
+//            Vector2 f = new Vector2(new Vector2(-MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad), MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad)).scl(1));
+//            Vector2 f1 = body.getPosition().sub(new Vector2(testpoint.x, testpoint.y));
+
             if (turnType == TURNTYPE.MOUSE && (ang < .001f && ang > -.001f && body.getAngularVelocity() < .001f && body.getAngularVelocity() > -.001f)) {
                 turnType = TURNTYPE.OFF;
             }
 //            ang = MathUtils.clamp(ang, -MathUtils.HALF_PI, MathUtils.HALF_PI);
             thrustController.update(ang + body.getAngularVelocity() / 10f, 0, Gdx.graphics.getDeltaTime());
 //            body.applyForce(new Vector2(0, thrustController.getOutput()*200).rotateRad(ang-45*MathUtils.degRad), body.getLocalCenter().cpy().add(4, 4), true);
-            body.applyTorque(thrustController.getOutput() * 2f, true);
+            body.applyTorque(thrustController.getOutput() * 5f, true);
         }
     }
 
@@ -201,10 +204,12 @@ public class ShipActor extends UserDataInterface {
     }
 
     public void fire() {
-        Vector2 tip = new Vector2(body.getWorldCenter().x + MathUtils.cos(body.getAngle() + 45 * MathUtils.degRad) * .75f, body.getWorldCenter().y + MathUtils.sin(body.getAngle() + 45 * MathUtils.degRad) * .75f);
+        Vector2 tip = new Vector2(body.getWorldCenter().x - MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad) * 2f, body.getWorldCenter().y + MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad) * 2f);
         BallActor b = new BallActor(world, rayHandler, tip.x, tip.y);
-        tip.set(MathUtils.cos(body.getAngle() + 45 * MathUtils.degRad), MathUtils.sin(body.getAngle() + 45 * MathUtils.degRad));
+        tip.set(-MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad), MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad));
         getStage().addActor(b);
-        b.body.setLinearVelocity(tip.scl(1000000).add(body.getLinearVelocity().cpy()));
+        b.body.setLinearVelocity(tip.scl(100000000).add(body.getLinearVelocity().cpy()));
+//
+//        b.body.setLinearVelocity(tip.scl(100000000));
     }
 }
