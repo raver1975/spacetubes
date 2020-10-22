@@ -6,12 +6,14 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
@@ -43,7 +45,6 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private Stage starStage;
 
 
-
     @Override
     public void create() {
 //        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
@@ -64,12 +65,53 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         float ratio = (float) (Gdx.graphics.getWidth()) / (float) (Gdx.graphics.getHeight());
 
         stage = new Stage(new ScreenViewport(), batch);
+
+        GestureDetector gd = new GestureDetector(new GestureDetector.GestureAdapter() {
+            private Vector2 oldInitialFirstPointer = null, oldInitialSecondPointer = null;
+            private float oldScale;
+
+            @Override
+            public void pinchStop() {
+                super.pinchStop();
+            }
+
+            @Override
+            public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+                if (!(initialPointer1.equals(oldInitialFirstPointer) && initialPointer2.equals(oldInitialSecondPointer))) {
+                    oldInitialFirstPointer = initialPointer1.cpy();
+                    oldInitialSecondPointer = initialPointer2.cpy();
+                    OrthographicCamera camera = (OrthographicCamera) stage.getCamera();
+                    oldScale = camera.zoom;
+                }
+                Vector3 center = new Vector3(
+                        (pointer1.x + initialPointer2.x) / 2,
+                        (pointer1.y + initialPointer2.y) / 2,
+                        0
+                );
+                zoomCamera(center, oldScale * initialPointer1.dst(initialPointer2) / pointer1.dst(pointer2));
+                return true;
+//                return super.pinch(initialPointer1, initialPointer2, pointer1, pointer2);
+
+            }
+
+            private void zoomCamera(Vector3 origin, float scale) {
+                OrthographicCamera camera = (OrthographicCamera) stage.getCamera();
+                camera.update();
+                Vector3 oldUnprojection = camera.unproject(origin.cpy()).cpy();
+                camera.zoom = scale; //Larger value of zoom = small images, border view
+                camera.zoom = Math.min(2.0f, Math.max(camera.zoom, 0.5f));
+                camera.update();
+                Vector3 newUnprojection = camera.unproject(origin.cpy()).cpy();
+                camera.position.add(oldUnprojection.cpy().add(newUnprojection.cpy().scl(-1f)));
+            }
+        });
         starStage = new Stage(new ScreenViewport(), batch);
         InputMultiplexer multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(this);
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(starStage);
+        multiplexer.addProcessor(gd);
         stage.getCamera().position.set(0, 0, 10);
         stage.getCamera().lookAt(0, 0, 0);
         stage.getCamera().viewportWidth = 400;
@@ -90,10 +132,11 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         rayHandler.setLightMapRendering(true);
         JarActor jarActor = new JarActor(world, rayHandler, 0f, -10.0f, 32f, 32f);
         stage.addActor(jarActor);
-        for (int i=0;i<5;i++) {
-            PlanetActor planetActor = new PlanetActor(world, rayHandler, new Vector2(MathUtils.random(-1000,1000),MathUtils.random(-1000,1000)), MathUtils.random(100,300));
+        for (int i = 0; i < 5; i++) {
+            PlanetActor planetActor = new PlanetActor(world, rayHandler, new Vector2(MathUtils.random(-1000, 1000), MathUtils.random(-1000, 1000)), MathUtils.random(100, 300));
             stage.addActor(planetActor);
-            System.out.println("processed planet #"+i);
+            PointLight pl2 = new PointLight(rayHandler, 128, new Color(0, 1, 0, 1f), planetActor.getWidth() / 2 + 100, planetActor.getX(), planetActor.getY());
+            System.out.println("processed planet #" + i);
         }
         shipActor = new ShipActor(world, rayHandler, 0f, 20.0f, 16f, 16f);
         stage.addActor(shipActor);
@@ -134,7 +177,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     @Override
     public void render() {
         stage.getCamera().unproject(testpoint.set((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0f));
-        Vector2 f=new Vector2(new Vector2(-MathUtils.sin(shipActor.body.getAngle() - 45 * MathUtils.degRad), MathUtils.cos(shipActor.body.getAngle() - 45 * MathUtils.degRad)).scl(1));
+        Vector2 f = new Vector2(new Vector2(-MathUtils.sin(shipActor.body.getAngle() - 45 * MathUtils.degRad), MathUtils.cos(shipActor.body.getAngle() - 45 * MathUtils.degRad)).scl(1));
 //            Vector2 f1=new Vector2(testpoint.x,testpoint.y).sub(body.getPosition());
         Vector2 f1 = shipActor.body.getPosition().sub(new Vector2(testpoint.x, testpoint.y));
         float ang = MathUtils.PI - f1.angleRad(f);
@@ -289,7 +332,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         shipActor.thrust(true);
 //        stage.getCamera().unproject(testpoint.set((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0f));
         shipActor.turn(ShipActor.TURNTYPE.MOUSE);
-        return true;
+        return false;
     }
 
     @Override
@@ -300,14 +343,15 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 //        Gdx.app.log("debug:","force:"+testpoint);
 //        tempDraggedBallAcor.body.applyForceToCenter(testpoint.x,testpoint.y,true);
         shipActor.thrust(false);
-        return true;
+        shipActor.turn(ShipActor.TURNTYPE.OFF);
+        return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 //        stage.getCamera().unproject(testpoint.set(screenX,screenY,0));
 //        tempDraggedBallAcor.body.setTransform(testpoint.x, testpoint.y, 0);
-        return true;
+        return false;
     }
 
     @Override

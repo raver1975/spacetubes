@@ -55,9 +55,7 @@ public class PlanetActor extends UserDataInterface{
         fd.shape = circle;
         Fixture fixture = body.createFixture(fd);
         Vector2 v = body.getPosition();
-        PointLight pl2 = new PointLight(rayHandler, 128, new Color(0, 1, 0, 1f), radius+100, v.x, v.y);
-        pl2.attachToBody(body);
-        pl2.setXray(true);
+
         createPlanet();
         rotationSpeed = 1/50f;
         planetShader = new ShaderProgram(Gdx.files.internal("shaders/planet.vsh"), Gdx.files.internal("shaders/planet.fsh"));

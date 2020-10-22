@@ -118,7 +118,7 @@ public class ShipActor extends UserDataInterface {
     @Override
     public void act(float delta) {
         super.act(delta);
-                body.setAngularDamping(.1f);
+                body.setAngularDamping(.3f);
         body.setLinearDamping(.1f);
 //        body.setAngularDamping(.7f);
 //        body.setLinearDamping(.2f);
@@ -151,7 +151,7 @@ public class ShipActor extends UserDataInterface {
             while (ang < -MathUtils.PI) {
                 ang += MathUtils.PI2;
             }
-//            if (turnType==TURNTYPE.MOUSE &&Math.abs(ang)<1){turnType=TURNTYPE.OFF;}
+            if (turnType==TURNTYPE.MOUSE &&(ang<.001f&&ang>-.001f&&body.getAngularVelocity()<.001f&&body.getAngularVelocity()>-.001f)){turnType=TURNTYPE.OFF;}
 //            ang = MathUtils.clamp(ang, -MathUtils.HALF_PI, MathUtils.HALF_PI);
             thrustController.update(ang+body.getAngularVelocity()/10f ,0, Gdx.graphics.getDeltaTime());
 //            body.applyForce(new Vector2(0, thrustController.getOutput()*200).rotateRad(ang-45*MathUtils.degRad), body.getLocalCenter().cpy().add(4, 4), true);
