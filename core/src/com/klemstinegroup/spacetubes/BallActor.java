@@ -93,7 +93,7 @@ public class BallActor extends UserDataInterface {
 //        this.setOrigin(getWidth()/2, getHeight()/2);
 //        circle.dispose();
         Vector2 v = body.getPosition();
-        pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), 4f, v.x, v.y);
+        pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), 5f, v.x, v.y);
         pl2.attachToBody(body);
         pl2.setIgnoreAttachedBody(true);
 

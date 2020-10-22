@@ -35,9 +35,11 @@ public class ShipActor extends UserDataInterface {
     private Vector3 testpoint = new Vector3();
     private BitmapFont font = new BitmapFont();
     private float ang;
-
+    private SimplePID thrustController = new SimplePID(1.5f, .0001f, 0f, 128, 1f/15f);
     public ShipActor(World aWorld, RayHandler rayHandler, float pos_x, float pos_y, float aWidth, float aHeight) {
         super(aWorld,rayHandler,new Texture("rocket.png"));
+//        thrustController.setClamping(3000000, -3000000);
+        thrustController.setOffset(0);
         this.rayHandler=rayHandler;
         Pixmap.Format format;
         Pixmap px = new Pixmap(1, 1, Format.RGBA8888);
@@ -116,11 +118,13 @@ public class ShipActor extends UserDataInterface {
     @Override
     public void act(float delta) {
         super.act(delta);
-        body.setAngularDamping(.7f);
-        body.setLinearDamping(.2f);
+                body.setAngularDamping(.1f);
+        body.setLinearDamping(.1f);
+//        body.setAngularDamping(.7f);
+//        body.setLinearDamping(.2f);
         if (engineOn) {
             engineLight.setColor(MathUtils.clamp(engineLight.getColor().r + MathUtils.random(-.07f,.07f), 0, 1), MathUtils.clamp(engineLight.getColor().g + MathUtils.random(-.07f,.07f), 0, 1), MathUtils.clamp(engineLight.getColor().b + MathUtils.random(-.07f,.07f), 0, 1), MathUtils.clamp(engineLight.getColor().a + MathUtils.random(-.07f,.07f), .95f, 1));
-            body.applyForceToCenter(new Vector2(0, 100000).rotateRad(body.getAngle()), true);
+            body.applyForceToCenter(new Vector2(0, 600000).rotateRad(body.getAngle()), true);
         } else {
             engineLight.setColor(engineLight.getColor().r, engineLight.getColor().g, engineLight.getColor().b, .0f);
         }
@@ -147,10 +151,11 @@ public class ShipActor extends UserDataInterface {
             while (ang < -MathUtils.PI) {
                 ang += MathUtils.PI2;
             }
-            ang = MathUtils.clamp(ang, -MathUtils.HALF_PI, MathUtils.HALF_PI);
-//            body.applyForce(new Vector2((ang>0?1:-1)*(ang*1000), 0).rotateRad(body.getAngle()-45*MathUtils.degRad), body.getLocalCenter().cpy().add(0, 4), true);
-            body.applyTorque((-(MathUtils.sin(ang) * MathUtils.sin(ang) * MathUtils.sin(ang))) * 200000, true);
-            System.out.println("DD:" + -(MathUtils.sin(ang)) + "\t" + ang * MathUtils.radDeg);
+//            if (turnType==TURNTYPE.MOUSE &&Math.abs(ang)<1){turnType=TURNTYPE.OFF;}
+//            ang = MathUtils.clamp(ang, -MathUtils.HALF_PI, MathUtils.HALF_PI);
+            thrustController.update(ang+body.getAngularVelocity()/10f ,0, Gdx.graphics.getDeltaTime());
+//            body.applyForce(new Vector2(0, thrustController.getOutput()*200).rotateRad(ang-45*MathUtils.degRad), body.getLocalCenter().cpy().add(4, 4), true);
+            body.applyTorque(thrustController.getOutput()*300000f, true);
         }
     }
 

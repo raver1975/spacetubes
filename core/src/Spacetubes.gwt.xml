@@ -3,4 +3,5 @@
 <module>
 	<source path="com/klemstinegroup/spacetubes" />
 	<source path="com/quailshillstudio" />
+	<source path="zk/planet_generator" />
 </module>
