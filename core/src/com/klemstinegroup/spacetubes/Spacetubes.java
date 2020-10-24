@@ -143,8 +143,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         for (int i = 0; i < 10; i++) {
             PlanetActor planetActor = new PlanetActor(world, rayHandler, new Vector2(MathUtils.random(200, 3000), MathUtils.random(-1500, 1500)), 40);
             stage.addActor(planetActor);
-            PointLight pl2 = new PointLight(rayHandler, 128, new Color(1, 1f, 0f, 1f), planetActor.getWidth() / 2+20, planetActor.getX(), planetActor.getY());
-            PointLight pl3 = new PointLight(rayHandler, 128, new Color(1, 0f, 0f, 1f), planetActor.getWidth() / 2+5, planetActor.getX(), planetActor.getY());
+            PointLight pl2 = new PointLight(rayHandler, 128, new Color(1, 1f, 0f, 1f), planetActor.getWidth(), planetActor.getX(), planetActor.getY());
+            PointLight pl3 = new PointLight(rayHandler, 128, new Color(1, 0f, 0f, 1f), planetActor.getWidth(), planetActor.getX(), planetActor.getY());
             pl3.setSoft(false);
             pl2.setXray(true);
             pl2.setSoft(true);
@@ -223,7 +223,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
             }
         }
 //        f = shipActor.tipVector(shipActor.body.getLinearVelocity().len()*1f);
-        f = shipActor.body.getWorldCenter().cpy().add(shipActor.body.getLinearVelocity().cpy().scl(0.9f));
+        f = shipActor.body.getWorldCenter().cpy().add(shipActor.body.getLinearVelocity().cpy().scl(((OrthographicCamera)stage.getCamera()).zoom*(1f/scaleFactor)/3f));
         stage.getCamera().position.set(f, 0);
         intendedZoom=Math.max(1f,shipActor.body.getLinearVelocity().len()/4f)*scaleFactor;
         if (((OrthographicCamera)stage.getCamera()).zoom<intendedZoom-.05f){

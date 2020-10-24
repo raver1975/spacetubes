@@ -120,12 +120,12 @@ public class UserDataInterface extends Image {
          Array<float[]> totalRS = new Array<>();
         Array<PolygonBox2DShape> shapes = new Array<>();
         for (Vector2 vv : points) {
-            Vector2 t = new Vector2(body.getWorldCenter().cpy().sub(vv)).nor().scl(-100000000);
+            Vector2 t = new Vector2(body.getWorldCenter().cpy().sub(vv)).nor().scl(-10000);
             bomb.body.applyForceToCenter(t, true);
-            t = new Vector2(bomb.body.getWorldCenter().cpy().sub(vv)).nor().scl(-100000000);
+            t = new Vector2(bomb.body.getWorldCenter().cpy().sub(vv)).nor().scl(-10000);
             body.applyForceToCenter(t, true);
             this.getStage().addActor(new FireEmitter(world, new Vector3(vv.x, vv.y, this.body.getAngle())));
-            Vector2 v = new Vector2(vv.x - this.body.getPosition().x, vv.y - this.body.getPosition().y);
+            Vector2 v = new Vector2(vv.x - this.body.getWorldCenter().x, vv.y - this.body.getWorldCenter().y);
             v.rotateRad(-this.body.getAngle());
             float[] circVerts = CollisionGeometry.approxCircle(v.x, v.y, circRadius / 2, segments);
             ChainShape shape = new ChainShape();

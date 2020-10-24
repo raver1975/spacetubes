@@ -59,15 +59,11 @@ public class BallActor extends UserDataInterface {
         BodyDef bd = new BodyDef();
         bd.position.set(this.getX(), this.getY());
         bd.type = BodyDef.BodyType.DynamicBody;
-
-
         body = world.createBody(bd);
-//        body.setLinearDamping(-2f);
         body.setBullet(true);
         body.setSleepingAllowed(false);
         body.setUserData(this);
         PolygonShape circle = new PolygonShape();
-
         float[] circVerts = CollisionGeometry.approxCircle(0, 0, getWidth() / 2f, 8);
 //        Polygon p=new Polygon(circVerts);
         circle.setRadius(getWidth() / 2f);
@@ -215,7 +211,7 @@ public class BallActor extends UserDataInterface {
             pl2.setContactFilter((short) 1, (short) 1, (short) 2);
             pl2.setColor(r, g, b, 1);
             pl2.setSoft(true);
-
+            body.setLinearDamping(2f);
 
             exploding = true;
         }
