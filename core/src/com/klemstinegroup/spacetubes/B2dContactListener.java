@@ -96,9 +96,9 @@ public class B2dContactListener implements ContactListener {
         } else {
             ground.collide(bomb, contact.getWorldManifold().getPoints());
         }
-        if (((UserDataInterface) a1.getUserData()).getDestr().getType() ==((UserDataInterface) b1.getUserData()).getDestr().getType() ){
-            bomb.collide(ground,contact.getWorldManifold().getPoints());
-        }
+//        if (((UserDataInterface) a1.getUserData()).getDestr().getType() ==DestructionData.BOMB && ((UserDataInterface) b1.getUserData()).getDestr().getType()==DestructionData.BOMB ){
+//            bomb.collide(ground,contact.getWorldManifold().getPoints());
+//        }
 
 //        spacetubes.polyVerts.add(ground);
 

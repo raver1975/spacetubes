@@ -25,7 +25,6 @@ import com.quailshillstudio.DestructionData;
 
 public class BallActor extends UserDataInterface {
     private final PointLight pl2;
-    private World world;
     private boolean delete;
     static private final Texture texture = new Texture("bubble.png");
     Array<ParticleEffect> explosionEffect = new Array<>();

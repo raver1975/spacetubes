@@ -22,7 +22,7 @@ import com.quailshillstudio.PolygonBox2DShape;
 import net.dermetfan.gdx.physics.box2d.Box2DUtils;
 
 public class UserDataInterface extends Image {
-    public static final float circRadius = 20f;
+    public static final float circRadius = 10f;
     public static final int segments = 16;
     public static final EarClippingTriangulator triangulator = new EarClippingTriangulator();
 
