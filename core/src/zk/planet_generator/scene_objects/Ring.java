@@ -6,8 +6,6 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import zk.planet_generator.ColorGroup;
 
-import java.awt.*;
-
 public class Ring implements Json.Serializable {
     private Array<Orbiter> objects;
     private ColorGroup colors;
