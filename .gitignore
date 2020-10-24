@@ -9,7 +9,7 @@ hs_err_pid*
 /ios/robovm-build/
 
 ## GWT
-/html/war/
+#/html/war/
 /html/gwt-unitCache/
 .apt_generated/
 .gwt/
