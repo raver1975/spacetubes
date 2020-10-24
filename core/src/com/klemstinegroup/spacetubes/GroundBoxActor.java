@@ -46,7 +46,11 @@ public class GroundBoxActor extends UserDataInterface {
         groundBox.setAsBox(width, height);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = groundBox;
-        fixtureDef.filter.groupIndex = 1;
+        fixtureDef.density = 1f;
+        fixtureDef.friction = 1f;
+        fixtureDef.restitution = .1f;
+        fixtureDef.filter.groupIndex=1;
+//        fixtureDef.filter.groupIndex = 1;
         body.createFixture(fixtureDef);
         this.setOrigin(width/2 , height/2);
         this.setOffset(width,height);

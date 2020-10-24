@@ -22,7 +22,7 @@ import com.quailshillstudio.PolygonBox2DShape;
 import net.dermetfan.gdx.physics.box2d.Box2DUtils;
 
 public class UserDataInterface extends Image {
-    public static final float circRadius = 6f;
+    public static final float circRadius = 20f;
     public static final int segments = 16;
     public static final EarClippingTriangulator triangulator = new EarClippingTriangulator();
 
@@ -33,6 +33,7 @@ public class UserDataInterface extends Image {
     public Array<FixtureDef> tempFixtureDefs = new Array<>();
     public Array<float[]> verts = new Array<>();
     protected RayHandler rayHandler;
+    protected Vector2 linearVelocity;
     private PixmapTextureData texData;
     private Array<PolygonRegion> pS = new Array<PolygonRegion>();
     private Vector2 offset = new Vector2();
@@ -196,6 +197,10 @@ public class UserDataInterface extends Image {
         super.act(delta);
         this.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
         this.setPosition(body.getPosition().x - getOriginX(), body.getPosition().y - getOriginY());
+        if (linearVelocity !=null){
+            this.body.setLinearVelocity(linearVelocity.cpy());
+            linearVelocity =null;
+        }
     }
 
 

@@ -48,7 +48,6 @@ public class BallActor extends UserDataInterface {
             b = MathUtils.randomBoolean() ? 1 : 0;
         }
         this.setSize(size / 2f, size / 2f);
-        Pixmap.Format format;
         Pixmap pixmap = new Pixmap((int) size, (int) size, Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
         pixmap.drawPixmap(extractPixmapFromTextureRegion(new TextureRegion(texture), size, size), 0, 0);
@@ -63,6 +62,9 @@ public class BallActor extends UserDataInterface {
 
 
         body = world.createBody(bd);
+//        body.setLinearDamping(-2f);
+        body.setBullet(true);
+        body.setSleepingAllowed(false);
         body.setUserData(this);
         PolygonShape circle = new PolygonShape();
 
@@ -85,7 +87,7 @@ public class BallActor extends UserDataInterface {
         FixtureDef fd = new FixtureDef();
         fd.density = 2f;
         fd.friction = 0.0f;
-        fd.restitution = 1f;
+        fd.restitution = 0f;
         fd.shape = circle;
 
 

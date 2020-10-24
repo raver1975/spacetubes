@@ -1,5 +1,5 @@
 buildscript {
-    
+
 
     repositories {
         mavenLocal()
@@ -14,7 +14,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:4.0.0'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.8'
         classpath 'org.ajoberstar:gradle-git:+'
-        
+
 
     }
 }
@@ -56,7 +56,7 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         api "de.tomgrill.gdxfacebook:gdx-facebook-desktop:1.4.1"
         api "de.tomgrill.gdxdialogs:gdx-dialogs-desktop:1.2.5"
-        
+
     }
 }
 
@@ -142,6 +142,6 @@ project(":core") {
         compile "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion"
         compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion" // Box2D module (optional)
         compile 'com.neovisionaries:nv-websocket-client:2.10'
-
+        implementation "com.github.pubnub:java:v4.33.3"
     }
 }

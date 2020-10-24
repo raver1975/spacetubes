@@ -12,8 +12,8 @@ import java.util.HashSet;
  */
 
 public class B2dContactListener implements ContactListener {
-    public float circRadius = 6f;
-    public int segments = 16;
+//    public float circRadius = 6f;
+//    public int segments = 16;
 
     private final Spacetubes spacetubes;
     public B2dContactListener(Spacetubes spacetubes) {

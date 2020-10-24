@@ -1,16 +1,7 @@
 package zk.planet_generator;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonWriter;
-//import com.kotcrab.vis.ui.VisUI;
-import com.sun.org.apache.xpath.internal.operations.Or;
-import zk.planet_generator.scene_objects.*;
-
-import javax.swing.*;
 
 /**
  * Planet shader code: https://gamedev.stackexchange.com/questions/9346/2d-shader-to-draw-representation-of-rotating-sphere

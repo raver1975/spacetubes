@@ -45,7 +45,9 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private ShipActor shipActor;
     private Stage starStage;
     private GravityHandler gravityHandler;
-    private float scaleFactor=1f;
+    private float scaleFactor=2f;
+    private float intendedZoom=1f;
+//    private Vector2 intendedPosition=new Vector2();
 
 
     @Override
@@ -105,7 +107,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
                 camera.update();
                 Vector3 oldUnprojection = camera.unproject(origin.cpy()).cpy();
                 camera.zoom = scale; //Larger value of zoom = small images, border view
-                camera.zoom = Math.min(5.0f, Math.max(camera.zoom, 0.25f));
+                camera.zoom = Math.min(5.0f, Math.max(camera.zoom, 0.05f));
                 camera.update();
                 Vector3 newUnprojection = camera.unproject(origin.cpy()).cpy();
                 camera.position.add(oldUnprojection.cpy().add(newUnprojection.cpy().scl(-1f)));
@@ -129,7 +131,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         createStars(1000);
         debugRenderer = new Box2DDebugRenderer();
 
-        windowFrame = new GroundBoxActor(world, rayHandler, -32, -32, 64, 8);
+        windowFrame = new GroundBoxActor(world, rayHandler, -32, -100, 50, 40);
         stage.addActor(windowFrame);
         rayHandler = new RayHandler(world, 1024, 1024);
         rayHandler.setAmbientLight(0.4f, 0.2f, 0.2f, .5f);
@@ -138,13 +140,14 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         rayHandler.setLightMapRendering(true);
         JarActor jarActor = new JarActor(world, rayHandler, 0f, -10.0f, 32f, 32f);
         stage.addActor(jarActor);
-        for (int i = 0; i < 5; i++) {
-            PlanetActor planetActor = new PlanetActor(world, rayHandler, new Vector2(MathUtils.random(-1500, 1500), MathUtils.random(-1500, 1500)), 10);
+        for (int i = 0; i < 10; i++) {
+            PlanetActor planetActor = new PlanetActor(world, rayHandler, new Vector2(MathUtils.random(200, 3000), MathUtils.random(-1500, 1500)), 40);
             stage.addActor(planetActor);
             PointLight pl2 = new PointLight(rayHandler, 128, new Color(1, 1f, 0f, 1f), planetActor.getWidth() / 2+20, planetActor.getX(), planetActor.getY());
             PointLight pl3 = new PointLight(rayHandler, 128, new Color(1, 0f, 0f, 1f), planetActor.getWidth() / 2+5, planetActor.getX(), planetActor.getY());
-            pl3.setSoft(true);
-//            pl2.setXray(true);
+            pl3.setSoft(false);
+            pl2.setXray(true);
+            pl2.setSoft(true);
             gravityHandler.add(new GravityHandler.DataAndForce(planetActor, planetActor.getWidth()*600));
             System.out.println("processed planet #" + i);
         }
@@ -220,9 +223,15 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
             }
         }
 //        f = shipActor.tipVector(shipActor.body.getLinearVelocity().len()*1f);
-        f = shipActor.body.getWorldCenter().add(shipActor.body.getLinearVelocity().cpy().scl(0.7f));
-        stage.getCamera().position.set(f.x, f.y, 0);
-        ((OrthographicCamera)stage.getCamera()).zoom=Math.max(1f,shipActor.body.getLinearVelocity().len()/4f)*scaleFactor;
+        f = shipActor.body.getWorldCenter().cpy().add(shipActor.body.getLinearVelocity().cpy().scl(0.9f));
+        stage.getCamera().position.set(f, 0);
+        intendedZoom=Math.max(1f,shipActor.body.getLinearVelocity().len()/4f)*scaleFactor;
+        if (((OrthographicCamera)stage.getCamera()).zoom<intendedZoom-.05f){
+            ((OrthographicCamera)stage.getCamera()).zoom+=.05f;
+        }
+        if (((OrthographicCamera)stage.getCamera()).zoom>intendedZoom+.05f){
+            ((OrthographicCamera)stage.getCamera()).zoom-=.05f;
+        }
         stage.getCamera().update();
         starStage.getCamera().update();
         starStage.draw();
