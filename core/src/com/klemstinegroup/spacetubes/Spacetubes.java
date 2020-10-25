@@ -133,8 +133,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         createStars(1000);
         debugRenderer = new Box2DDebugRenderer();
 
-        for (int i = 0; i < 100; i++){
-            GroundBoxActor groundBoxActor = new GroundBoxActor(world, rayHandler, MathUtils.random(-1000,1000), MathUtils.random(-1000,1000), MathUtils.random(10,100), MathUtils.random(10,100));
+        for (int i = 0; i < 20; i++){
+            GroundBoxActor groundBoxActor = new GroundBoxActor(world, rayHandler, MathUtils.random(-1000,1000), MathUtils.random(-1000,-100), MathUtils.random(10,100), MathUtils.random(10,100));
         stage.addActor(groundBoxActor);
     }
         rayHandler = new RayHandler(world, 1024, 1024);
@@ -145,7 +145,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         JarActor jarActor = new JarActor(world, rayHandler, 0f, -10.0f, 32f, 32f);
         stage.addActor(jarActor);
         for (int i = 0; i < 10; i++) {
-            PlanetActor planetActor = new PlanetActor(world, rayHandler, new Vector2(MathUtils.random(200, 3000), MathUtils.random(-1500, 1500)), 40);
+            PlanetActor planetActor = new PlanetActor(world, rayHandler, new Vector2(MathUtils.random(-1000, 1000), MathUtils.random(100, 1500)), MathUtils.random(40,200));
             stage.addActor(planetActor);
             PointLight pl2 = new PointLight(rayHandler, 128, new Color(1, 1f, 0f, 1f), planetActor.getWidth(), planetActor.getX(), planetActor.getY());
             PointLight pl3 = new PointLight(rayHandler, 128, new Color(1, 0f, 0f, 1f), planetActor.getWidth(), planetActor.getX(), planetActor.getY());
@@ -231,14 +231,14 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
             }
         }
 //        f = shipActor.tipVector(shipActor.body.getLinearVelocity().len()*1f);
-        intendedPosition = cameraActor.body.getWorldCenter().cpy().add(cameraActor.body.getLinearVelocity().cpy().scl(((OrthographicCamera) stage.getCamera()).zoom * (1f / scaleFactor) / 2.5f));
-        stage.getCamera().position.set(intendedPosition.lerp(new Vector2(stage.getCamera().position.x,stage.getCamera().position.y),.99f), 0);
+        intendedPosition = cameraActor.body.getWorldCenter().cpy().add(cameraActor.body.getLinearVelocity().cpy().scl(((OrthographicCamera) stage.getCamera()).zoom * (1f/scaleFactor)/ 4f));
+        stage.getCamera().position.set(intendedPosition.lerp(new Vector2(stage.getCamera().position.x,stage.getCamera().position.y),.3f), 0);
         intendedZoom = Math.max(1f, cameraActor.body.getLinearVelocity().len() / 2.5f) * scaleFactor;
-        if (((OrthographicCamera) stage.getCamera()).zoom < intendedZoom - .02f) {
-            ((OrthographicCamera) stage.getCamera()).zoom += .02f;
+        if (((OrthographicCamera) stage.getCamera()).zoom < intendedZoom - .05f) {
+            ((OrthographicCamera) stage.getCamera()).zoom += .05f;
         }
-        if (((OrthographicCamera) stage.getCamera()).zoom > intendedZoom + .02f) {
-            ((OrthographicCamera) stage.getCamera()).zoom -= .02f;
+        if (((OrthographicCamera) stage.getCamera()).zoom > intendedZoom + .05f) {
+            ((OrthographicCamera) stage.getCamera()).zoom -= .05f;
         }
         stage.getCamera().update();
 
@@ -272,6 +272,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         if (debug) debugRenderer.render(world, stage.getCamera().combined);
 
         Array<UserDataInterface> createBody = new Array<>();
+        world.getBodies(bodies);
         for (int i = 0; i < world.getBodyCount(); i++) {
             try {
                 UserDataInterface datai = ((UserDataInterface) bodies.get(i).getUserData());
@@ -382,7 +383,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         stage.getCamera().unproject(testpoint.set(screenX, screenY, 0));
-        if ((button==0&&shipActor.body.getWorldCenter().dst(new Vector2(testpoint.x,testpoint.y))<2f*((OrthographicCamera)stage.getCamera()).zoom)||button==1){
+        if ((button==0&&shipActor.body.getWorldCenter().dst(new Vector2(testpoint.x,testpoint.y))<1f*((OrthographicCamera)stage.getCamera()).zoom)||button==1){
             shipActor.fire();
             return false;
         }       if (pointer == 0) {
@@ -449,7 +450,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         camera.unproject(testpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
         float px = testpoint.x;
         float py = testpoint.y;
-        camera.zoom += y * camera.zoom * 0.1f;
+        intendedZoom += y * camera.zoom * 0.1f;
         scaleFactor += y * .1f;
         camera.update();
 

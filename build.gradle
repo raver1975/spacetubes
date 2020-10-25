@@ -44,7 +44,24 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
+project(":core") {
+    apply plugin: "java-library"
 
+
+    dependencies {
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
+        api "com.esotericsoftware.spine:spine-libgdx:3.6.53.1"
+        api "de.tomgrill.gdxfacebook:gdx-facebook-core:1.4.1"
+        api "de.tomgrill.gdxdialogs:gdx-dialogs-core:1.2.5"
+        implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
+        compile "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion"
+        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion" // Box2D module (optional)
+        compile 'com.neovisionaries:nv-websocket-client:2.10'
+        implementation "com.github.pubnub:java:v4.33.3"
+    }
+}
 project(":desktop") {
     apply plugin: "java-library"
 
@@ -127,21 +144,4 @@ project(":html") {
     }
 }
 
-project(":core") {
-    apply plugin: "java-library"
 
-
-    dependencies {
-        api "com.badlogicgames.gdx:gdx:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-        api "com.esotericsoftware.spine:spine-libgdx:3.6.53.1"
-        api "de.tomgrill.gdxfacebook:gdx-facebook-core:1.4.1"
-        api "de.tomgrill.gdxdialogs:gdx-dialogs-core:1.2.5"
-        implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion" // Box2D module (optional)
-        compile 'com.neovisionaries:nv-websocket-client:2.10'
-        implementation "com.github.pubnub:java:v4.33.3"
-    }
-}
