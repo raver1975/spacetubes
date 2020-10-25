@@ -35,7 +35,7 @@ public class CarActor extends UserDataInterface {
 
         this.setScale(2,2);// fixture
 
-        setDestr(new DestructionData(DestructionData.BOMB));
+        setDestr(new DestructionData(DestructionData.GROUND));
         int scale1=16;
         Pixmap pixmap = new Pixmap((int) this.getWidth()*scale1, (int) getHeight()*scale1, Pixmap.Format.RGB888);
         final int MAX_COLOR = 6;
@@ -152,7 +152,7 @@ public class CarActor extends UserDataInterface {
 //        wheelShape.setRadius(40 / worldScale);
 
         ChainShape wheelShapeRear = new ChainShape();
-        float[] circVerts = CollisionGeometry.approxCircle(0,0, 40/worldScale, 6);
+        float[] circVerts = CollisionGeometry.approxCircle(0,0, 40/worldScale, 16);
         wheelShapeRear.setRadius(40/worldScale);
         wheelShapeRear.createLoop(circVerts);
 
@@ -173,7 +173,7 @@ public class CarActor extends UserDataInterface {
         rearWheel.createFixture(wheelFixtureRear);
         // the front wheel itself
         ChainShape wheelShapeFront = new ChainShape();
-        float[] circVerts2 = CollisionGeometry.approxCircle(0,0, 40/worldScale, 6);
+        float[] circVerts2 = CollisionGeometry.approxCircle(0,0, 40/worldScale, 16);
         wheelShapeFront.setRadius(40/worldScale);
         wheelShapeFront.createLoop(circVerts2);
 
@@ -267,6 +267,6 @@ public class CarActor extends UserDataInterface {
         temp.add(body);
         temp.add(frontWheel);
         temp.add(rearWheel);
-        create();
+        create(temp);
     }
 }

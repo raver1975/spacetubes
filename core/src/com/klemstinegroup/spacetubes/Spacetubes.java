@@ -36,7 +36,6 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private RayHandler rayHandler;
     private Texture whiteTexture;
     private ShapeDrawer drawer;
-    private GroundBoxActor windowFrame;
     private BallActor tempDraggedBallAcor;
     private Vector3 testpoint = new Vector3();
     private long touchDownTime;
@@ -48,7 +47,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private float intendedZoom = 1f;
     private CarActor carActor;
     private UserDataInterface cameraActor = null;
-//    private Vector2 intendedPosition=new Vector2();
+    private Vector2 intendedPosition=new Vector2();
 
 
     @Override
@@ -65,7 +64,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         drawer = new ShapeDrawer(batch, region);
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        world = new World(new Vector2(0, -2), true);
+        world = new World(new Vector2(0, -4), true);
         World.setVelocityThreshold(10000000);
         world.setContactListener(new B2dContactListener(this));
         batch = new PolygonSpriteBatch();
@@ -134,8 +133,10 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         createStars(1000);
         debugRenderer = new Box2DDebugRenderer();
 
-        windowFrame = new GroundBoxActor(world, rayHandler, -32, -100, 50, 40);
-        stage.addActor(windowFrame);
+        for (int i = 0; i < 100; i++){
+            GroundBoxActor groundBoxActor = new GroundBoxActor(world, rayHandler, MathUtils.random(-1000,1000), MathUtils.random(-1000,1000), MathUtils.random(10,100), MathUtils.random(10,100));
+        stage.addActor(groundBoxActor);
+    }
         rayHandler = new RayHandler(world, 1024, 1024);
         rayHandler.setAmbientLight(0.0f, 0.2f, 0.2f, 0f);
         rayHandler.setBlurNum(3);
@@ -230,8 +231,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
             }
         }
 //        f = shipActor.tipVector(shipActor.body.getLinearVelocity().len()*1f);
-        f = cameraActor.body.getWorldCenter().cpy().add(cameraActor.body.getLinearVelocity().cpy().scl(((OrthographicCamera) stage.getCamera()).zoom * (1f / scaleFactor) / 2.5f));
-        stage.getCamera().position.set(f, 0);
+        intendedPosition = cameraActor.body.getWorldCenter().cpy().add(cameraActor.body.getLinearVelocity().cpy().scl(((OrthographicCamera) stage.getCamera()).zoom * (1f / scaleFactor) / 2.5f));
+        stage.getCamera().position.set(intendedPosition.lerp(new Vector2(stage.getCamera().position.x,stage.getCamera().position.y),.99f), 0);
         intendedZoom = Math.max(1f, cameraActor.body.getLinearVelocity().len() / 2.5f) * scaleFactor;
         if (((OrthographicCamera) stage.getCamera()).zoom < intendedZoom - .02f) {
             ((OrthographicCamera) stage.getCamera()).zoom += .02f;
@@ -381,7 +382,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         stage.getCamera().unproject(testpoint.set(screenX, screenY, 0));
-        if ((button==0&&shipActor.body.getWorldCenter().dst(new Vector2(testpoint.x,testpoint.y))<6)||button==1){
+        if ((button==0&&shipActor.body.getWorldCenter().dst(new Vector2(testpoint.x,testpoint.y))<2f*((OrthographicCamera)stage.getCamera()).zoom)||button==1){
             shipActor.fire();
             return false;
         }       if (pointer == 0) {

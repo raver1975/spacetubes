@@ -58,9 +58,9 @@ public class BallActor extends UserDataInterface {
         BodyDef bd = new BodyDef();
         bd.position.set(this.getX(), this.getY());
         bd.type = BodyDef.BodyType.DynamicBody;
+        bd.bullet=true;
+        bd.allowSleep=false;
         body = world.createBody(bd);
-        body.setBullet(true);
-        body.setSleepingAllowed(false);
         body.setUserData(this);
         PolygonShape circle = new PolygonShape();
         float[] circVerts = CollisionGeometry.approxCircle(0, 0, getWidth() / 2f, 8);

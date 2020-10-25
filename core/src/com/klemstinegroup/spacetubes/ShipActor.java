@@ -67,7 +67,7 @@ public class ShipActor extends UserDataInterface {
 //        setTextureRegion(pixmap);
 
 //        setTextureRegion(new Texture("gfx/test01.png"));
-        destr = new DestructionData(DestructionData.BOMB);
+        destr = new DestructionData(DestructionData.BALL);
 
         this.setPosition(pos_x, pos_y);
         world = aWorld;
@@ -126,8 +126,8 @@ public class ShipActor extends UserDataInterface {
     @Override
     public void act(float delta) {
         super.act(delta);
-        body.setAngularDamping(.9f);
-        body.setLinearDamping(.01f);
+        body.setAngularDamping(.8f);
+        body.setLinearDamping(.3f);
 //        body.setAngularDamping(.7f);
 //        body.setLinearDamping(.2f);
         Vector2 f = new Vector2(new Vector2(-MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad), MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad)).scl(1));
@@ -166,9 +166,9 @@ public class ShipActor extends UserDataInterface {
 //                turnType = TURNTYPE.OFF;
 //            }
 //            ang = MathUtils.clamp(ang, -MathUtils.HALF_PI, MathUtils.HALF_PI);
-            thrustController.update(ang + body.getAngularVelocity() / 5f, 0, Gdx.graphics.getDeltaTime());
+            thrustController.update(ang + body.getAngularVelocity() / 2f, 0, Gdx.graphics.getDeltaTime());
 //            body.applyForce(new Vector2(0, thrustController.getOutput()*200).rotateRad(ang-45*MathUtils.degRad), body.getLocalCenter().cpy().add(4, 4), true);
-            body.applyTorque(thrustController.getOutput() * 5f, true);
+            body.applyTorque(thrustController.getOutput() * 10f, true);
         }
     }
 

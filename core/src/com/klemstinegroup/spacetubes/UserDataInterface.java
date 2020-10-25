@@ -117,12 +117,12 @@ public class UserDataInterface extends Image {
         for (Fixture f : body.getFixtureList()) {
             tempFixtureDefs.add(Box2DUtils.createDef(f));
         }
-         Array<float[]> totalRS = new Array<>();
+        Array<float[]> totalRS = new Array<>();
         Array<PolygonBox2DShape> shapes = new Array<>();
         for (Vector2 vv : points) {
-            Vector2 t = new Vector2(body.getWorldCenter().cpy().sub(vv)).nor().scl(-10000);
+            Vector2 t = new Vector2(body.getWorldCenter().cpy().sub(vv)).nor().scl(-1000);
             bomb.body.applyForceToCenter(t, true);
-            t = new Vector2(bomb.body.getWorldCenter().cpy().sub(vv)).nor().scl(-10000);
+            t = new Vector2(bomb.body.getWorldCenter().cpy().sub(vv)).nor().scl(-1000);
             body.applyForceToCenter(t, true);
             this.getStage().addActor(new FireEmitter(world, new Vector3(vv.x, vv.y, this.body.getAngle())));
             Vector2 v = new Vector2(vv.x - this.body.getWorldCenter().x, vv.y - this.body.getWorldCenter().y);
@@ -185,7 +185,7 @@ public class UserDataInterface extends Image {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         for (PolygonRegion psa : pS) {
-            ((PolygonSpriteBatch) batch).draw(psa, body.getPosition().x - getOriginX() * getScaleX() + offset.x, body.getPosition().y - getOriginY() * getScaleY() + offset.y, getOriginX() , getOriginY(), getWidth(), getHeight(),
+            ((PolygonSpriteBatch) batch).draw(psa, body.getPosition().x - getOriginX() * getScaleX() + offset.x, body.getPosition().y - getOriginY() * getScaleY() + offset.y, getOriginX(), getOriginY(), getWidth(), getHeight(),
                     getScaleX(), getScaleY(), body.getAngle() * MathUtils.radiansToDegrees);
 //            psa.draw((PolygonSpriteBatch) batch);
         }
@@ -197,15 +197,15 @@ public class UserDataInterface extends Image {
         super.act(delta);
         this.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
         this.setPosition(body.getPosition().x - getOriginX(), body.getPosition().y - getOriginY());
-        if (linearVelocity !=null){
-            this.body.applyForceToCenter(linearVelocity.cpy(),true);
-            linearVelocity =null;
+        if (linearVelocity != null) {
+            this.body.applyForceToCenter(linearVelocity.cpy(), true);
+            linearVelocity = null;
         }
     }
 
-void create(Array<Body> bodies){
-        verts=new Array<>();
-        for (Body body:bodies) {
+    void create(Array<Body> bodies) {
+        verts = new Array<>();
+        for (Body body : bodies) {
             this.tempBodyDef = Box2DUtils.createDef(body);
             for (Fixture f : body.getFixtureList()) {
                 tempFixtureDefs.add(Box2DUtils.createDef(f));
@@ -213,9 +213,9 @@ void create(Array<Body> bodies){
             verts.addAll(getVerts(body));
         }
 
-    createPolgyonShapes();
-    this.destr.mustDestroy = true;
-}
+        createPolgyonShapes();
+        this.destr.mustDestroy = true;
+    }
 
     void create() {
         this.tempBodyDef = Box2DUtils.createDef(body);
