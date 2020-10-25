@@ -41,7 +41,7 @@ public class JarActor extends UserDataInterface {
         setTextureRegion(pixmap);
 
 //        setTextureRegion(new Texture("gfx/test01.png"));
-        destr = new DestructionData(DestructionData.BALL);
+        destr = new DestructionData(DestructionData.GROUND);
 
         this.setPosition(pos_x, pos_y);
         world = aWorld;

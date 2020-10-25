@@ -67,7 +67,7 @@ public class ShipActor extends UserDataInterface {
 //        setTextureRegion(pixmap);
 
 //        setTextureRegion(new Texture("gfx/test01.png"));
-        destr = new DestructionData(DestructionData.BALL);
+        destr = new DestructionData(DestructionData.BOMB);
 
         this.setPosition(pos_x, pos_y);
         world = aWorld;
@@ -85,7 +85,7 @@ public class ShipActor extends UserDataInterface {
 
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
-        fd.density = 20f;
+        fd.density = 10f;
         fd.friction = .9f;
         fd.restitution = .1f;
         fd.filter.groupIndex = 1;
@@ -215,7 +215,7 @@ public class ShipActor extends UserDataInterface {
         BallActor b = new BallActor(world, rayHandler, tip.x, tip.y);
 //        tip.set(-MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad), MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad));
         getStage().addActor(b);
-        b.linearVelocity =(tip.sub(body.getWorldCenter()).scl(20).add(body.getLinearVelocity())).cpy();
+        b.linearVelocity =(tip.sub(body.getWorldCenter().cpy()).scl(5000.0f).add(body.getLinearVelocity().cpy())).cpy();
 //
 //        b.body.setLinearVelocity(tip.scl(100000000));
     }

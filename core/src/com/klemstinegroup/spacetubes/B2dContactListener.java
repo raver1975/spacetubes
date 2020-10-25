@@ -74,12 +74,13 @@ public class B2dContactListener implements ContactListener {
         }
 
         if (ground == null || bomb == null) {
-            System.out.println("---------------------------------");
-            System.out.println(ground + "\t" + bomb);
-            System.out.println(((UserDataInterface) a1.getUserData()).getDestr().getType() + "\t" + ((UserDataInterface) b1.getUserData()).getDestr().getType());
-            System.out.println(a1.getUserData().getClass().toString() + "\t" + b1.getUserData().getClass().toString());
-            System.out.println("-------------------------------------------------");
-//
+//            System.out.println("---------------------------------");
+//            System.out.println(ground + "\t" + bomb);
+//            System.out.println(((UserDataInterface) a1.getUserData()).getDestr().getType() + "\t" + ((UserDataInterface) b1.getUserData()).getDestr().getType());
+//            System.out.println(a1.getUserData().getClass().toString() + "\t" + b1.getUserData().getClass().toString());
+//            System.out.println("-------------------------------------------------");
+//c
+
             return;
         }
         Gdx.app.log("debug:", "collision:" + ground.getClass().getName() + "\t" + bomb.getClass().getName());

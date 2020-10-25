@@ -198,7 +198,7 @@ public class UserDataInterface extends Image {
         this.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
         this.setPosition(body.getPosition().x - getOriginX(), body.getPosition().y - getOriginY());
         if (linearVelocity !=null){
-            this.body.setLinearVelocity(linearVelocity.cpy());
+            this.body.applyForceToCenter(linearVelocity.cpy(),true);
             linearVelocity =null;
         }
     }

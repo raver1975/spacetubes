@@ -35,7 +35,7 @@ public class CarActor extends UserDataInterface {
 
         this.setScale(2,2);// fixture
 
-        setDestr(new DestructionData(DestructionData.BALL));
+        setDestr(new DestructionData(DestructionData.BOMB));
         int scale1=16;
         Pixmap pixmap = new Pixmap((int) this.getWidth()*scale1, (int) getHeight()*scale1, Pixmap.Format.RGB888);
         final int MAX_COLOR = 6;
@@ -78,7 +78,7 @@ public class CarActor extends UserDataInterface {
 //        this.setOffset((120/worldScale)/2,(20/worldScale)/2);
         this.setPosition(x,y);
         FixtureDef carFixture = new FixtureDef();
-        carFixture.density = 50;
+        carFixture.density = 5;
         carFixture.friction = 3;
         carFixture.restitution = 0.3f;
         carFixture.filter.groupIndex = -1;

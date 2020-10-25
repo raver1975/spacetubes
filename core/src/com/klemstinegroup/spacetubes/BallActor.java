@@ -50,7 +50,7 @@ public class BallActor extends UserDataInterface {
         Pixmap pixmap = new Pixmap((int) size, (int) size, Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
         pixmap.drawPixmap(extractPixmapFromTextureRegion(new TextureRegion(texture), size, size), 0, 0);
-        setTextureRegion(pixmap);
+//        setTextureRegion(pixmap);
 
         this.setPosition(pos_x, pos_y);
         destr = new DestructionData(DestructionData.BOMB);
@@ -91,7 +91,7 @@ public class BallActor extends UserDataInterface {
 //        circle.dispose();
         Vector2 v = body.getPosition();
         pl2 = new PointLight(rayHandler, 128, new Color(r, g, b, 1f), size*10, v.x, v.y);
-        pl2.setSoft(false);
+        pl2.setSoft(true);
         pl2.setSoftnessLength(100);
         pl2.setXray(true);
         pl2.attachToBody(body);

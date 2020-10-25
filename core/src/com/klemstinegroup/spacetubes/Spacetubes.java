@@ -13,10 +13,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.quailshillstudio.DestructionData;
@@ -45,10 +44,10 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private ShipActor shipActor;
     private Stage starStage;
     private GravityHandler gravityHandler;
-    private float scaleFactor=2f;
-    private float intendedZoom=1f;
+    private float scaleFactor = 2f;
+    private float intendedZoom = 1f;
     private CarActor carActor;
-    private UserDataInterface cameraActor=null;
+    private UserDataInterface cameraActor = null;
 //    private Vector2 intendedPosition=new Vector2();
 
 
@@ -66,7 +65,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         drawer = new ShapeDrawer(batch, region);
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        world = new World(new Vector2(0,-2), true);
+        world = new World(new Vector2(0, -2), true);
+        World.setVelocityThreshold(10000000);
         world.setContactListener(new B2dContactListener(this));
         batch = new PolygonSpriteBatch();
         Gdx.input.setInputProcessor(stage);
@@ -96,9 +96,9 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
                         (pointer1.y + initialPointer2.y) / 2,
                         0
                 );
-                float newScale=oldScale * initialPointer1.dst(initialPointer2) / pointer1.dst(pointer2);
-                zoomCamera(center,newScale );
-                scaleFactor=newScale;
+                float newScale = oldScale * initialPointer1.dst(initialPointer2) / pointer1.dst(pointer2);
+                zoomCamera(center, newScale);
+                scaleFactor = newScale;
                 return true;
 //                return super.pinch(initialPointer1, initialPointer2, pointer1, pointer2);
 
@@ -128,15 +128,16 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         stage.getCamera().viewportHeight = 20 / ratio;
         starStage.getCamera().position.set(0, 0, 10);
         starStage.getCamera().lookAt(0, 0, 0);
-        starStage.getCamera().viewportWidth = 20;
-        starStage.getCamera().viewportHeight = 20 / ratio;
+        starStage.getCamera().viewportWidth = Scene.BUFFER_WIDTH;
+        starStage.getCamera().viewportHeight = Scene.BUFFER_HEIGHT;
+        starStage.getCamera().translate(320, 240, 0);
         createStars(1000);
         debugRenderer = new Box2DDebugRenderer();
 
         windowFrame = new GroundBoxActor(world, rayHandler, -32, -100, 50, 40);
         stage.addActor(windowFrame);
         rayHandler = new RayHandler(world, 1024, 1024);
-        rayHandler.setAmbientLight(0.4f, 0.2f, 0.2f, .5f);
+        rayHandler.setAmbientLight(0.0f, 0.2f, 0.2f, 0f);
         rayHandler.setBlurNum(3);
         rayHandler.setCulling(false);
         rayHandler.setLightMapRendering(true);
@@ -150,12 +151,12 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
             pl3.setSoft(false);
             pl2.setXray(true);
             pl2.setSoft(true);
-            gravityHandler.add(new GravityHandler.DataAndForce(planetActor, planetActor.getWidth()*600));
+            gravityHandler.add(new GravityHandler.DataAndForce(planetActor, planetActor.getWidth() * 600));
             System.out.println("processed planet #" + i);
         }
         shipActor = new ShipActor(world, rayHandler, 0f, 40.0f, 1.2f, 1.2f);
         stage.addActor(shipActor);
-cameraActor=shipActor;
+        cameraActor = shipActor;
         carActor = new CarActor(world, rayHandler, 0f, 25.0f);
         stage.addActor(carActor);
 
@@ -223,26 +224,29 @@ cameraActor=shipActor;
                 Vector2 bodyCenter = body.getWorldCenter();
 //                bodyCenter.sub(planetCenter);
                 Vector2 dist = planetCenter.cpy().sub(bodyCenter);
-                Vector2 dd=dist.cpy().nor().scl((float) (daf.force/(dist.len()*dist.len())));
-                body.applyForceToCenter(dd,true);
+                Vector2 dd = dist.cpy().nor().scl((float) (daf.force / (dist.len() * dist.len())));
+                body.applyForceToCenter(dd, true);
 
             }
         }
 //        f = shipActor.tipVector(shipActor.body.getLinearVelocity().len()*1f);
-        f = cameraActor.body.getWorldCenter().cpy().add(cameraActor.body.getLinearVelocity().cpy().scl(((OrthographicCamera)stage.getCamera()).zoom*(1f/scaleFactor)/2.5f));
+        f = cameraActor.body.getWorldCenter().cpy().add(cameraActor.body.getLinearVelocity().cpy().scl(((OrthographicCamera) stage.getCamera()).zoom * (1f / scaleFactor) / 2.5f));
         stage.getCamera().position.set(f, 0);
-        intendedZoom=Math.max(1f,cameraActor.body.getLinearVelocity().len()/2.5f)*scaleFactor;
-        if (((OrthographicCamera)stage.getCamera()).zoom<intendedZoom-.02f){
-            ((OrthographicCamera)stage.getCamera()).zoom+=.02f;
+        intendedZoom = Math.max(1f, cameraActor.body.getLinearVelocity().len() / 2.5f) * scaleFactor;
+        if (((OrthographicCamera) stage.getCamera()).zoom < intendedZoom - .02f) {
+            ((OrthographicCamera) stage.getCamera()).zoom += .02f;
         }
-        if (((OrthographicCamera)stage.getCamera()).zoom>intendedZoom+.02f){
-            ((OrthographicCamera)stage.getCamera()).zoom-=.02f;
+        if (((OrthographicCamera) stage.getCamera()).zoom > intendedZoom + .02f) {
+            ((OrthographicCamera) stage.getCamera()).zoom -= .02f;
         }
         stage.getCamera().update();
+
+//        ((OrthographicCamera)starStage.getCamera()).zoom= ((OrthographicCamera)stage.getCamera()).zoom;
         starStage.getCamera().update();
-        starStage.draw();
+
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        starStage.act(Gdx.graphics.getDeltaTime());
 
 
         Vector2 g = new Vector2();
@@ -261,6 +265,8 @@ cameraActor=shipActor;
         stage.act();
         rayHandler.setCombinedMatrix(stage.getCamera().combined, 0, 0, 1, 1);
         rayHandler.updateAndRender();
+        starStage.draw();
+        batch.setColor(Color.WHITE);
         stage.draw();
         if (debug) debugRenderer.render(world, stage.getCamera().combined);
 
@@ -268,12 +274,16 @@ cameraActor=shipActor;
         for (int i = 0; i < world.getBodyCount(); i++) {
             try {
                 UserDataInterface datai = ((UserDataInterface) bodies.get(i).getUserData());
-                DestructionData data = datai.getDestr();
-                if (data != null && data.getType() == DestructionData.GROUND) {
-                    if ((data.mustDestroy) && !data.destroyed) {
-                        world.destroyBody(bodies.get(i));
-                        createBody.add(datai);
+                if (datai == null) {
+                    System.out.println("???");
+                } else {
+                    DestructionData data = datai.getDestr();
+                    if (data != null && data.getType() == DestructionData.GROUND) {
+                        if ((data.mustDestroy) && !data.destroyed) {
+                            world.destroyBody(bodies.get(i));
+                            createBody.add(datai);
 //                        bodies.removeIndex(i);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -318,11 +328,11 @@ cameraActor=shipActor;
     public boolean keyDown(int keycode) {
 
         if (keycode == Input.Keys.NUM_1) {
-            cameraActor=carActor;
+            cameraActor = carActor;
         }
 
         if (keycode == Input.Keys.NUM_2) {
-            cameraActor=shipActor;
+            cameraActor = shipActor;
         }
 
         if (keycode == Input.Keys.SPACE) {
@@ -371,7 +381,7 @@ cameraActor=shipActor;
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         stage.getCamera().unproject(testpoint.set(screenX, screenY, 0));
-        if ((button==0&&shipActor.body.getWorldCenter().dst(new Vector2(testpoint.x,testpoint.y))<3)||button==1){
+        if ((button==0&&shipActor.body.getWorldCenter().dst(new Vector2(testpoint.x,testpoint.y))<6)||button==1){
             shipActor.fire();
             return false;
         }       if (pointer == 0) {
@@ -439,7 +449,7 @@ cameraActor=shipActor;
         float px = testpoint.x;
         float py = testpoint.y;
         camera.zoom += y * camera.zoom * 0.1f;
-        scaleFactor+=y*.1f;
+        scaleFactor += y * .1f;
         camera.update();
 
         camera.unproject(testpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
@@ -449,14 +459,17 @@ cameraActor=shipActor;
     }
 
     public void createStars(int starAmount) {
+        Texture pixelTexture = new Texture(Gdx.files.internal("pixel.png"));
         for (int i = 0; i < starAmount; i++) {
-            Image star = new Image(Scene.pixelTexture);
+            final Image star = new Image(pixelTexture);
+            star.addAction(Actions.forever(Actions.sequence(Actions.fadeOut(MathUtils.random(.1f, 1)), Actions.fadeIn(MathUtils.random(.1f, 1)))));
             star.setPosition(MathUtils.random(0, Scene.BUFFER_WIDTH + Scene.EDITOR_OFFSET), MathUtils.random(0, Scene.BUFFER_HEIGHT));
+//            star.setSize(10,10);
             star.setColor(Color.WHITE);
-
-            if (MathUtils.randomBoolean(0.1f)) {
-                star.setSize(MathUtils.random.nextFloat(), MathUtils.random.nextFloat());
-            }
+            star.setSize(MathUtils.random.nextFloat(), MathUtils.random.nextFloat());
+//            if (MathUtils.randomBoolean(0.2f)) {
+//
+//            }
 
             starStage.addActor(star);
         }
