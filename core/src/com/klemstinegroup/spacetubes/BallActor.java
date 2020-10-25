@@ -30,8 +30,8 @@ public class BallActor extends UserDataInterface {
     Array<ParticleEffect> explosionEffect = new Array<>();
     private boolean exploding;
     private boolean dead = false;
-    private float ballScale = 20f;
-    private float explosionScale = .1f;
+    private float ballScale = 30f;
+    private float explosionScale = .3f;
     private int r;
     private int g;
     private int b;
@@ -59,7 +59,7 @@ public class BallActor extends UserDataInterface {
         bd.position.set(this.getX(), this.getY());
         bd.type = BodyDef.BodyType.DynamicBody;
         bd.bullet=true;
-        bd.allowSleep=false;
+        bd.allowSleep=true;
         body = world.createBody(bd);
         body.setUserData(this);
         PolygonShape circle = new PolygonShape();

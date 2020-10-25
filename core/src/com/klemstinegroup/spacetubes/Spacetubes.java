@@ -178,8 +178,13 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
         PointLight pl2 = new PointLight(rayHandler, 512, new Color(.4f, 0, .4f, 1f), 150, 80f, 10f);
         pl2.setIgnoreAttachedBody(true);
-
         PointLight pl3 = new PointLight(rayHandler, 512, new Color(.4f, .4f, 0f, 1f), 150, 0f, 10f);
+        for (int i=0;i<100;i++) {
+            PointLight pl4 = new PointLight(rayHandler, 512, GroundBoxActor.HSVtoRGB(MathUtils.random(6f), 1f, 1f), MathUtils.random(150, 500), MathUtils.random(-1500, 1500), MathUtils.random(-1500, 1500));
+            pl4.setStaticLight(false);
+            pl4.setSoft(true);
+            pl4.setContactFilter((short) 1, (short) 1, (short) 2);
+        }
 //        pl3.attachToBody(windowFrame.body, 0, 50);
         pl3.setIgnoreAttachedBody(true);
 
@@ -231,7 +236,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
             }
         }
 //        f = shipActor.tipVector(shipActor.body.getLinearVelocity().len()*1f);
-        intendedPosition = cameraActor.body.getWorldCenter().cpy().add(cameraActor.body.getLinearVelocity().cpy().scl(((OrthographicCamera) stage.getCamera()).zoom * (1f/scaleFactor)/ 4f));
+        intendedPosition = cameraActor.body.getWorldCenter().cpy().add(cameraActor.body.getLinearVelocity().cpy().scl(((OrthographicCamera) stage.getCamera()).zoom /  20f));
         stage.getCamera().position.set(intendedPosition.lerp(new Vector2(stage.getCamera().position.x,stage.getCamera().position.y),.3f), 0);
         intendedZoom = Math.max(1f, cameraActor.body.getLinearVelocity().len() / 2.5f) * scaleFactor;
         if (((OrthographicCamera) stage.getCamera()).zoom < intendedZoom - .05f) {
@@ -450,7 +455,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         camera.unproject(testpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
         float px = testpoint.x;
         float py = testpoint.y;
-        intendedZoom += y * camera.zoom * 0.1f;
+        camera.zoom += y * camera.zoom * 0.1f;
+        intendedZoom+=y*intendedZoom*.1f;
         scaleFactor += y * .1f;
         camera.update();
 
@@ -464,7 +470,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         Texture pixelTexture = new Texture(Gdx.files.internal("pixel.png"));
         for (int i = 0; i < starAmount; i++) {
             final Image star = new Image(pixelTexture);
-            star.addAction(Actions.forever(Actions.sequence(Actions.fadeOut(MathUtils.random(.1f, 1)), Actions.fadeIn(MathUtils.random(.1f, 1)))));
+            star.addAction(Actions.forever(Actions.sequence(Actions.delay(MathUtils.random(1,10)),Actions.fadeOut(MathUtils.random(.1f, 2)), Actions.delay(MathUtils.random(1,10)),Actions.fadeIn(MathUtils.random(.1f, 1)))));
             star.setPosition(MathUtils.random(0, Scene.BUFFER_WIDTH + Scene.EDITOR_OFFSET), MathUtils.random(0, Scene.BUFFER_HEIGHT));
 //            star.setSize(10,10);
             star.setColor(Color.WHITE);

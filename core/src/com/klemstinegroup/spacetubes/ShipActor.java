@@ -3,11 +3,8 @@ package com.klemstinegroup.spacetubes;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
@@ -16,7 +13,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.quailshillstudio.DestructionData;
-import zk.planet_generator.ColorGroup;
 
 /**
  * Created by julienvillegas on 06/12/2017.
@@ -24,8 +20,8 @@ import zk.planet_generator.ColorGroup;
 
 public class ShipActor extends UserDataInterface {
 
-    private float closestFraction;
-    private Vector2 collisionPoint=new Vector2();
+//    private float closestFraction;
+//    private Vector2 collisionPoint=new Vector2();
 
     public enum TURNTYPE {MOUSE, LEFT, RIGHT, OFF}
 
@@ -69,7 +65,7 @@ public class ShipActor extends UserDataInterface {
 //        setTextureRegion(pixmap);
 
 //        setTextureRegion(new Texture("gfx/test01.png"));
-        destr = new DestructionData(DestructionData.BOMB);
+        destr = new DestructionData(DestructionData.BALL);
 
         this.setPosition(pos_x, pos_y);
         world = aWorld;
@@ -82,8 +78,8 @@ public class ShipActor extends UserDataInterface {
         bd.angle = 45 * MathUtils.degRad;
         float scale = this.getWidth();
         body = world.createBody(bd);
-        body.setAngularDamping(.3f);
-        body.setLinearDamping(.1f);
+        body.setAngularDamping(.6f);
+//        body.setLinearDamping(.1f);
         body.setUserData(this);
         body.setBullet(true);
         // 2. Create a FixtureDef, as usual.
@@ -129,9 +125,9 @@ public class ShipActor extends UserDataInterface {
     @Override
     public void act(float delta) {
         super.act(delta);
-        if (MathUtils.random()<.01f){
-            this.fire();
-        }
+//        if (MathUtils.random()<.01f){
+//            this.fire();
+//        }
 
 //        body.setAngularDamping(.7f);
 //        body.setLinearDamping(.2f);
@@ -147,7 +143,7 @@ public class ShipActor extends UserDataInterface {
         }
         if (engineOn) {// && (turnType != TURNTYPE.MOUSE || Math.abs(ang) < 1f)) {
             engineLight.setColor(MathUtils.clamp(engineLight.getColor().r + MathUtils.random(-.07f, .07f), 0, 1), MathUtils.clamp(engineLight.getColor().g + MathUtils.random(-.07f, .07f), 0, 1), MathUtils.clamp(engineLight.getColor().b + MathUtils.random(-.07f, .07f), 0, 1), MathUtils.clamp(engineLight.getColor().a + MathUtils.random(-.07f, .07f), .95f, 1));
-            body.applyForceToCenter(new Vector2(0, 10).rotateRad(body.getAngle() - 45 * MathUtils.degRad), true);
+            body.applyForceToCenter(new Vector2(0, 20).rotateRad(body.getAngle() - 45 * MathUtils.degRad), true);
         } else {
             engineLight.setColor(engineLight.getColor().r, engineLight.getColor().g, engineLight.getColor().b, .0f);
         }
@@ -171,7 +167,7 @@ public class ShipActor extends UserDataInterface {
 //                turnType = TURNTYPE.OFF;
 //            }
 //            ang = MathUtils.clamp(ang, -MathUtils.HALF_PI, MathUtils.HALF_PI);
-            thrustController.update(ang + body.getAngularVelocity() / 50f, 0, Gdx.graphics.getDeltaTime());
+            thrustController.update(ang + body.getAngularVelocity() / 10f, 0, Gdx.graphics.getDeltaTime());
 //            body.applyForce(new Vector2(0, thrustController.getOutput()*200).rotateRad(ang-45*MathUtils.degRad), body.getLocalCenter().cpy().add(4, 4), true);
             body.applyTorque(thrustController.getOutput() * .2f, true);
         }
@@ -183,10 +179,8 @@ public class ShipActor extends UserDataInterface {
 
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
+    public void draw(final Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-batch.setColor(Color.RED);
-        drawLine(this.getStage().getBatch(), body.getWorldCenter(), collisionPoint, body.getLinearVelocity().len() / 50, whiteTexture);
 
 //        getStage().getCamera().project(testpoint.set(body.getPosition().x, body.getPosition().y, 0f));
 //        float ang=new Vector2(testpoint.x,testpoint.y).sub(body.getPosition()).angleRad()-body.getAngle();
@@ -201,39 +195,31 @@ batch.setColor(Color.RED);
         batch.setColor(Color.CYAN);
 
         //direction
-        drawLine(batch, tipVector(body.getLinearVelocity().len() * .9f), body.getPosition(), body.getLinearVelocity().len() / 50, whiteTexture);
+        drawLine(batch, tipVector(((OrthographicCamera) getStage().getCamera()).zoom), body.getWorldCenter(), ((OrthographicCamera) getStage().getCamera()).zoom / 15, whiteTexture);
 //        Vector2 f = body.getWorldCenter().cpy().add(body.getLinearVelocity().scl(100f));
 
         //linear velocity
-        Vector2 f = body.getLinearVelocity().cpy().nor().scl(200);
-        if (f.len() > 0.001f) {
-            closestFraction=1f;
-            world.rayCast(new RayCastCallback() {
-                @Override
-                public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-                    if ( fraction < closestFraction ) {
-                        closestFraction = fraction;
-                        collisionPoint.set(point);
+        Vector2 f = body.getLinearVelocity().cpy().nor();
+        if (f.len() > 0.000000001f) {
+            for (int i = -180; i < 180; i++) {
+                world.rayCast(new RayCastCallback() {
+                    @Override
+                    public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+                        if (point.cpy().sub(body.getWorldCenter()).len()<300) {
+                            getStage().getBatch().setColor(new Color(1,.4f,.2f,.1f));
+                            drawLine(getStage().getBatch(), body.getWorldCenter(), point, ((OrthographicCamera) getStage().getCamera()).zoom / 15, whiteTexture);
+                            batch.setColor(Color.WHITE);
+                            return 0;
+                        }
+                        else return 1;
                     }
-
-                    return 0;
-                }
-            }, body.getWorldCenter(), f.add(body.getWorldCenter()));
-            world.rayCast(new RayCastCallback() {
-                @Override
-                public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-                    if ( fraction < 1f/closestFraction ) {
-                        closestFraction = 1f/fraction;
-                        collisionPoint.set(point);
-                    }
-
-                    return 0;
-                }
-            }, f.add(body.getWorldCenter()), body.getWorldCenter());
+                }, body.getWorldCenter(), f.rotateDeg(1).add(body.getWorldCenter()));
+            }
         }
-        batch.setColor(Color.GOLD);
-        drawLine(batch, body.getWorldCenter(), body.getLinearVelocity().cpy().scl(.9f).add(body.getWorldCenter()), body.getLinearVelocity().len() / 50, whiteTexture);
-
+//        if (Spacetubes.debug) {
+            batch.setColor(Color.GOLD);
+            drawLine(batch, body.getWorldCenter(), body.getLinearVelocity().cpy().scl(.3f * ((OrthographicCamera) getStage().getCamera()).zoom / 10f).add(body.getWorldCenter()), ((OrthographicCamera) getStage().getCamera()).zoom / 15, whiteTexture);
+//        }
 //        }
     }
 
@@ -250,12 +236,12 @@ batch.setColor(Color.RED);
     }
 
     public void fire() {
-        Vector2 tip = tipVector(3f);
+        Vector2 tip = tipVector(10f);
         BallActor b = new BallActor(world, rayHandler, tip.x, tip.y);
 //        tip.set(-MathUtils.sin(body.getAngle() - 45 * MathUtils.degRad), MathUtils.cos(body.getAngle() - 45 * MathUtils.degRad));
         getStage().addActor(b);
         b.linearVelocity = (tip.sub(body.getWorldCenter().cpy()).scl(5000.0f).add(body.getLinearVelocity().cpy())).cpy();
-world.clearForces();
+        world.step(0, 1, 1);
 //        b.body.setLinearVelocity(tip.scl(100000000));
     }
 
