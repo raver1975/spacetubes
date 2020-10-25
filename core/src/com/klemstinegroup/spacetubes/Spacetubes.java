@@ -107,7 +107,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
                 camera.update();
                 Vector3 oldUnprojection = camera.unproject(origin.cpy()).cpy();
                 camera.zoom = scale; //Larger value of zoom = small images, border view
-                camera.zoom = Math.min(5.0f, Math.max(camera.zoom, 0.05f));
+                camera.zoom = Math.max(camera.zoom, 0.05f);
                 camera.update();
                 Vector3 newUnprojection = camera.unproject(origin.cpy()).cpy();
                 camera.position.add(oldUnprojection.cpy().add(newUnprojection.cpy().scl(-1f)));
@@ -223,14 +223,14 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
             }
         }
 //        f = shipActor.tipVector(shipActor.body.getLinearVelocity().len()*1f);
-        f = shipActor.body.getWorldCenter().cpy().add(shipActor.body.getLinearVelocity().cpy().scl(((OrthographicCamera)stage.getCamera()).zoom*(1f/scaleFactor)/3f));
+        f = shipActor.body.getWorldCenter().cpy().add(shipActor.body.getLinearVelocity().cpy().scl(((OrthographicCamera)stage.getCamera()).zoom*(1f/scaleFactor)/2.5f));
         stage.getCamera().position.set(f, 0);
-        intendedZoom=Math.max(1f,shipActor.body.getLinearVelocity().len()/4f)*scaleFactor;
-        if (((OrthographicCamera)stage.getCamera()).zoom<intendedZoom-.05f){
-            ((OrthographicCamera)stage.getCamera()).zoom+=.05f;
+        intendedZoom=Math.max(1f,shipActor.body.getLinearVelocity().len()/2.5f)*scaleFactor;
+        if (((OrthographicCamera)stage.getCamera()).zoom<intendedZoom-.02f){
+            ((OrthographicCamera)stage.getCamera()).zoom+=.02f;
         }
-        if (((OrthographicCamera)stage.getCamera()).zoom>intendedZoom+.05f){
-            ((OrthographicCamera)stage.getCamera()).zoom-=.05f;
+        if (((OrthographicCamera)stage.getCamera()).zoom>intendedZoom+.02f){
+            ((OrthographicCamera)stage.getCamera()).zoom-=.02f;
         }
         stage.getCamera().update();
         starStage.getCamera().update();

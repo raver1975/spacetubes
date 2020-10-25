@@ -191,7 +191,7 @@ public class ShipActor extends UserDataInterface {
 //            font.draw(batch, ang * MathUtils.radDeg + "", testpoint.x + 10, testpoint.y + 10);
         batch.setColor(Color.CYAN);
             drawLine(batch, tipVector(body.getLinearVelocity().len()*.9f), body.getPosition(), body.getLinearVelocity().len()/50, whiteTexture);
-            Vector2 f = body.getWorldCenter().cpy().add(body.getLinearVelocity().cpy().scl(.9f));
+            Vector2 f = body.getWorldCenter().cpy().add(body.getLinearVelocity().scl(.9f));
         batch.setColor(Color.GOLD);
             drawLine(batch, f, body.getWorldCenter(), body.getLinearVelocity().len()/50, whiteTexture);
 //        }
