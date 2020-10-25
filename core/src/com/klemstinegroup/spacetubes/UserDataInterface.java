@@ -165,7 +165,7 @@ public class UserDataInterface extends Image {
         this.destr.mustDestroy = true;
     }
 
-    public Array<float[]> getVerts() {
+    public Array<float[]> getVerts(Body body) {
         Array<float[]> totalRS = new Array<>();
         Array<Fixture> fixtureList = body.getFixtureList();
         int fixCount = fixtureList.size;
@@ -185,7 +185,7 @@ public class UserDataInterface extends Image {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         for (PolygonRegion psa : pS) {
-            ((PolygonSpriteBatch) batch).draw(psa, body.getPosition().x - getOriginX() * getScaleX() + offset.x, body.getPosition().y - getOriginY() * getScaleY() + offset.y, getOriginX() * getScaleX(), getOriginY() * getScaleY(), getWidth(), getHeight(),
+            ((PolygonSpriteBatch) batch).draw(psa, body.getPosition().x - getOriginX() * getScaleX() + offset.x, body.getPosition().y - getOriginY() * getScaleY() + offset.y, getOriginX() , getOriginY(), getWidth(), getHeight(),
                     getScaleX(), getScaleY(), body.getAngle() * MathUtils.radiansToDegrees);
 //            psa.draw((PolygonSpriteBatch) batch);
         }
@@ -203,13 +203,26 @@ public class UserDataInterface extends Image {
         }
     }
 
+void create(Array<Body> bodies){
+        verts=new Array<>();
+        for (Body body:bodies) {
+            this.tempBodyDef = Box2DUtils.createDef(body);
+            for (Fixture f : body.getFixtureList()) {
+                tempFixtureDefs.add(Box2DUtils.createDef(f));
+            }
+            verts.addAll(getVerts(body));
+        }
+
+    createPolgyonShapes();
+    this.destr.mustDestroy = true;
+}
 
     void create() {
         this.tempBodyDef = Box2DUtils.createDef(body);
         for (Fixture f : body.getFixtureList()) {
             tempFixtureDefs.add(Box2DUtils.createDef(f));
         }
-        verts = getVerts();
+        verts = getVerts(body);
 
         createPolgyonShapes();
         this.destr.mustDestroy = true;

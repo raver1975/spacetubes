@@ -38,10 +38,7 @@ public class GearActor extends UserDataInterface {
         destr = new DestructionData(DestructionData.GROUND);
 
         this.setPosition(pos_x, pos_y);
-
-        world = aWorld;
         BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("box2d_scene.json"));
-
         BodyDef bd = new BodyDef();
         bd.type = BodyDef.BodyType.KinematicBody;
         bd.position.x = this.getX();

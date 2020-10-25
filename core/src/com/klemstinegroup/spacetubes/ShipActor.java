@@ -62,6 +62,7 @@ public class ShipActor extends UserDataInterface {
             pixmap.drawLine(i, 0, i, (int) aHeight * scale1);
         }
         this.setSize(aWidth, aHeight);
+
 //        pixmap.drawPixmap(extractPixmapFromTextureRegion(new TextureRegion(new Texture("gfx/test01.png")), aWidth*scale, aHeight*scale),0,0);
 //        setTextureRegion(pixmap);
 

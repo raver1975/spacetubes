@@ -47,6 +47,8 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
     private GravityHandler gravityHandler;
     private float scaleFactor=2f;
     private float intendedZoom=1f;
+    private CarActor carActor;
+    private UserDataInterface cameraActor=null;
 //    private Vector2 intendedPosition=new Vector2();
 
 
@@ -64,7 +66,7 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         drawer = new ShapeDrawer(batch, region);
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        world = new World(new Vector2(), true);
+        world = new World(new Vector2(0,-2), true);
         world.setContactListener(new B2dContactListener(this));
         batch = new PolygonSpriteBatch();
         Gdx.input.setInputProcessor(stage);
@@ -153,6 +155,10 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
         }
         shipActor = new ShipActor(world, rayHandler, 0f, 40.0f, 1.2f, 1.2f);
         stage.addActor(shipActor);
+cameraActor=shipActor;
+        carActor = new CarActor(world, rayHandler, 0f, 25.0f);
+        stage.addActor(carActor);
+
 //        shipActor.addListener(new ActorGestureListener(){
 //            @Override
 //            public void tap(InputEvent event, float x, float y, int count, int button) {
@@ -223,9 +229,9 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
             }
         }
 //        f = shipActor.tipVector(shipActor.body.getLinearVelocity().len()*1f);
-        f = shipActor.body.getWorldCenter().cpy().add(shipActor.body.getLinearVelocity().cpy().scl(((OrthographicCamera)stage.getCamera()).zoom*(1f/scaleFactor)/2.5f));
+        f = cameraActor.body.getWorldCenter().cpy().add(cameraActor.body.getLinearVelocity().cpy().scl(((OrthographicCamera)stage.getCamera()).zoom*(1f/scaleFactor)/2.5f));
         stage.getCamera().position.set(f, 0);
-        intendedZoom=Math.max(1f,shipActor.body.getLinearVelocity().len()/2.5f)*scaleFactor;
+        intendedZoom=Math.max(1f,cameraActor.body.getLinearVelocity().len()/2.5f)*scaleFactor;
         if (((OrthographicCamera)stage.getCamera()).zoom<intendedZoom-.02f){
             ((OrthographicCamera)stage.getCamera()).zoom+=.02f;
         }
@@ -310,6 +316,15 @@ public class Spacetubes extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+
+        if (keycode == Input.Keys.NUM_1) {
+            cameraActor=carActor;
+        }
+
+        if (keycode == Input.Keys.NUM_2) {
+            cameraActor=shipActor;
+        }
+
         if (keycode == Input.Keys.SPACE) {
             shipActor.fire();
         }

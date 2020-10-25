@@ -35,7 +35,7 @@ public class PlanetActor extends UserDataInterface {
         this.setPosition(position.x, position.y);
         this.setSize(radius * 2, radius * 2);
         this.setOrigin(radius, radius);
-        this.setOffset(radius * 2, radius * 2);
+        this.setOffset(radius, radius );
         this.setScale(2, 2);
         destr = new DestructionData(DestructionData.GROUND);
         BodyDef bd = new BodyDef();
@@ -87,7 +87,7 @@ public class PlanetActor extends UserDataInterface {
     }
 
     private void createPlanet() {
-        setTextureRegion(generatePlanetPixmap(256));
+        setTextureRegion(generatePlanetPixmap(512));
 
 //        int size = MathUtils.random(100, 148);
 //        planet.setSize(size, size);

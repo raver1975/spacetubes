@@ -53,7 +53,7 @@ public class GroundBoxActor extends UserDataInterface {
 //        fixtureDef.filter.groupIndex = 1;
         body.createFixture(fixtureDef);
         this.setOrigin(width/2 , height/2);
-        this.setOffset(width,height);
+        this.setOffset(width/2,height/2);
         create();
     }
 
