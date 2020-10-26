@@ -117,7 +117,7 @@ public class BallActor extends UserDataInterface {
         Vector2 v = body.getPosition();
 
         if (exploding) {
-            BallGenerator.getInstance().explode(this);
+//            BallGenerator.getInstance().explode(this);
             body.applyForceToCenter(body.getLinearVelocity().cpy().scl(.05f + MathUtils.random(.01f) - .005f, .05f + MathUtils.random(.01f) - .005f).scl(explosionScale / 6f), true);
 //            if (MathUtils.random() > .8f) {
             BallGenerator.getInstance().explode(this);

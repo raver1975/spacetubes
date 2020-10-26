@@ -218,7 +218,7 @@ public class ShipActor extends UserDataInterface {
         }
 //        if (Spacetubes.debug) {
             batch.setColor(Color.GOLD);
-            drawLine(batch, body.getWorldCenter(), body.getLinearVelocity().cpy().scl(.3f * ((OrthographicCamera) getStage().getCamera()).zoom / 10f).add(body.getWorldCenter()), ((OrthographicCamera) getStage().getCamera()).zoom / 15, whiteTexture);
+            drawLine(batch, body.getWorldCenter(), body.getLinearVelocity().cpy().scl(.5f * ((OrthographicCamera) getStage().getCamera()).zoom / 10f).add(body.getWorldCenter()), ((OrthographicCamera) getStage().getCamera()).zoom / 15, whiteTexture);
 //        }
 //        }
     }
