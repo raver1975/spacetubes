@@ -200,7 +200,7 @@ public class ShipActor extends UserDataInterface {
 
         //linear velocity
         Vector2 f = body.getLinearVelocity().cpy().nor();
-        if (f.len() > 0.000000001f) {
+        if (Spacetubes.debug&&f.len() > 0.000000001f) {
             for (int i = -180; i < 180; i++) {
                 world.rayCast(new RayCastCallback() {
                     @Override
